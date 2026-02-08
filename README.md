@@ -8,7 +8,7 @@
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python)
 
 **Florida State University | CEN 4090L: Software Engineering Lab**  
-**Spring 2025 - Group Capstone Project**
+**Spring 2026 - Group Capstone Project**
 
 ---
 
@@ -546,7 +546,7 @@ POST   /api/simulator/predict        # Simulate custom race scenario
 **Request Body Example (Simulator)**:
 ```json
 {
-  "race_id": "2025_monaco_gp",
+  "race_id": "2026_monaco_gp",
   "weather": "wet",
   "tire_strategy": "medium-hard",
   "expected_pit_stops": 2
@@ -557,9 +557,9 @@ POST   /api/simulator/predict        # Simulate custom race scenario
 ```json
 {
   "race_info": {
-    "race_id": "2025_monaco_gp",
+    "race_id": "2026_monaco_gp",
     "circuit": "Monaco",
-    "date": "2025-05-25"
+    "date": "2026-05-25"
   },
   "prediction": {
     "winner": {
@@ -666,20 +666,20 @@ The model is retrained:
 
 Our project follows a **14-week incremental development plan** with three major deliverables:
 
-### Increment 1: Foundation & Dashboard (Weeks 1-5) - Due: Feb 23, 2025
+### Increment 1: Foundation & Dashboard (Weeks 1-5) - Due: Feb 23, 2026 by 11:59 PM EST
 - Database schema design and setup
 - Core backend API endpoints
 - Baseline ML model training
 - Dashboard page with live predictions
 - Driver and constructor standings
 
-### Increment 2: Simulator & Data Center (Weeks 6-8) - Due: Mar 30, 2025
+### Increment 2: Simulator & Data Center (Weeks 6-8) - Due: Mar 23, 2026 by 11:59 PM EST
 - Race prediction simulator with custom parameters
 - Enhanced ML model with scenario simulation
 - Data Center with historical race database
 - Circuit visualizations and statistics
 
-### Increment 3: News Feed & Production (Weeks 9-14) - Due: May 5, 2025
+### Increment 3: News Feed & Production (Weeks 9-14) - Due: Apr 27, 2026 by 11:59 PM EST
 - News aggregation page
 - Production deployment (Vercel + Heroku/Railway)
 - Comprehensive testing and bug fixes
@@ -824,4 +824,4 @@ For questions or feedback regarding this project:
 
 ---
 
-**Built with care by FSU Software Engineering Lab - Spring 2025**
+**Built with care by FSU Software Engineering Lab - Spring 2026**
