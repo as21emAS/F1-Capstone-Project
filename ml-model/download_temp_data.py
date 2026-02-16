@@ -135,18 +135,18 @@ def main():
     else:
         print("No missing values detected")
 
+    # save to CSV
+    print("Saving data...")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f'temp_f1_data_{timestamp}.csv'
+    df.to_csv(filename, index=False)
+    
     # top performers (quick sanity check)
     print("\nTop 5 drivers by points:")
     winners = df[df['finish_position'] == 1]
     top_winners = winners['driver_full_name'].value_counts().head(5)
     for driver, wins in top_winners.items():
         print(f"   {driver:25s} {wins} wins")
-
-    # save to CSV
-    print("Saving data...")
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f'temp_f1_data_{timestamp}.csv'
-    df.to_csv(filename, index=False)
     
     # elapsed time
     elapsed = time.time() - start_time
