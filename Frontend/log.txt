@@ -1,0 +1,23 @@
+File /root/CAP_Stuff/Git_front/F1-Capstone-Project/Frontend/src/App.tsx
+
+
+Warnings :
+1 : the definition is not identified
+2 : the definition is not identified
+3 : the definition is not identified
+4 : the definition is not identified
+6 : the definition is not identified
+7 : the definition is not identified
+10 : the definition is not identified
+11 : the definition is not identified
+13 : the definition is not identified
+14 : the definition is not identified
+15 : the definition is not identified
+16 : the definition is not identified
+17 : the definition is not identified
+18 : the definition is not identified
+19 : the definition is not identified
+20 : the definition is not identified
+22 : the definition is not identified
+
+Your trace has 0 errors and 17 warnings.
