@@ -417,8 +417,60 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-.DS_Store
-venv/
-*.csv
-*.pkl
-*.png
+nano Backend/.gitignore
+```
+
+Paste:
+```
+# Environment variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+nano Backend/.gitignore
+```
+
+Paste:
+```
+# Environment variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log

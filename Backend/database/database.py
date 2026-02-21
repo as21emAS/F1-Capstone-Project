@@ -1,6 +1,23 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = "postgresql://postgres:password@localhost:5432/f1_database"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine)
+load_dotenv()
+
+DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://livreiter:@localhost:5432/f1_predictor')
+
+# Create engine
+engine = create_engine(DATABASE_URL, echo=False)
+
+# Create session factory
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Dependency for FastAPI
+def get_db():
+    """Get database session for FastAPI dependency injection"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
