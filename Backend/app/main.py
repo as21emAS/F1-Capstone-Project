@@ -4,6 +4,9 @@ import logging
 
 from app.core.config import settings
 
+from app.api.v1.endpoints.races import router as races_router
+
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -27,6 +30,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(races_router, prefix="/api/races", tags=["races"])
 
 @app.get("/health")
 def health_check():
