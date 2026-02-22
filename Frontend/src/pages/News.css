@@ -87,3 +87,66 @@
   background: #c8001a;
   color: #faf4e8;
 }
+
+/* ─── Mobile ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+
+  /* Grid becomes single column */
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Card spacing slightly tighter */
+  .news-article {
+    padding: 0.9rem;
+    box-shadow: 2px 2px 0 #1c1208;
+  }
+
+  /* Disable hover lift on mobile */
+  .news-article:hover {
+    transform: none;
+    box-shadow: 2px 2px 0 #1c1208;
+  }
+
+  /* Slightly reduce corner fold */
+  .news-article::after {
+    border-width: 0 14px 14px 0;
+  }
+
+  .news-article:hover::after {
+    border-width: 0 14px 14px 0;
+  }
+
+  /* Typography scaling */
+  .news-article-title {
+    font-size: 0.8rem;
+  }
+
+  .news-article-excerpt {
+    font-size: 0.68rem;
+    line-height: 1.5;
+  }
+
+  /* Make button full-width for easier tapping */
+  .read-more-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.55rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* ─── Tablet ───────────────────────────────────────────────────────────── */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  .news-grid {
+    gap: 1rem;
+  }
+
+  .news-article-title {
+    font-size: 0.85rem;
+  }
+}
