@@ -474,3 +474,9 @@ build/
 
 # Logs
 *.log
+
+# ml-dev
+*.ipynb_checkpoints
+.ipynb_checkpoints/
+*.png
+venv/
