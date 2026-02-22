@@ -134,3 +134,93 @@
   color: #c8001a;
   letter-spacing: 0.05em;
 }
+
+/* ─── Mobile ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+
+  /* Wrapper */
+  .predictor-wrap {
+    max-width: 100%;
+  }
+
+  /* Parameter grid becomes single column */
+  .predictor-grid {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .param-label {
+    font-size: 0.7rem;
+  }
+
+  /* Run button full width */
+  .run-btn {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Results stack vertically */
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.85rem 0;
+  }
+
+  .result-pos {
+    font-size: 1.4rem;
+    width: auto;
+  }
+
+  .result-info {
+    width: 100%;
+  }
+
+  .result-driver {
+    font-size: 0.85rem;
+  }
+
+  .result-team {
+    font-size: 0.62rem;
+  }
+
+  /* Factor tags wrap naturally */
+  .result-factors {
+    width: 100%;
+  }
+
+  .factor-tag {
+    font-size: 0.6rem;
+  }
+
+  /* Confidence section moves below */
+  .result-conf {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .result-conf-num {
+    font-size: 1rem;
+  }
+}
+
+/* ─── Tablet ───────────────────────────────────────────────────────────── */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  .predictor-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-info {
+    width: 150px;
+  }
+
+  .result-conf {
+    width: 100px;
+  }
+}

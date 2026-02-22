@@ -380,3 +380,106 @@
 .news-row:hover .news-headline {
   color: #c8001a;
 }
+
+/* ─────────────────────────────────────────────
+   MOBILE (< 640px)
+   ───────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+
+  /* Grid becomes single column */
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .standings-card,
+  .teams-card,
+  .news-card {
+    grid-column: 1 / -1;
+  }
+
+  /* Hero stacks */
+  .hero-body {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .hero-right {
+    width: 100%;
+  }
+
+  .hero-race-name {
+    font-size: 1.6rem;
+  }
+
+  .hero-flag {
+    font-size: 2rem;
+  }
+
+  /* Prediction card scales down */
+  .pred-driver {
+    font-size: 1.3rem;
+  }
+
+  .conf-pct {
+    font-size: 1.1rem;
+  }
+
+  /* Tables scroll instead of breaking layout */
+  .standings-card {
+    overflow-x: auto;
+  }
+
+  .f1-table {
+    min-width: 520px;
+  }
+
+  /* Mini bars shrink */
+  .mini-bar {
+    width: 80px;
+  }
+
+  /* Teams section stacks nicely */
+  .team-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .champ-meter {
+    width: 100%;
+    margin-top: 0.4rem;
+  }
+
+  /* News text slightly smaller */
+  .news-headline {
+    font-size: 0.75rem;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   TABLET (640px - 1024px)
+   ───────────────────────────────────────────── */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  .dash-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .hero-right {
+    width: 200px;
+  }
+
+  .hero-race-name {
+    font-size: 1.9rem;
+  }
+
+  .mini-bar {
+    width: 90px;
+  }
+
+  .champ-meter {
+    width: 100px;
+  }
+}

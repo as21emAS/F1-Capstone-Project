@@ -5,6 +5,7 @@ import "./Layout.css";
 
 export default function Dashboard() {
   const [timeStr, setTimeStr] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const update = () =>
@@ -33,22 +34,57 @@ export default function Dashboard() {
             <span className="live-text">LIVE</span>
             <span className="live-time">{timeStr}</span>
           </div>
+
+          {/* Hamburger Button (mobile only) */}
+          <button
+            className={`hamburger ${menuOpen ? "open" : ""}`}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
 
-        <nav className="nav">
-          <NavLink to="/" end className="nav-btn">
+        <nav className={`nav ${menuOpen ? "open" : ""}`}>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `nav-btn${isActive ? " active" : ""}`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
             ◉ DASHBOARD
           </NavLink>
 
-          <NavLink to="/simulator" className="nav-btn">
+          <NavLink
+            to="/simulator"
+            className={({ isActive }) =>
+              `nav-btn${isActive ? " active" : ""}`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
             ⧖ RACE PREDICTOR
           </NavLink>
 
-          <NavLink to="/data-center" className="nav-btn">
+          <NavLink
+            to="/data-center"
+            className={({ isActive }) =>
+              `nav-btn${isActive ? " active" : ""}`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
             ◈ DATA CENTER
           </NavLink>
 
-          <NavLink to="/news" className="nav-btn">
+          <NavLink
+            to="/news"
+            className={({ isActive }) =>
+              `nav-btn${isActive ? " active" : ""}`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
             ◷ NEWSROOM
           </NavLink>
         </nav>
