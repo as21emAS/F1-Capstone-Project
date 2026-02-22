@@ -2,11 +2,13 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from dotenv import load_dotenv
-from Backend.database.connection_pool import get_connection, return_connection
+#from Backend.database.connection_pool import get_connection, return_connection
+#from database.connection_pool import get_connection, return_connection
 
 load_dotenv()
 try:
-    from Backend.database.connection_pool import get_connection, return_connection
+    #from Backend.database.connection_pool import get_connection, return_connection
+    from database.connection_pool import get_connection, return_connection
     USE_POOL = True
 except ImportError:
     USE_POOL = False
@@ -415,3 +417,43 @@ def get_predictions_for_race(race_id):
     cursor.close()
     conn.close()
     return predictions
+
+def upsert_driver(driver_data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO drivers (driver_id, driver_number, driver_code, driver_forename, 
+                           driver_surname, driver_full_name, nationality, team_id)
+        VALUES (%(driver_id)s, %(driver_number)s, %(driver_code)s, %(driver_forename)s,
+                %(driver_surname)s, %(driver_full_name)s, %(nationality)s, %(team_id)s)
+        ON CONFLICT (driver_id) DO UPDATE SET
+            driver_number = EXCLUDED.driver_number,
+            driver_code = EXCLUDED.driver_code,
+            driver_forename = EXCLUDED.driver_forename,
+            driver_surname = EXCLUDED.driver_surname,
+            driver_full_name = EXCLUDED.driver_full_name,
+            nationality = EXCLUDED.nationality,
+            team_id = EXCLUDED.team_id,
+            updated_at = CURRENT_TIMESTAMP
+    """, driver_data)
+    
+    conn.commit()
+    cursor.close()
+    return_connection(conn)  # return to pool instead of closing
+
+def upsert_team(team_data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO teams (team_id, team_name)
+        VALUES (%(team_id)s, %(team_name)s)
+        ON CONFLICT (team_id) DO UPDATE SET
+            team_name = EXCLUDED.team_name,
+            updated_at = CURRENT_TIMESTAMP
+    """, team_data)
+    
+    conn.commit()
+    cursor.close()
+    return_connection(conn)  # return to pool instead of closing

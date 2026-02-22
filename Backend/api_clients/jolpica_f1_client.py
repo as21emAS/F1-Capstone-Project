@@ -192,6 +192,27 @@ class JolpicaF1Client:
                 return races[0]['PitStops']
         return []
 
+    def get_drivers_with_teams(self, year: int = 2024) -> List[Dict]:
+        standings = self.get_driver_standings(year)
+        drivers = []
+    
+        for entry in standings:
+            driver_info = entry['Driver']
+            constructor_info = entry['Constructors'][0] if entry.get('Constructors') else {}
+        
+            drivers.append({
+                'driver_id': driver_info['driverId'],
+                'driver_number': driver_info.get('permanentNumber'),
+                'driver_code': driver_info.get('code'),
+                'driver_forename': driver_info['givenName'],
+                'driver_surname': driver_info['familyName'],
+                'driver_full_name': f"{driver_info['givenName']} {driver_info['familyName']}",
+                'nationality': driver_info.get('nationality'),
+                'team_id': constructor_info.get('constructorId')
+            })
+    
+        return drivers
+
 #test function
 #NOTE: Current standings are unavailable (2026 season hasn't started yet)
 #So 2024 data will be used for testing purposes

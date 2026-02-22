@@ -46,6 +46,8 @@ class Driver(Base):
     driver_forename = Column(String(100))
     driver_surname = Column(String(100))
     driver_full_name = Column(String(200))
+    nationality = Column(String(100))
+    team_id = Column(String(100), ForeignKey('teams.team_id'), nullable=True)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     
