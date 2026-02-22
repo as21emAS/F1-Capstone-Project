@@ -1,0 +1,136 @@
+/* ─── Page Wrapper ─────────────────────────────────────────────────────────── */
+
+.predictor-wrap {
+  max-width: 960px;
+}
+
+/* ─── Parameter Grid ───────────────────────────────────────────────────────── */
+
+.predictor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+}
+
+.predictor-param {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.param-label {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: #6a4820;
+}
+
+/* ─── Run Button ───────────────────────────────────────────────────────────── */
+
+.run-btn {
+  background: #c8001a;
+  border: 2px solid #1c1208;
+  color: #faf4e8;
+  padding: 0.65rem 1.5rem;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  box-shadow: 3px 3px 0 #1c1208;
+  align-self: flex-end;
+}
+
+.run-btn:hover {
+  background: #1c1208;
+  color: #f0c040;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #c8001a;
+}
+
+.run-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1c1208;
+}
+
+/* ─── Results ──────────────────────────────────────────────────────────────── */
+
+.results-card {
+  margin-top: 1.5rem;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e0d4bc;
+  animation: slideIn 0.4s ease forwards;
+}
+
+.result-row:last-child { border-bottom: none; }
+
+.result-pos {
+  font-family: "Bebas Neue", monospace;
+  font-size: 1.6rem;
+  color: #c8001a;
+  width: 40px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.result-info {
+  width: 185px;
+  flex-shrink: 0;
+}
+
+.result-driver {
+  font-size: 0.88rem;
+  font-weight: bold;
+  color: #1c1208;
+  letter-spacing: 0.04em;
+}
+
+.result-team {
+  font-size: 0.6rem;
+  color: #8a6030;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.result-factors {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.factor-tag {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  background: #e8ddc8;
+  border: 1px solid #8a6030;
+  padding: 0.2rem 0.65rem;
+  color: #5a3820;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+}
+
+.result-conf {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.result-conf-num {
+  font-family: "Bebas Neue", monospace;
+  font-size: 1.1rem;
+  color: #c8001a;
+  letter-spacing: 0.05em;
+}

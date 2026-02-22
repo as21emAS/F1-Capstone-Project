@@ -1,0 +1,89 @@
+/* ─── Grid ─────────────────────────────────────────────────────────────────── */
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+/* ─── Article Card ─────────────────────────────────────────────────────────── */
+
+.news-article {
+  background: #faf4e8;
+  border: 2px solid #1c1208;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  position: relative;
+  animation: fadeIn 0.4s ease forwards;
+  box-shadow: 3px 3px 0 #1c1208;
+}
+
+.news-article:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #c8001a;
+}
+
+/* Vintage corner fold effect */
+.news-article::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 18px 18px 0;
+  border-color: transparent #c8001a transparent transparent;
+  transition: border-width 0.15s;
+}
+
+.news-article:hover::after {
+  border-width: 0 24px 24px 0;
+}
+
+.news-article-header {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.news-article-title {
+  font-size: 0.88rem;
+  color: #1c1208;
+  line-height: 1.45;
+  font-weight: bold;
+  letter-spacing: 0.01em;
+  font-family: "Special Elite", "Courier New", serif;
+}
+
+.news-article-excerpt {
+  font-size: 0.65rem;
+  color: #6a5030;
+  line-height: 1.55;
+  flex: 1;
+  font-style: italic;
+}
+
+/* ─── Read More Button ─────────────────────────────────────────────────────── */
+
+.read-more-btn {
+  background: #1c1208;
+  border: none;
+  color: #f0c040;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.read-more-btn:hover {
+  background: #c8001a;
+  color: #faf4e8;
+}

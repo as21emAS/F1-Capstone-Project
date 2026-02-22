@@ -1,0 +1,382 @@
+/* ─── Grid Layout ──────────────────────────────────────────────────────────── */
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* ─── Hero Card ────────────────────────────────────────────────────────────── */
+
+.hero-card {
+  grid-column: 1 / -1;
+  background: #1c1208 !important;
+  color: #faf4e8;
+}
+
+.hero-card .card-header {
+  border-bottom-color: #c8001a;
+}
+
+.hero-card .card-label {
+  color: #f0c040;
+}
+
+.hero-body {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.hero-left { flex: 1; }
+
+.hero-right {
+  flex-shrink: 0;
+  width: 250px;
+}
+
+.hero-flag {
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+}
+
+.hero-race-name {
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 2.2rem;
+  font-weight: normal;
+  color: #faf4e8;
+  margin: 0 0 0.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 #c8001a;
+  line-height: 1;
+}
+
+.hero-circuit {
+  font-size: 0.7rem;
+  color: #a09070;
+  letter-spacing: 0.2em;
+  margin-bottom: 0.85rem;
+  font-style: italic;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.meta-pill {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  background: transparent;
+  border: 1px solid #5a4030;
+  padding: 0.3rem 0.75rem;
+  color: #c8b8a0;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+}
+
+/* ─── Prediction Card ──────────────────────────────────────────────────────── */
+
+.pred-card {
+  background: #c8001a;
+  border: 2px solid #faf4e8;
+  padding: 1.1rem;
+  position: relative;
+}
+
+.pred-card::after {
+  content: "";
+  position: absolute;
+  bottom: -6px; right: -6px;
+  width: 100%; height: 100%;
+  border: 2px solid rgba(250,244,232,0.3);
+  pointer-events: none;
+}
+
+.pred-label {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: rgba(250,244,232,0.7);
+  margin-bottom: 0.4rem;
+}
+
+.pred-driver {
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 1.6rem;
+  color: #faf4e8;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
+}
+
+.pred-team {
+  font-size: 0.6rem;
+  color: rgba(250,244,232,0.7);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.12em;
+  font-style: italic;
+}
+
+.conf-meter { margin-top: 0.5rem; }
+
+.conf-label {
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(250,244,232,0.6);
+  margin-bottom: 0.35rem;
+}
+
+.conf-bar {
+  height: 10px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(250,244,232,0.3);
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.conf-fill {
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    #faf4e8,
+    #faf4e8 4px,
+    rgba(250,244,232,0.6) 4px,
+    rgba(250,244,232,0.6) 8px
+  );
+  animation: fillBar 1.2s ease forwards;
+}
+
+.conf-pct {
+  font-family: "Bebas Neue", monospace;
+  font-size: 1.4rem;
+  color: #faf4e8;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Standings Table ──────────────────────────────────────────────────────── */
+
+.standings-card { grid-column: 1 / 2; }
+
+.f1-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+}
+
+.f1-table thead {
+  background: #1c1208;
+}
+
+.f1-table th {
+  text-align: left;
+  padding: 0.55rem 0.6rem;
+  color: #f0c040;
+  letter-spacing: 0.2em;
+  font-size: 0.55rem;
+  font-family: "Bebas Neue", monospace;
+  border-bottom: 2px solid #c8001a;
+}
+
+.f1-table tr {
+  border-bottom: 1px solid #e0d4bc;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.f1-table tr:hover {
+  background: rgba(200, 0, 26, 0.06);
+}
+
+.f1-table td {
+  padding: 0.6rem 0.6rem;
+  color: #3a2810;
+  letter-spacing: 0.03em;
+  vertical-align: middle;
+}
+
+.pos-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #e0d4bc;
+  border: 2px solid #1c1208;
+  font-size: 0.65rem;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+}
+
+.pos-num.first {
+  background: #c8001a;
+  border-color: #c8001a;
+  color: #faf4e8;
+}
+
+.driver-flag { margin-right: 5px; }
+
+.driver-name {
+  color: #1c1208;
+  font-weight: bold;
+  letter-spacing: 0.03em;
+}
+
+.team-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+.td-pts {
+  color: #c8001a;
+  font-weight: bold;
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.mini-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100px;
+}
+
+.mini-bar-fill {
+  flex: 1;
+  height: 6px;
+  background: #c8001a;
+  border: 1px solid #8a0010;
+  animation: fillBar 1.5s ease forwards;
+}
+
+.mini-bar-label {
+  font-size: 0.62rem;
+  color: #c8001a;
+  font-weight: bold;
+  min-width: 28px;
+  font-family: "Courier New", monospace;
+}
+
+/* ─── Teams Card ───────────────────────────────────────────────────────────── */
+
+.teams-card { grid-column: 2 / 3; }
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #e0d4bc;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.team-row:last-child { border-bottom: none; }
+
+.team-row:hover { background: rgba(200, 0, 26, 0.05); }
+
+.team-pos {
+  width: 20px;
+  font-size: 0.65rem;
+  color: #8a6030;
+  flex-shrink: 0;
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.85rem;
+}
+
+.team-color-bar {
+  width: 5px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.15);
+}
+
+.team-info { flex: 1; }
+
+.team-name {
+  display: block;
+  font-size: 0.72rem;
+  color: #1c1208;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.team-pts {
+  font-size: 0.55rem;
+  color: #8a6030;
+  letter-spacing: 0.1em;
+  font-style: italic;
+}
+
+.champ-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 120px;
+}
+
+.champ-bar {
+  flex: 1;
+  height: 7px;
+  background: #e0d4bc;
+  border: 1px solid #8a6030;
+  overflow: hidden;
+}
+
+.champ-fill {
+  height: 100%;
+  opacity: 0.85;
+  animation: fillBar 1.5s ease forwards;
+}
+
+.champ-pct {
+  font-size: 0.62rem;
+  color: #3a2810;
+  min-width: 28px;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+}
+
+/* ─── News Ticker Strip ────────────────────────────────────────────────────── */
+
+.news-card { grid-column: 1 / -1; }
+
+.news-row {
+  border-bottom: 1px solid #e0d4bc;
+  padding: 0.8rem 0;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.news-row:last-child { border-bottom: none; }
+
+.news-row:hover { background: rgba(200, 0, 26, 0.04); }
+
+.news-tag-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.news-headline {
+  font-size: 0.82rem;
+  color: #1c1208;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  transition: color 0.12s;
+}
+
+.news-row:hover .news-headline {
+  color: #c8001a;
+}

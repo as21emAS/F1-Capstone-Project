@@ -1,0 +1,178 @@
+/* ─── Root ─────────────────────────────────────────────────────────────────── */
+
+.app-root {
+  min-height: 100vh;
+  background: #f0e6d0;
+  color: #1c1208;
+  font-family: "Courier New", Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ─── Racing Stripe Background ─────────────────────────────────────────────── */
+
+.app-root::after {
+  content: "";
+  position: fixed;
+  top: 0; bottom: 0; left: 0;
+  width: 8px;
+  background: repeating-linear-gradient(
+    180deg,
+    #c8001a 0px, #c8001a 20px,
+    #1c1208 20px, #1c1208 40px
+  );
+  z-index: 50;
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────────── */
+
+.header {
+  background: #1c1208;
+  border-bottom: 4px solid #c8001a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 2.5rem 0.85rem 3rem;
+}
+
+/* ─── Logo ─────────────────────────────────────────────────────────────────── */
+
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.checkered {
+  width: 40px;
+  height: 40px;
+  background-image: repeating-conic-gradient(#faf4e8 0% 25%, #1c1208 0% 50%);
+  background-size: 10px 10px;
+  border: 2px solid #faf4e8;
+  flex-shrink: 0;
+}
+
+.logo-title {
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 2rem;
+  letter-spacing: 0.3em;
+  color: #faf4e8;
+  line-height: 1;
+  text-shadow: 2px 2px 0 #c8001a;
+}
+
+.logo-sub {
+  font-size: 0.5rem;
+  letter-spacing: 0.35em;
+  color: #8a7060;
+  margin-top: 0.25rem;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+}
+
+/* ─── Live Badge ───────────────────────────────────────────────────────────── */
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #c8001a;
+  border: 2px solid #faf4e8;
+  padding: 0.4rem 1rem;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #faf4e8;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;  transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
+
+.live-text {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: #faf4e8;
+}
+
+.live-time {
+  font-size: 0.55rem;
+  color: rgba(250, 244, 232, 0.7);
+  font-family: "Courier New", monospace;
+}
+
+/* ─── Navigation ───────────────────────────────────────────────────────────── */
+
+.nav {
+  display: flex;
+  border-top: 2px solid #3a2810;
+  background: #251a0a;
+}
+
+.nav-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #3a2810;
+  color: #8a7060;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-transform: uppercase;
+}
+
+.nav-btn:last-child {
+  border-right: none;
+}
+
+.nav-btn:hover {
+  color: #faf4e8;
+  background: rgba(200, 0, 26, 0.15);
+}
+
+.nav-btn.active {
+  color: #faf4e8;
+  background: #c8001a;
+  border-bottom: none;
+}
+
+/* ─── Main ─────────────────────────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  padding: 1.75rem 2.5rem 1.75rem 3rem;
+}
+
+/* ─── Footer ───────────────────────────────────────────────────────────────── */
+
+.footer {
+  background: #1c1208;
+  border-top: 4px solid #c8001a;
+  padding: 0.75rem 2.5rem 0.75rem 3rem;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: #6a5040;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+}
