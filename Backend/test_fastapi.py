@@ -3,7 +3,10 @@ from sqlalchemy.orm import Session
 from database.database import get_db
 from models import Race, Driver, Circuit
 
+from routes.health import router as health_router
+
 app = FastAPI(title="F1 Predictor API")
+app.include_router(health_router)
 
 @app.get("/")
 def root():
