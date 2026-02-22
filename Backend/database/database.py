@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://livreiter:@localhost:5432/f1_predictor')
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 # Create engine
 engine = create_engine(DATABASE_URL, echo=False)

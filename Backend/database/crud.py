@@ -21,7 +21,7 @@ def get_db_connection():
         return conn
     else:
         # Fallback to direct connection
-        database_url = os.getenv('DATABASE_URL', 'postgresql://livreiter:@localhost:5432/f1_predictor')
+        database_url = os.getenv('DATABASE_URL')
         return psycopg2.connect(database_url, cursor_factory=RealDictCursor)
     
 def db_connection():
