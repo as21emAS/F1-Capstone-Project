@@ -1,0 +1,125 @@
+================================================================================
+F1 MODEL - BACKEND INTEGRATION
+================================================================================
+
+Model: f1_winner_model_v1.pkl
+Version: 1.0
+For: Person 2 (Backend Team)
+
+================================================================================
+FILES YOU NEED
+================================================================================
+
+1. f1_winner_model_v1.pkl  - The trained model
+2. model_features.pkl       - Feature names (optional, for reference)
+3. model_info.json          - Model metadata (optional)
+
+Copy these to your backend directory.
+
+================================================================================
+SETUP
+================================================================================
+
+Install:
+    pip install pandas scikit-learn
+
+Load model:
+    import pickle
+    model = pickle.load(open('f1_winner_model_v1.pkl', 'rb'))
+
+================================================================================
+PREDICTION FUNCTION
+================================================================================
+
+Copy this function from ml_pipeline.ipynb (Cell 20):
+
+def predict_race_winner(driver_win_rate, team_avg_finish, 
+                         driver_recent_form, grid_position):
+    """
+    Args:
+        driver_win_rate (float): 0-100 (e.g., 63.2 for Verstappen)
+        team_avg_finish (float): 1-20 (e.g., 4.9 for Red Bull)
+        driver_recent_form (float): 1-20 (e.g., 1.5 = great form)
+        grid_position (int): 1-20 (e.g., 1 = pole)
+    
+    Returns:
+        {
+            'win_probability': '70.8%',
+            'prediction': 'WIN' | 'LOSE',
+            'confidence': 'Very High' | 'High' | 'Medium' | 'Low',
+            'raw_probability': 0.708
+        }
+    """
+    import pandas as pd
+    
+    input_data = pd.DataFrame({
+        'driver_win_rate': [driver_win_rate],
+        'team_avg_finish': [team_avg_finish],
+        'driver_recent_form': [driver_recent_form],
+        'grid_position': [grid_position]
+    })
+    
+    prob = model.predict_proba(input_data)[0][1]
+    prediction = 'WIN' if prob > 0.5 else 'LOSE'
+    
+    if prob > 0.8 or prob < 0.2:
+        confidence = 'Very High'
+    elif prob > 0.65 or prob < 0.35:
+        confidence = 'High'
+    elif prob > 0.55 or prob < 0.45:
+        confidence = 'Medium'
+    else:
+        confidence = 'Low'
+    
+    return {
+        'win_probability': f"{prob*100:.1f}%",
+        'prediction': prediction,
+        'confidence': confidence,
+        'raw_probability': round(prob, 3)
+    }
+
+================================================================================
+USAGE
+================================================================================
+
+1. Query driver stats from your database
+2. Call the function with 4 required features
+3. Return result to frontend
+
+Example:
+    result = predict_race_winner(
+        driver_win_rate=63.2,      # From database
+        team_avg_finish=4.9,        # From database
+        driver_recent_form=1.5,     # From database
+        grid_position=1             # From qualifying results
+    )
+    
+    # Returns: {'win_probability': '70.8%', 'prediction': 'WIN', ...}
+
+================================================================================
+REQUIRED FEATURES (from your database)
+================================================================================
+
+1. driver_win_rate
+   - (total wins / total races) × 100
+   - Example: Verstappen = 63.2, Leclerc = 8.8
+
+2. team_avg_finish
+   - Average finish position for team
+   - Example: Red Bull = 4.9, Ferrari = 6.5
+
+3. driver_recent_form
+   - Average finish position in last 3 races
+   - Example: [1,2,1] → 1.33
+
+4. grid_position
+   - Starting position from qualifying
+   - Example: Pole = 1, Last = 20
+
+================================================================================
+NOTES
+================================================================================
+
+- All inputs must be numeric (float/int)
+- Column names in DataFrame must match exactly
+- Model is deterministic (same input = same output)

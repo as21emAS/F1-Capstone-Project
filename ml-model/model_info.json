@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "created_date": "2026-02-22 22:04:36",
+  "dataset": "Sample data (2022-2024)",
+  "num_samples": 1359,
+  "features": [
+    "driver_win_rate",
+    "team_avg_finish",
+    "driver_recent_form",
+    "grid_position"
+  ],
+  "accuracy": "95.96%",
+  "model_type": "RandomForestClassifier",
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 10,
+    "random_state": 42
+  },
+  "notes": "Baseline model trained on sample data. Will retrain with full PostgreSQL database in Week 2."
+}
