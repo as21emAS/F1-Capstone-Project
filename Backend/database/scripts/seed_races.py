@@ -194,4 +194,5 @@ def seed_races_and_circuits(year=2025):
 
 
 if __name__ == "__main__":
-    seed_races_and_circuits(2025)
+    for year in range(2010, 2027):
+        seed_races_and_circuits(year)

@@ -28,4 +28,5 @@ def seed_teams_and_drivers(year=2024):
 
 
 if __name__ == "__main__":
-    seed_teams_and_drivers(2024)
+    for year in range(2010, 2027):
+        seed_teams_and_drivers(year)
