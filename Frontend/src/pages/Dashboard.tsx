@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import "./global.css";
+import "./Global.css";
 import "./Layout.css";
 
 export default function Dashboard() {

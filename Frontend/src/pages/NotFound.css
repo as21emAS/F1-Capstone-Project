@@ -1,0 +1,71 @@
+/* ─── Main Container ─── */
+.notfound-container {
+  position: fixed;
+  inset: 0; /* Shorthand for top:0, right:0, bottom:0, left:0 */
+  width: 100vw;
+  height: 100vh;
+  background-color: #0a0000;
+  overflow: hidden;
+  z-index: 50;
+}
+
+/* ─── Terminal Wrapper ─── */
+.notfound-terminal-wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+/* ─── Centered 404 Text Wrapper ─── */
+.notfound-text-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  pointer-events: none; 
+}
+
+/* ─── 404 Text ─── */
+.notfound-text {
+  font-size: clamp(8rem, 25vw, 18rem);
+  font-weight: bold;
+  color: #e8ddc8;
+  line-height: 1;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 15px rgba(225, 6, 0, 0.6));
+  transform: translateX(-2rem);
+}
+
+
+/* ─── Bottom Centered Button Wrapper ─── */
+.notfound-footer {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%); 
+  z-index: 30;
+  pointer-events: auto;
+}
+
+/* ─── Button Styles ─── */
+.notfound-btn {
+  font-family: monospace;
+  color: #b02700;
+  border: 1px solid #b02700;
+  padding: 0.5rem 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background-color: rgba(10, 0, 0, 0.8);
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.notfound-btn:hover {
+  background-color: #b02700;
+  color: #0a0000;
+}

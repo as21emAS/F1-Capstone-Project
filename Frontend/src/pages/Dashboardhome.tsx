@@ -1,4 +1,4 @@
-import "./DashboardHome.css";
+import "./Dashboardhome.css";
 import { DRIVERS, TEAMS, NEWS, NEXT_RACE, TEAM_COLORS } from "./Data.ts";
 
 export default function DashboardHome() {
