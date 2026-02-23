@@ -35,10 +35,13 @@ export default function Dashboard() {
             <span className="live-time">{timeStr}</span>
           </div>
 
-          {/* Hamburger Button (mobile only) */}
+          {/* Hamburger — mobile only, shown via CSS */}
           <button
-            className={`hamburger ${menuOpen ? "open" : ""}`}
-            onClick={() => setMenuOpen(!menuOpen)}
+            className={`hamburger${menuOpen ? " open" : ""}`}
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={menuOpen}
+            aria-controls="main-nav"
           >
             <span />
             <span />
@@ -46,13 +49,15 @@ export default function Dashboard() {
           </button>
         </div>
 
-        <nav className={`nav ${menuOpen ? "open" : ""}`}>
+        <nav
+          id="main-nav"
+          className={`nav${menuOpen ? " open" : ""}`}
+          aria-label="Main navigation"
+        >
           <NavLink
             to="/"
             end
-            className={({ isActive }) =>
-              `nav-btn${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
             ◉ DASHBOARD
@@ -60,9 +65,7 @@ export default function Dashboard() {
 
           <NavLink
             to="/simulator"
-            className={({ isActive }) =>
-              `nav-btn${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
             ⧖ RACE PREDICTOR
@@ -70,9 +73,7 @@ export default function Dashboard() {
 
           <NavLink
             to="/data-center"
-            className={({ isActive }) =>
-              `nav-btn${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
             ◈ DATA CENTER
@@ -80,12 +81,20 @@ export default function Dashboard() {
 
           <NavLink
             to="/news"
-            className={({ isActive }) =>
-              `nav-btn${isActive ? " active" : ""}`
-            }
+            className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
             ◷ NEWSROOM
+          </NavLink>
+
+          <NavLink
+            to="/components"
+            className={({ isActive }) =>
+              `nav-btn nav-btn--dev${isActive ? " active" : ""}`
+            }
+            onClick={() => setMenuOpen(false)}
+          >
+            ⬡ UI COMPONENTS
           </NavLink>
         </nav>
       </header>
@@ -97,7 +106,7 @@ export default function Dashboard() {
       <footer className="footer">
         <div className="footer-inner">
           <span>FORMULA 1 PREDICTOR THING © 2026</span>
-          <span>POWERED BY FSU's BEST AND BRIGHTEST</span>
+          <span>POWERED BY FSU'S BEST AND BRIGHTEST</span>
         </div>
       </footer>
     </div>

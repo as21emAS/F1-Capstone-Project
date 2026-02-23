@@ -10,7 +10,7 @@
   overflow-x: hidden;
 }
 
-/* ─── Racing Stripe Background ─────────────────────────────────────────────── */
+/* ─── Racing Stripe ────────────────────────────────────────────────────────── */
 
 .app-root::after {
   content: "";
@@ -19,10 +19,11 @@
   width: 8px;
   background: repeating-linear-gradient(
     180deg,
-    #c8001a 0px, #c8001a 20px,
+    #c8001a 0px,  #c8001a 20px,
     #1c1208 20px, #1c1208 40px
   );
   z-index: 50;
+  pointer-events: none;
 }
 
 /* ─── Header ───────────────────────────────────────────────────────────────── */
@@ -97,7 +98,7 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1;  transform: scale(1); }
+  0%, 100% { opacity: 1;   transform: scale(1);   }
   50%       { opacity: 0.4; transform: scale(0.8); }
 }
 
@@ -135,6 +136,10 @@
   cursor: pointer;
   transition: all 0.15s;
   text-transform: uppercase;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-btn:last-child {
@@ -150,6 +155,11 @@
   color: #faf4e8;
   background: #c8001a;
   border-bottom: none;
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid #f0c040;
+  outline-offset: -2px;
 }
 
 /* ─── Main ─────────────────────────────────────────────────────────────────── */
@@ -177,14 +187,42 @@
   text-transform: uppercase;
 }
 
-/* ─── Mobile ───────────────────────────────────────────────────────────── */
+/* ─── Hamburger Button ─────────────────────────────────────────────────────── */
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #faf4e8;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Animate into × */
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ─── Mobile  (< 640px) ────────────────────────────────────────────────────── */
 
 @media (max-width: 639px) {
 
+  .hamburger {
+    display: flex;
+  }
+
   .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     padding: 1rem 1.25rem 1rem 1.5rem;
   }
 
@@ -198,19 +236,28 @@
   }
 
   .live-badge {
-    align-self: stretch;
-    justify-content: center;
+    /* push to the right, but don't stretch full width */
+    margin-left: auto;
+    margin-right: 0.5rem;
   }
 
+  /* Collapsible nav */
   .nav {
     flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+
+  .nav.open {
+    max-height: 400px; /* enough for 5+ items */
   }
 
   .nav-btn {
     border-right: none;
     border-bottom: 1px solid #3a2810;
-    width: 100%;
-    text-align: center;
+    padding: 0.85rem 1.5rem;
+    justify-content: flex-start;
   }
 
   .nav-btn:last-child {
@@ -221,28 +268,35 @@
     padding: 1.25rem 1.25rem 1.25rem 1.5rem;
   }
 
+  .footer {
+    padding: 1rem 1.25rem;
+  }
+
   .footer-inner {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
     text-align: center;
   }
 
-  .footer {
-    padding: 1rem 1.25rem 1rem 1.5rem;
-  }
-
-  /* Reduce stripe width slightly */
   .app-root::after {
     width: 5px;
   }
 }
 
-/* ─── Tablet ───────────────────────────────────────────────────────────── */
+/* ─── Tablet  (640px – 1023px) ─────────────────────────────────────────────── */
 
 @media (min-width: 640px) and (max-width: 1023px) {
 
   .header-inner {
     padding: 0.85rem 1.75rem 0.85rem 2rem;
+  }
+
+  .logo-title  { font-size: 1.7rem; }
+
+  .nav-btn {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    padding: 0.6rem 0.75rem;
   }
 
   .main {
@@ -252,19 +306,9 @@
   .footer {
     padding: 0.75rem 1.75rem 0.75rem 2rem;
   }
-
-  .nav-btn {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    padding: 0.6rem 0.75rem;
-  }
-
-  .logo-title {
-    font-size: 1.7rem;
-  }
 }
 
-/* ─── Desktop ───────────────────────────────────────────────────────────── */
+/* ─── Desktop  (≥ 1024px) ──────────────────────────────────────────────────── */
 
 @media (min-width: 1024px) {
 
@@ -273,73 +317,7 @@
     margin: 0 auto;
   }
 
-  .nav-btn {
-    font-size: 0.9rem;
-  }
+  .logo-title { font-size: 2.1rem; }
 
-  .logo-title {
-    font-size: 2.1rem;
-  }
-} 
-
-/* ─── Hamburger Button ───────────────────────────────────────────────────── */
-
-.hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.hamburger span {
-  width: 24px;
-  height: 2px;
-  background: #faf4e8;
-  transition: all 0.3s ease;
-}
-
-/* Animate into X */
-.hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(4px, 4px);
-}
-
-.hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(5px, -5px);
-}
-
-/* ─── Mobile Menu Behavior ───────────────────────────────────────────────── */
-
-@media (max-width: 639px) {
-
-  .hamburger {
-    display: flex;
-  }
-
-  .nav {
-    flex-direction: column;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  }
-
-  .nav.open {
-    max-height: 300px;
-  }
-
-  .nav-btn {
-    border-right: none;
-    border-bottom: 1px solid #3a2810;
-    width: 100%;
-    text-align: center;
-  }
-
-  .nav-btn:last-child {
-    border-bottom: none;
-  }
+  .nav-btn { font-size: 0.9rem; }
 }

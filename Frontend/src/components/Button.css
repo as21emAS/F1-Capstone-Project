@@ -1,0 +1,184 @@
+/* ─── Base Button ──────────────────────────────────────────────────────────── */
+
+.f1-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 2px solid #1c1208;
+  border-radius: 0;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+}
+
+/* Stamp-press active effect */
+.f1-btn:active:not(.f1-btn--disabled) {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0 0 0 transparent !important;
+}
+
+/* Focus ring - accessible keyboard nav */
+.f1-btn:focus-visible {
+  outline: 3px solid #f0c040;
+  outline-offset: 2px;
+}
+
+/* ─── Sizes ────────────────────────────────────────────────────────────────── */
+
+.f1-btn--sm {
+  font-size: 0.7rem;
+  padding: 0.35rem 0.85rem;
+  box-shadow: 2px 2px 0 #1c1208;
+}
+
+.f1-btn--md {
+  font-size: 0.85rem;
+  padding: 0.55rem 1.25rem;
+  box-shadow: 3px 3px 0 #1c1208;
+}
+
+.f1-btn--lg {
+  font-size: 1rem;
+  padding: 0.75rem 1.75rem;
+  box-shadow: 4px 4px 0 #1c1208;
+}
+
+/* ─── Full Width ───────────────────────────────────────────────────────────── */
+
+.f1-btn--full {
+  width: 100%;
+}
+
+/* ─── Primary Variant ──────────────────────────────────────────────────────── */
+
+.f1-btn--primary {
+  background: #c8001a;
+  color: #faf4e8;
+  border-color: #1c1208;
+}
+
+.f1-btn--primary:hover:not(.f1-btn--disabled) {
+  background: #a50015;
+  transform: translate(-1px, -1px);
+}
+
+.f1-btn--sm.f1-btn--primary:hover:not(.f1-btn--disabled) {
+  box-shadow: 3px 3px 0 #1c1208;
+}
+
+.f1-btn--md.f1-btn--primary:hover:not(.f1-btn--disabled) {
+  box-shadow: 4px 4px 0 #1c1208;
+}
+
+.f1-btn--lg.f1-btn--primary:hover:not(.f1-btn--disabled) {
+  box-shadow: 5px 5px 0 #1c1208;
+}
+
+/* ─── Secondary Variant ────────────────────────────────────────────────────── */
+
+.f1-btn--secondary {
+  background: #faf4e8;
+  color: #1c1208;
+  border-color: #1c1208;
+}
+
+.f1-btn--secondary:hover:not(.f1-btn--disabled) {
+  background: #1c1208;
+  color: #f0c040;
+  transform: translate(-1px, -1px);
+}
+
+.f1-btn--sm.f1-btn--secondary:hover:not(.f1-btn--disabled) {
+  box-shadow: 3px 3px 0 #8a6030;
+}
+.f1-btn--md.f1-btn--secondary:hover:not(.f1-btn--disabled) {
+  box-shadow: 4px 4px 0 #8a6030;
+}
+.f1-btn--lg.f1-btn--secondary:hover:not(.f1-btn--disabled) {
+  box-shadow: 5px 5px 0 #8a6030;
+}
+
+/* ─── Danger Variant ───────────────────────────────────────────────────────── */
+
+.f1-btn--danger {
+  background: #1c1208;
+  color: #c8001a;
+  border-color: #c8001a;
+}
+
+.f1-btn--sm.f1-btn--danger   { box-shadow: 2px 2px 0 #c8001a; }
+.f1-btn--md.f1-btn--danger   { box-shadow: 3px 3px 0 #c8001a; }
+.f1-btn--lg.f1-btn--danger   { box-shadow: 4px 4px 0 #c8001a; }
+
+.f1-btn--danger:hover:not(.f1-btn--disabled) {
+  background: #c8001a;
+  color: #faf4e8;
+  transform: translate(-1px, -1px);
+}
+
+.f1-btn--sm.f1-btn--danger:hover:not(.f1-btn--disabled)  { box-shadow: 3px 3px 0 #c8001a; }
+.f1-btn--md.f1-btn--danger:hover:not(.f1-btn--disabled)  { box-shadow: 4px 4px 0 #c8001a; }
+.f1-btn--lg.f1-btn--danger:hover:not(.f1-btn--disabled)  { box-shadow: 5px 5px 0 #c8001a; }
+
+/* ─── Ghost Variant ────────────────────────────────────────────────────────── */
+
+.f1-btn--ghost {
+  background: transparent;
+  color: #8a6030;
+  border-color: #8a6030;
+  box-shadow: none;
+}
+
+.f1-btn--ghost:hover:not(.f1-btn--disabled) {
+  background: rgba(200, 0, 26, 0.08);
+  color: #c8001a;
+  border-color: #c8001a;
+  box-shadow: 2px 2px 0 #c8001a;
+  transform: translate(-1px, -1px);
+}
+
+/* ─── Disabled State ───────────────────────────────────────────────────────── */
+
+.f1-btn--disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+
+/* ─── Spinner ──────────────────────────────────────────────────────────────── */
+
+.f1-btn__spinner {
+  display: inline-flex;
+  align-items: center;
+  animation: spinCW 0.75s steps(8, end) infinite;
+}
+
+@keyframes spinCW {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Icons ────────────────────────────────────────────────────────────────── */
+
+.f1-btn__icon {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1em;
+}
+
+/* ─── Label ────────────────────────────────────────────────────────────────── */
+
+.f1-btn__label {
+  line-height: 1;
+}

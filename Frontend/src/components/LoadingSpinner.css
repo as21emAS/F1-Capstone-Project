@@ -1,0 +1,134 @@
+/* ─── Screen-reader utility ────────────────────────────────────────────────── */
+
+.f1-spinner__sr-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Base Spinner Container ───────────────────────────────────────────────── */
+
+.f1-spinner {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  position: relative;
+}
+
+/* ─── Sizes ────────────────────────────────────────────────────────────────── */
+
+.f1-spinner--sm { --sz: 28px; }
+.f1-spinner--md { --sz: 44px; }
+.f1-spinner--lg { --sz: 64px; }
+
+/* ─── Wheel Variant ────────────────────────────────────────────────────────── */
+
+.f1-spinner__wheel {
+  width: var(--sz);
+  height: var(--sz);
+  animation: spinCW 0.9s linear infinite;
+}
+
+.f1-spinner__arc {
+  transform-origin: center;
+  transform: rotate(-90deg);
+}
+
+@keyframes spinCW {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Bars Variant ─────────────────────────────────────────────────────────── */
+
+.f1-spinner__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: var(--sz, 44px);
+}
+
+.f1-spinner__bar {
+  width: calc(var(--sz, 44px) / 8);
+  height: 40%;
+  background: #c8001a;
+  animation: barPulse 0.7s ease-in-out infinite alternate;
+}
+
+/* Stagger heights like a pit wall timing board */
+.f1-spinner__bar:nth-child(1) { height: 55%; }
+.f1-spinner__bar:nth-child(2) { height: 80%; }
+.f1-spinner__bar:nth-child(3) { height: 100%; }
+.f1-spinner__bar:nth-child(4) { height: 75%; }
+.f1-spinner__bar:nth-child(5) { height: 50%; }
+
+@keyframes barPulse {
+  from { opacity: 1; transform: scaleY(1); }
+  to   { opacity: 0.35; transform: scaleY(0.4); }
+}
+
+/* ─── Dots Variant ─────────────────────────────────────────────────────────── */
+
+.f1-spinner__dots {
+  display: flex;
+  gap: calc(var(--sz, 44px) / 7);
+}
+
+.f1-spinner__dot {
+  width: calc(var(--sz, 44px) / 5);
+  height: calc(var(--sz, 44px) / 5);
+  background: #c8001a;
+  border: 2px solid #1c1208;
+  animation: dotBounce 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes dotBounce {
+  from { transform: translateY(0);                     background: #c8001a; }
+  to   { transform: translateY(calc(var(--sz) / -3));  background: #1c1208; }
+}
+
+/* ─── Status Message ───────────────────────────────────────────────────────── */
+
+.f1-spinner__message {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: #8a6030;
+  text-transform: uppercase;
+  text-align: center;
+  animation: messageBlink 1.4s ease-in-out infinite;
+}
+
+@keyframes messageBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ─── Overlay ──────────────────────────────────────────────────────────────── */
+
+.f1-spinner__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(240, 230, 208, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  /* Retro diagonal stripe vignette */
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(200, 0, 26, 0.03) 0px,
+      rgba(200, 0, 26, 0.03) 1px,
+      transparent 1px,
+      transparent 12px
+    ),
+    linear-gradient(rgba(240, 230, 208, 0.9), rgba(240, 230, 208, 0.9));
+}
