@@ -54,3 +54,6 @@ exported_data/
 
 # Logs
 *.log
+
+# Cache directory (api client cache)
+.cache/
