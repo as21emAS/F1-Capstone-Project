@@ -1,48 +1,14 @@
 import "./Dashboardhome.css";
 import { DRIVERS, TEAMS, NEWS, NEXT_RACE, TEAM_COLORS } from "./Data.ts";
+import NextRaceCard from "../components/NextRaceCard";
 
 export default function DashboardHome() {
   return (
     <div className="dash-grid">
-      {/* ── Next Race Hero ─────────────────────────────────────────────────── */}
-      <section className="card hero-card">
-        <div className="card-header">
-          <span className="card-label">NEXT RACE</span>
-          <span className="card-badge">T-3 DAYS 14:22:07</span>
-        </div>
-
-        <div className="hero-body">
-          <div className="hero-left">
-            <div className="hero-flag">🇮🇹</div>
-            <h2 className="hero-race-name">{NEXT_RACE.name}</h2>
-            <div className="hero-circuit">{NEXT_RACE.circuit}</div>
-            <div className="hero-meta">
-              <span className="meta-pill">{NEXT_RACE.date}</span>
-              <span className="meta-pill">{NEXT_RACE.lap}</span>
-              <span className="meta-pill">⛅ {NEXT_RACE.weather}</span>
-            </div>
-          </div>
-
-          <div className="hero-right">
-            <div className="pred-card">
-              <div className="pred-label">RACE PREDICTION</div>
-              <div className="pred-driver">{NEXT_RACE.prediction.driver}</div>
-              <div className="pred-team">{NEXT_RACE.prediction.team}</div>
-              <div className="conf-meter">
-                <div className="conf-label">CONFIDENCE</div>
-                <div className="conf-bar">
-                  <div
-                    className="conf-fill"
-                    style={{ width: `${NEXT_RACE.prediction.confidence}%` }}
-                  />
-                </div>
-                <div className="conf-pct">{NEXT_RACE.prediction.confidence}%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      {/* ── Next Race Hero (Replaced with dynamic component) ── */}
+      <div style={{ gridColumn: "1 / -1" }}>
+        <NextRaceCard />
+      </div>
       {/* ── Driver Standings ───────────────────────────────────────────────── */}
       <section className="card standings-card">
         <div className="card-header">
