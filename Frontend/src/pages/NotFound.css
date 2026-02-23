@@ -1,71 +1,138 @@
-/* ─── Main Container ─── */
 .notfound-container {
   position: fixed;
-  inset: 0; /* Shorthand for top:0, right:0, bottom:0, left:0 */
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #0a0000;
-  overflow: hidden;
-  z-index: 50;
-}
-
-/* ─── Terminal Wrapper ─── */
-.notfound-terminal-wrapper {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-}
-
-/* ─── Centered 404 Text Wrapper ─── */
-.notfound-text-wrapper {
-  position: absolute;
-  inset: 0;
+  background-color: transparent; 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 20;
-  pointer-events: none; 
+  z-index: 9999;
+  padding: 1rem;
+  overflow: hidden;
 }
 
-/* ─── 404 Text ─── */
-.notfound-text {
-  font-size: clamp(8rem, 25vw, 18rem);
-  font-weight: bold;
-  color: #e8ddc8;
-  line-height: 1;
-  pointer-events: auto;
-  filter: drop-shadow(0 0 15px rgba(225, 6, 0, 0.6));
-  transform: translateX(-2rem);
-}
-
-
-/* ─── Bottom Centered Button Wrapper ─── */
-.notfound-footer {
+/* ─── Checkered Side Borders ─── */
+.notfound-container::before,
+.notfound-container::after {
+  content: "";
   position: absolute;
-  bottom: 3rem;
-  left: 50%;
-  transform: translateX(-50%); 
-  z-index: 30;
-  pointer-events: auto;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+
+  background-image: conic-gradient(
+    #1c1208 90deg,
+    #c8001a 90deg 180deg,
+    #1c1208 180deg 270deg,
+    #c8001a 270deg
+  );
+  background-size: 40px 40px;
+  z-index: 1; 
 }
 
-/* ─── Button Styles ─── */
-.notfound-btn {
-  font-family: monospace;
-  color: #b02700;
-  border: 1px solid #b02700;
-  padding: 0.5rem 1.5rem;
+.notfound-container::before {
+  left: 0;
+  border-right: 2px solid #c8001a;
+}
+
+.notfound-container::after {
+  right: 0;
+  border-left: 2px solid #c8001a;
+}
+
+/* ─── CRT Scanline Overlay ─── */
+.crt-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(28, 18, 8, 0) 50%, 
+    rgba(28, 18, 8, 0.08) 50%
+  );
+  background-size: 100% 4px;
+  animation: crtFlicker 0.15s infinite;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.95; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.95; }
+}
+
+/* ─── Scattered Text Styles ─── */
+.scattered-error {
+  position: absolute;
+  font-family: "Courier New", monospace;
+  color: #c8001a; 
+  font-weight: bold;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background-color: rgba(10, 0, 0, 0.8);
-  text-decoration: none;
-  display: inline-block;
-  transition: background-color 0.3s, color 0.3s;
+  z-index: 5; /* Places it behind the main content but above background */
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  opacity: 0; 
+  /* Glitch blink animation */
+  animation: scatter-glitch 4s infinite;
 }
 
-.notfound-btn:hover {
-  background-color: #b02700;
-  color: #0a0000;
+@keyframes scatter-glitch {
+  0%, 100% { opacity: 0.1; }
+  45% { opacity: 0.1; }
+  46% { opacity: 0.8; } /* Flash solid */
+  48% { opacity: 0; }   /* Disappear */
+  50% { opacity: 0.4; }
+  52% { opacity: 0.1; }
+}
+
+/* ─── Main Content Styling ─── */
+.notfound-content,
+.notfound-actions {
+  position: relative;
+  z-index: 10; 
+}
+
+.notfound-content {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.error-code {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(8rem, 25vw, 18rem);
+  color: #1c1208; 
+  line-height: 0.8;
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-shadow: 
+    3px 0px 0px rgba(200, 0, 26, 0.4), 
+    -3px 0px 0px rgba(0, 150, 255, 0.2);
+  animation: textGlitch 4s infinite linear alternate-reverse;
+}
+
+@keyframes textGlitch {
+  0%, 90% { transform: translate(0, 0) skew(0deg); }
+  92% { transform: translate(-2px, 2px) skew(2deg); }
+  94% { transform: translate(2px, -2px) skew(-2deg); }
+  96% { transform: translate(0, 0) skew(0deg); }
+}
+
+/* ─── Card Actions ─── */
+.notfound-actions {
+  width: 100%;
+  max-width: 460px; 
+}
+
+.clickable-404-card {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  background: #faf4e8 !important; 
+}
+
+.clickable-404-card:hover {
+  transform: translateY(-5px);
+  border-color: #c8001a !important; /* Hovering triggers F1 red border */
 }
