@@ -51,6 +51,61 @@ Host: localhost
 Port: 5432
 ```
 
+## Database Seeding
+
+### Seed Race Data
+
+To populate the database with the current F1 season schedule and circuit information:
+```bash
+cd Backend
+python database/scripts/seed_races.py
+```
+
+**First Run Output:**
+```
+✅ Circuits: 24 added, 0 updated
+✅ Races: 24 added, 0 updated
+```
+
+**Subsequent Runs:**
+```
+✅ Circuits: 0 added, 24 updated
+✅ Races: 0 added, 24 updated
+```
+
+### Update Race Data
+
+To update race data (for schedule changes or new seasons):
+```bash
+# Update 2025 season
+python database/scripts/seed_races.py
+
+# The script automatically handles updates without creating duplicates
+```
+
+### Seed Other Data
+
+To seed teams and drivers:
+```bash
+python database/scripts/seed_data.py
+```
+
+### Seeding for Future Seasons
+
+To seed data for a different season, modify `seed_races.py`:
+```python
+# Change the year in the main function:
+if __name__ == "__main__":
+    seed_races_and_circuits(2026)  # Change year here
+```
+
+Or call the function directly:
+```python
+from database.scripts.seed_races import seed_races_and_circuits
+seed_races_and_circuits(2026)
+```
+
+
 ## Database Schema
 
 ### Core Tables
