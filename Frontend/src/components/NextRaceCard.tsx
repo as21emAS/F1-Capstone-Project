@@ -2,17 +2,7 @@ import { useState, useEffect } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { ErrorMessage } from "./ErrorMessage";
 import { NEXT_RACE } from "../pages/Data"; // Hardcoded for prediction data
-
-interface RaceData {
-  id: string;
-  raceName: string;
-  circuitName: string;
-  country: string;
-  date: string;
-}
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
-
+import { fetchNextRace, fetchHealth, type RaceData } from "../services/api";
 const getCountryFlag = (country: string) => {
   const flags: Record<string, string> = {
     "Italy": "🇮🇹", "Singapore": "🇸🇬", "Japan": "🇯🇵", 
@@ -32,6 +22,21 @@ export default function NextRaceCard() {
   const [error, setError] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<{ d: number; h: number; m: number; s: number } | null>(null);
 
+	
+  // TEMPORARY TEST FOR FETCH HEALTH
+  useEffect(() => {
+    const runHealthCheck = async () => {
+      try {
+        console.log("Testing fetchHealth...");
+        const response = await fetchHealth();
+        console.log("Health Check Success:", response);
+      } catch (error) {
+        console.error("Health Check Failed:", error);
+      }
+    };
+    runHealthCheck();
+  }, []);
+
   //Fetch Data and Auto-Refresh
   useEffect(() => {
     let isMounted = true;
@@ -43,20 +48,10 @@ export default function NextRaceCard() {
         
         setError(null); // Clear errors on new attemps
 
-        const response = await fetch(`${API_BASE_URL}/api/races/next`); 
-        
-        if (!response.ok) throw new Error("Race unreachable.");
-        
-        const data = await response.json();
+        const raceData = await fetchNextRace(); 
         
         if (isMounted) {
-          setRaceData({
-            id: data.id || `${data.season}-${data.round_number}`,
-            raceName: data.race_name || data.raceName,
-            circuitName: data.circuit?.name || data.circuitName,
-            country: data.circuit?.country || data.country,
-            date: data.time ? `${data.date.split('T')[0]}T${data.time}Z` : data.date,
-          });
+          setRaceData(raceData);
         }
       } catch (err: any) {
         if (isMounted) {
