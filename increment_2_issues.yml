@@ -1,0 +1,455 @@
+milestone:
+  name: "Increment 2"
+  description: "Frontend-backend HTTP integration, live Dashboard, Simulator foundation, and Data Center shell. Internal deadline: March 15, 2026. Professor deadline: March 23, 2026."
+  due_date: "2026-03-23"
+
+labels:
+  - name: "backend"
+    color: "e74c3c"
+    description: "Backend / FastAPI work"
+  - name: "frontend"
+    color: "3498db"
+    description: "React / TypeScript work"
+  - name: "ml"
+    color: "9b59b6"
+    description: "Machine learning / model work"
+  - name: "database"
+    color: "e67e22"
+    description: "Database / SQLAlchemy / migrations"
+  - name: "external-apis"
+    color: "1abc9c"
+    description: "Jolpica, OpenF1, weather API integration"
+  - name: "integration"
+    color: "f39c12"
+    description: "Frontend-backend HTTP wiring"
+  - name: "components"
+    color: "2980b9"
+    description: "Reusable UI components"
+  - name: "documentation"
+    color: "95a5a6"
+    description: "Docs, specs, diagrams"
+  - name: "increment-2"
+    color: "27ae60"
+    description: "Scoped to Increment 2 deliverables"
+  - name: "priority: critical"
+    color: "c0392b"
+    description: "Blocks other issues — do first"
+  - name: "priority: high"
+    color: "e74c3c"
+    description: "Important, unblocks integration"
+  - name: "priority: medium"
+    color: "f39c12"
+    description: "Important but not blocking"
+  - name: "priority: low"
+    color: "27ae60"
+    description: "Nice to have / cleanup"
+  - name: "blocking"
+    color: "c0392b"
+    description: "This issue blocks others"
+
+issues:
+  - title: "[ML] Serialize trained model to .pkl and expose prediction interface"
+    labels:
+      - "backend"
+      - "ml"
+      - "increment-2"
+      - "priority: critical"
+      - "blocking"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      The baseline ML model from Increment 1 needs to be serialized and wrapped in a clean callable interface so Liv can load it into FastAPI. This is the first critical path item — nothing on the backend prediction side can proceed without it.
+
+      **Assignee:** Julissa (js22cu)
+      **Branch:** `feature/js-model-serialization`
+      **Internal Deadline:** March 5, 2026
+
+      ## Tasks
+      - [ ] Finalize and document the feature set used in training (driver avg finishing position, grid position, constructor standing, circuit type, etc.)
+      - [ ] Train final baseline model on cleaned 2010–2024 historical data
+      - [ ] Serialize trained model to `backend/ml/model.pkl` using `joblib`
+      - [ ] Create `backend/ml/predictor.py` with function:
+        ```python
+        def predict_race_winner(race_id: int, params: dict = {}) -> list[dict]:
+            # Returns: [{ "driver_id": str, "predicted_position": int, "confidence_score": float }]
+        ```
+      - [ ] Add all new dependencies to `requirements.txt`
+      - [ ] Write a local smoke test: call the function and print output to confirm it works
+      - [ ] Commit `model.pkl` to `backend/ml/` (or document how to regenerate it if too large for git)
+
+      ## Acceptance Criteria
+      - [ ] `model.pkl` loads without errors
+      - [ ] `predict_race_winner()` returns a ranked list of all drivers with confidence scores
+      - [ ] Liv can import and call the function from a FastAPI route without errors
+      - [ ] No hardcoded paths — uses relative paths safe for all team members
+
+      ## Blocks
+      - #2 — Prediction + standings endpoints (Liv needs this first)
+
+      ## Estimated Time
+      4–6 hours
+
+  - title: "[BACKEND] Build prediction, standings, and next race API endpoints"
+    labels:
+      - "backend"
+      - "database"
+      - "increment-2"
+      - "priority: critical"
+      - "blocking"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Core API endpoints required before any frontend integration can happen. This is the primary blocker for Aleksandar and Brooklyn. CORS must also be configured so the React app can reach FastAPI without browser errors.
+
+      **Assignee:** Liv (or22a)
+      **Branch:** `feature/lr-prediction-standings-endpoints`
+      **Internal Deadline:** March 6, 2026
+      **Depends on:** #1 (model.pkl must exist)
+
+      ## Tasks
+      - [ ] Load `model.pkl` once at FastAPI startup using `joblib.load()` — store as app-level state, not per-request
+      - [ ] `POST /api/predictions` — accepts `{ race_id, weather?, tire_strategy?, pit_stops? }`, returns ranked driver predictions with confidence scores
+      - [ ] `GET /api/standings/drivers/current` — returns 2025 season driver standings (position, driver, team, points, wins)
+      - [ ] `GET /api/standings/teams/current` — returns 2025 season constructor standings
+      - [ ] `GET /api/races/next` — returns next upcoming race (name, date, circuit, location, round)
+      - [ ] Add CORS middleware to `main.py`:
+        ```python
+        from fastapi.middleware.cors import CORSMiddleware
+        app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
+        ```
+      - [ ] Add Pydantic request/response models for all endpoints
+      - [ ] Verify all endpoints appear and work correctly in Swagger UI at `localhost:8000/docs`
+      - [ ] Write basic endpoint tests in `backend/tests/`
+
+      ## Acceptance Criteria
+      - [ ] All 5 endpoints return valid, correctly structured JSON
+      - [ ] CORS configured — React app at `localhost:5173` can call all endpoints without browser errors
+      - [ ] Swagger docs reflect accurate schemas
+      - [ ] Prediction endpoint responds in under 2 seconds
+
+      ## Blocks
+      - #4 — Axios API client setup (Aleksandar)
+      - #5 — Dashboard wiring (Aleksandar)
+      - #6 — Component library (Brooklyn)
+
+      ## Estimated Time
+      5–7 hours
+
+  - title: "[BACKEND] Populate database with historical race data via Jolpica-F1 API"
+    labels:
+      - "backend"
+      - "external-apis"
+      - "database"
+      - "increment-2"
+      - "priority: high"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      The database needs real data for the frontend to display anything meaningful. Yulissa owns the pipeline from Jolpica-F1 and OpenF1 APIs into PostgreSQL.
+
+      **Assignee:** Yulissa (yaf22b)
+      **Branch:** `feature/yf-database-seeding`
+      **Internal Deadline:** March 7, 2026
+      **Depends on:** #2 (schema and tables must exist)
+
+      ## Tasks
+      - [ ] Write `backend/scripts/seed_historical_data.py` using Jolpica-F1 API
+      - [ ] Populate `races` table — all rounds for 2020–2024 seasons
+      - [ ] Populate `drivers` table — all drivers who competed 2020–2024
+      - [ ] Populate `teams` table — all constructors 2020–2024
+      - [ ] Populate `circuits` table — all circuits used 2020–2024
+      - [ ] Populate `race_results` table — finishing results for all seeded races
+      - [ ] Populate current 2025 driver and constructor standings
+      - [ ] Populate `GET /api/races/next` data source with upcoming 2025 race
+      - [ ] Add retry logic and rate limit handling (Jolpica allows ~200 req/hour)
+      - [ ] Document how to run the seed script in `docs/` or README
+
+      ## Acceptance Criteria
+      - [ ] Running `python backend/scripts/seed_historical_data.py` completes without errors
+      - [ ] `GET /api/standings/drivers/current` returns real 2025 standings
+      - [ ] `GET /api/races/next` returns the correct upcoming race
+      - [ ] At minimum 3 seasons of race results in the database
+
+      ## Estimated Time
+      5–7 hours
+
+  - title: "[FRONTEND] Set up Axios HTTP client and React Query API service layer"
+    labels:
+      - "frontend"
+      - "integration"
+      - "increment-2"
+      - "priority: critical"
+      - "blocking"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Before any page can show real data, the frontend needs a centralized HTTP client and data-fetching layer. This replaces all dummy/mock data across the app.
+
+      **Assignee:** Aleksandar (as21em)
+      **Branch:** `feature/as-axios-api-client`
+      **Internal Deadline:** March 6, 2026
+      **Depends on:** #2 (CORS must be enabled on backend first)
+
+      ## Tasks
+      - [ ] Install dependencies:
+        ```bash
+        npm install axios @tanstack/react-query
+        ```
+      - [ ] Create `frontend/src/services/api.ts` — base Axios instance:
+        ```ts
+        const api = axios.create({ baseURL: 'http://localhost:8000/api' });
+        ```
+      - [ ] Create typed service functions (all return typed Promises):
+        - `getPredictions(raceId: number, params?: object)`
+        - `getDriverStandings()`
+        - `getTeamStandings()`
+        - `getNextRace()`
+        - `getRaces(season?: number)`
+        - `getDrivers()`
+        - `getCircuits()`
+      - [ ] Add global Axios error interceptor (log errors, surface user-friendly messages)
+      - [ ] Configure `QueryClient` and wrap `App.tsx` with `QueryClientProvider`
+      - [ ] Create TypeScript interfaces for all API response shapes in `frontend/src/types/api.ts`
+      - [ ] Remove all hardcoded dummy/mock data from `Dashboard.tsx` and any other pages
+
+      ## Acceptance Criteria
+      - [ ] `api.ts` exports typed service functions for all current endpoints
+      - [ ] React Query is configured and `useQuery` works in at least one component
+      - [ ] No dummy data arrays remain anywhere in the frontend codebase
+      - [ ] TypeScript interfaces match actual API response shapes
+
+      ## Blocks
+      - #5 — Dashboard wiring
+      - #6 — Component library integration
+      - #7 — Global UI states
+
+      ## Estimated Time
+      3–4 hours
+
+  - title: "[FRONTEND] Wire Dashboard page to live backend data"
+    labels:
+      - "frontend"
+      - "integration"
+      - "increment-2"
+      - "priority: high"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      The Dashboard page currently uses dummy data. Connect all four sections to live backend endpoints using the API service layer from #4.
+
+      **Assignee:** Aleksandar (as21em)
+      **Branch:** `feature/as-dashboard-integration`
+      **Internal Deadline:** March 10, 2026
+      **Depends on:** #2 (endpoints), #3 (real data), #4 (Axios setup)
+
+      ## Tasks
+      - [ ] **Next Race Card:** `useQuery` → `GET /api/races/next` — show race name, circuit, date, location, round number, and countdown timer
+      - [ ] **Top 5 Predictions:** `useQuery` → `POST /api/predictions` — display driver name, team, predicted position, confidence percentage bar
+      - [ ] **Driver Standings Table:** `useQuery` → `GET /api/standings/drivers/current` — position, driver, team, points, wins
+      - [ ] **Constructor Standings:** `useQuery` → `GET /api/standings/teams/current` — wire to chart component from Brooklyn (#6)
+      - [ ] Implement loading skeleton states for all 4 sections (use `LoadingSkeleton` from #7)
+      - [ ] Implement error state UI — friendly message if API is unreachable (use `ErrorMessage` from #7)
+      - [ ] Add auto-refresh: predictions refetch every 60 seconds or on window focus (`refetchInterval`, `refetchOnWindowFocus`)
+      - [ ] Verify no console errors during normal load and error states
+
+      ## Acceptance Criteria
+      - [ ] All 4 Dashboard sections display 100% real backend data
+      - [ ] Skeletons appear while data is loading
+      - [ ] Error UI shows if backend is unreachable (test by stopping FastAPI)
+      - [ ] Auto-refresh works without page reload
+      - [ ] Zero TypeScript errors
+
+      ## Estimated Time
+      5–7 hours
+
+  - title: "[FRONTEND] Build shared component library (Cards, Charts, Loading states)"
+    labels:
+      - "frontend"
+      - "components"
+      - "increment-2"
+      - "priority: high"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Build the shared component library needed across Dashboard, Simulator, and Data Center. These components are consumed by Aleksandar (Dashboard) and will be used throughout Increment 2 and 3.
+
+      **Assignee:** Brooklyn (bem23b)
+      **Branch:** `feature/bm-component-library`
+      **Internal Deadline:** March 10, 2026
+      **Depends on:** #4 (React Query pattern established)
+
+      ## Tasks
+
+      ### Data Display Components
+      - [ ] `DriverCard.tsx` — props: `{ driver_id, name, team, nationality, points, position }`
+      - [ ] `TeamCard.tsx` — props: `{ team_id, name, points, position, wins }`
+      - [ ] `RaceCard.tsx` — props: `{ race_id, name, circuit, date, round, season }`
+      - [ ] `PredictionResultCard.tsx` — props: `{ driver, predicted_position, confidence_score }` with visual confidence bar
+
+      ### Chart Components (Recharts)
+      - [ ] Install Recharts if not present: `npm install recharts`
+      - [ ] `DriverStandingsChart.tsx` — bar chart, props: `{ standings: DriverStanding[] }`
+      - [ ] `TeamStandingsChart.tsx` — pie or bar chart, props: `{ standings: TeamStanding[] }`
+      - [ ] Charts must be responsive (`ResponsiveContainer`)
+
+      ### Utility Components
+      - [ ] `LoadingSkeleton.tsx` — configurable placeholder, props: `{ width?, height?, variant?: 'card' | 'table-row' | 'chart' }`
+      - [ ] `ErrorMessage.tsx` — props: `{ message: string, onRetry?: () => void }`
+      - [ ] `EmptyState.tsx` — props: `{ title: string, message: string, icon?: ReactNode }`
+      - [ ] `ConfidenceBar.tsx` — visual bar for confidence %, props: `{ value: number }` (0–100)
+
+      ### Exports
+      - [ ] Export all components from `frontend/src/components/index.ts`
+      - [ ] All components fully typed with TypeScript interfaces
+      - [ ] Provide `DriverStandingsChart` and `TeamStandingsChart` to Aleksandar for Dashboard use
+
+      ## Acceptance Criteria
+      - [ ] All components render without errors when given valid props
+      - [ ] Charts render correctly with real data
+      - [ ] Everything exported from a single index file
+      - [ ] No TypeScript errors
+
+      ## Estimated Time
+      6–8 hours
+
+  - title: "[FRONTEND] Implement global loading, error, and empty state UI patterns"
+    labels:
+      - "frontend"
+      - "components"
+      - "increment-2"
+      - "priority: medium"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Every page that makes API calls needs consistent loading, error, and empty state handling. This prevents white screens and unhandled crashes across the entire app.
+
+      **Assignee:** Alex (ach22h)
+      **Branch:** `feature/ah-global-ui-states`
+      **Internal Deadline:** March 8, 2026
+      **Depends on:** #4 (React Query setup)
+
+      ## Tasks
+      - [ ] `PageLoader.tsx` — full-page centered spinner for initial data load
+      - [ ] `ApiErrorBoundary.tsx` — React Error Boundary wrapping all route-level components in `App.tsx`
+      - [ ] `EmptyState.tsx` — configurable empty state: icon + title + message (for tables/lists with no data)
+      - [ ] Apply `PageLoader` to Dashboard and Data Center routes
+      - [ ] Wrap router in `ApiErrorBoundary` inside `App.tsx`
+      - [ ] **Test:** Stop the FastAPI backend — verify every page shows graceful error UI instead of crashing or showing a white screen
+      - [ ] **Test:** Ensure empty arrays from API show `EmptyState` rather than blank sections
+
+      ## Acceptance Criteria
+      - [ ] App never shows unhandled white screen or React crash screen
+      - [ ] Consistent loading UI across all pages
+      - [ ] Error boundary catches and displays route-level errors gracefully
+      - [ ] Empty states display when API returns empty arrays
+
+      ## Estimated Time
+      2–3 hours
+
+  - title: "[BACKEND] Build Data Center read endpoints with pagination"
+    labels:
+      - "backend"
+      - "database"
+      - "increment-2"
+      - "priority: medium"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      The Data Center page needs historical race, circuit, and result read endpoints. These are read-only and depend on the database being seeded with real data.
+
+      **Assignee:** Liv (or22a)
+      **Branch:** `feature/lr-datacenter-endpoints`
+      **Internal Deadline:** March 11, 2026
+      **Depends on:** #3 (database must have seeded data)
+
+      ## Tasks
+      - [ ] `GET /api/races` — paginated list of races, supports `?season=` filter and `?page=&limit=` pagination
+      - [ ] `GET /api/races/{race_id}` — full race details (name, date, circuit, season, round)
+      - [ ] `GET /api/races/{race_id}/results` — finishing results for a race (position, driver, team, points, grid, status)
+      - [ ] `GET /api/circuits` — list all circuits
+      - [ ] `GET /api/circuits/{circuit_id}` — circuit detail (name, location, country, length, lap record if available)
+      - [ ] All paginated endpoints return metadata: `{ total, page, limit, data: [] }`
+      - [ ] Add Pydantic response models for all endpoints
+      - [ ] Test all endpoints in Swagger UI
+
+      ## Acceptance Criteria
+      - [ ] All endpoints return correct data from seeded database
+      - [ ] `?season=2024` filter works on `/api/races`
+      - [ ] Pagination metadata returned correctly
+      - [ ] Response time under 500ms for all read endpoints
+
+      ## Estimated Time
+      4–5 hours
+
+  - title: "[FRONTEND] Build Data Center page shell with season/race selector and tab structure"
+    labels:
+      - "frontend"
+      - "integration"
+      - "increment-2"
+      - "priority: medium"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Build the Data Center page with a working season/race selector dropdown and 3-tab layout. At minimum Tab 1 (Overview) should show real data by the internal March 15 deadline.
+
+      **Assignee:** Brooklyn (bem23b)
+      **Branch:** `feature/bm-datacenter-shell`
+      **Internal Deadline:** March 13, 2026
+      **Depends on:** #6 (component library), #8 (Data Center endpoints)
+
+      ## Tasks
+      - [ ] Season dropdown (2020–2025) — changing season calls `GET /api/races?season=`
+      - [ ] Race selector dropdown — populated from season API response, sorted by round
+      - [ ] 3-tab layout: **Overview** | **Circuit Info** | **Race Data**
+      - [ ] **Tab 1 (Overview):** race name, date, circuit name, location, country, round number — wired to `GET /api/races/{id}`
+      - [ ] **Tab 2 (Circuit Info):** circuit name, location, country, length (image placeholder OK) — wired to `GET /api/circuits/{id}`
+      - [ ] **Tab 3 (Race Data):** results table with position, driver, team, points, grid, status — wired to `GET /api/races/{id}/results`
+      - [ ] Loading states on all tab content areas (use `LoadingSkeleton`)
+      - [ ] Empty state if no race selected (use `EmptyState`)
+
+      ## Acceptance Criteria
+      - [ ] Selecting a season populates the race dropdown from the API
+      - [ ] Selecting a race loads real data into Tab 1
+      - [ ] Tab navigation works correctly between all 3 tabs
+      - [ ] Loading skeletons show during data fetch
+      - [ ] No TypeScript errors
+
+      ## Estimated Time
+      5–6 hours
+
+  - title: "[DOCS] Update API specification and database schema docs for Increment 2"
+    labels:
+      - "documentation"
+      - "increment-2"
+      - "priority: low"
+    milestone: "Increment 2"
+    body: |
+      ## Overview
+      Keep `Docs/api-specification.md` and `Docs/database-schema.md` up to date with all new endpoints and any schema changes made during Increment 2.
+
+      **Assignee:** Alex (ach22h)
+      **Branch:** `feature/ah-increment2-docs`
+      **Internal Deadline:** March 15, 2026
+      **Depends on:** #2, #8 (endpoints must be built first)
+
+      ## Tasks
+      - [ ] Update `Docs/api-specification.md`:
+        - [ ] Add all new Increment 2 endpoints with method, path, description
+        - [ ] Add example JSON request bodies for `POST /api/predictions`
+        - [ ] Add example JSON responses for all new endpoints
+        - [ ] Document CORS configuration (allowed origins)
+      - [ ] Update `Docs/database-schema.md`:
+        - [ ] Reflect any schema changes made during Increment 2
+        - [ ] Add ERD diagram if possible (even a simple text diagram)
+      - [ ] Update `Docs/ml-model.md`:
+        - [ ] Document final feature set used in training
+        - [ ] Add actual accuracy metrics from trained model
+        - [ ] Document model serialization approach (joblib / .pkl location)
+
+      ## Acceptance Criteria
+      - [ ] All Increment 2 endpoints documented with request/response examples
+      - [ ] No "work in progress" placeholder text remains for covered topics
+      - [ ] Docs reflect actual implementation (not the original plan)
+
+      ## Estimated Time
+      2–3 hours
