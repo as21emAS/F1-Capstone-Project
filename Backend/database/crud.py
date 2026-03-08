@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 #from Backend.database.connection_pool import get_connection, return_connection
 #from database.connection_pool import get_connection, return_connection
+from database.connection_pool import get_connection, return_connection
 
 load_dotenv()
 try:
@@ -33,7 +34,7 @@ def db_connection():
         if USE_POOL:
             return_connection(conn)
         else:
-            conn.close()
+            return_connection(conn)
 
 def execute_query(query, params=None, fetchone=False, fetchall=True):
     """Helper function to execute queries using connection pool"""
@@ -67,7 +68,8 @@ def get_all_races(year=None):
     
     races = cursor.fetchall()
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return races
 
 def get_upcoming_race():
@@ -84,7 +86,7 @@ def get_upcoming_race():
     
     race = cursor.fetchone()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return race
 
 def get_race_by_id(race_id):
@@ -96,7 +98,8 @@ def get_race_by_id(race_id):
     race = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return race
 
 def get_race_by_year_round(year, round_num):
@@ -108,7 +111,7 @@ def get_race_by_year_round(year, round_num):
     race = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return race
 
 
@@ -122,7 +125,7 @@ def get_all_drivers():
     drivers = cursor.fetchall()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return drivers
 
 def get_driver_by_id(driver_id):
@@ -134,7 +137,7 @@ def get_driver_by_id(driver_id):
     driver = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return driver
 
 def get_active_drivers(year):
@@ -153,7 +156,7 @@ def get_active_drivers(year):
     
     drivers = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return drivers
 
 
@@ -166,7 +169,7 @@ def get_all_teams():
     teams = cursor.fetchall()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return teams
 
 def get_team_by_id(team_id):
@@ -178,7 +181,7 @@ def get_team_by_id(team_id):
     team = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return team
 
 def get_active_teams(year):
@@ -197,7 +200,7 @@ def get_active_teams(year):
     
     teams = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return teams
 
 
@@ -218,7 +221,8 @@ def get_race_results(race_id):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return results
 
 def get_driver_results(driver_id, year=None):
@@ -247,7 +251,7 @@ def get_driver_results(driver_id, year=None):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 def get_team_results(team_id, year=None):
@@ -276,7 +280,7 @@ def get_team_results(team_id, year=None):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 
@@ -305,7 +309,7 @@ def get_driver_standings(year):
     
     standings = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return standings
 
 def get_team_standings(year):
@@ -330,7 +334,7 @@ def get_team_standings(year):
     
     standings = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return standings
 
 
@@ -355,7 +359,7 @@ def get_driver_stats(driver_id):
     
     stats = cursor.fetchone()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return stats
 
 def get_circuit_results(circuit_id, limit=10):
@@ -377,7 +381,7 @@ def get_circuit_results(circuit_id, limit=10):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 
@@ -396,7 +400,7 @@ def save_prediction(race_id, predicted_winner_id, confidence_score, predicted_to
     prediction_id = cursor.fetchone()['prediction_id']
     conn.commit()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return prediction_id
 
 def get_predictions_for_race(race_id):
@@ -415,7 +419,7 @@ def get_predictions_for_race(race_id):
     
     predictions = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return predictions
 
 def upsert_driver(driver_data):
