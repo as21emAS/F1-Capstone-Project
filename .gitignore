@@ -78,3 +78,21 @@ Thumbs.db
 # Vite
 # ========================
 vite.config.ts.timestamp-*
+
+# ========================
+# Python / ML
+# ========================
+# Virtual environments
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Jupyter
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Visualizations
+*.png
+*.jpg
+*.jpeg

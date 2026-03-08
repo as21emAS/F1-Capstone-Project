@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "created_date": "2026-03-07 23:40:49",
+  "dataset": "Full database (2010-2025)",
+  "num_samples": 6911,
+  "features": [
+    "driver_win_rate",
+    "team_avg_finish",
+    "driver_recent_form",
+    "grid_position",
+    "driver_avg_finish",
+    "driver_podium_rate",
+    "circuit_driver_performance",
+    "qualifying_position_delta",
+    "wet_race",
+    "driver_wet_weather_skill"
+  ],
+  "accuracy": "99.06%",
+  "model_type": "RandomForestClassifier",
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 10,
+    "random_state": 42
+  },
+  "improvements_over_v1": {
+    "data_increase": "+5552 rows",
+    "feature_increase": "+6 features",
+    "accuracy_gain": "+3.10%"
+  }
+}
