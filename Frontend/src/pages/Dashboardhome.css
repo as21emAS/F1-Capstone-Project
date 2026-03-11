@@ -6,6 +6,9 @@
   gap: 1.5rem;
 }
 
+.card-badge{
+  font-size: medium;
+}
 /* ─── Hero Card ────────────────────────────────────────────────────────────── */
 
 .hero-card {
@@ -482,4 +485,179 @@
   .champ-meter {
     width: 100px;
   }
+}
+/* ─────────────────────────────────────────────
+   SKELETON LOADING STATES
+   ───────────────────────────────────────────── */
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton-block {
+  display: inline-block;
+  height: 12px;
+  width: 80px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    #e0d4bc 25%,
+    #f0e8d0 50%,
+    #e0d4bc 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(
+    90deg,
+    #e0d4bc 25%,
+    #f0e8d0 50%,
+    #e0d4bc 75%
+  );
+  background-size: 400px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.skeleton-row td {
+  padding: 0.65rem 0.6rem;
+}
+
+.skeleton-row td .skeleton-block {
+  width: 100%;
+  max-width: 90px;
+}
+
+.skeleton-team-row {
+  pointer-events: none;
+}
+
+.skeleton-pred-row {
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   TOP-5 PREDICTIONS SECTION
+   ───────────────────────────────────────────── */
+
+.predictions-card { grid-column: 1 / -1; }
+
+.pred-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pred-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #e0d4bc;
+  transition: background 0.12s;
+  cursor: default;
+}
+
+.pred-row:last-child { border-bottom: none; }
+
+.pred-row:hover { background: rgba(200, 0, 26, 0.04); }
+
+.pred-pos-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  background: #e0d4bc;
+  border: 2px solid #1c1208;
+  font-size: 0.65rem;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+}
+
+.pred-pos-num.first {
+  background: #c8001a;
+  border-color: #c8001a;
+  color: #faf4e8;
+}
+
+.pred-row-info {
+  width: 210px;
+  flex-shrink: 0;
+}
+
+.pred-row-driver {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #1c1208;
+  letter-spacing: 0.03em;
+}
+
+.pred-row-team {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.pred-row-bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pred-row-bar {
+  flex: 1;
+  height: 8px;
+  background: #e0d4bc;
+  border: 1px solid #c8b8a0;
+  overflow: hidden;
+}
+
+.pred-row-fill {
+  height: 100%;
+  opacity: 0.85;
+  animation: fillBar 1.4s ease forwards;
+}
+
+.pred-row-pct {
+  width: 34px;
+  font-size: 0.64rem;
+  font-weight: bold;
+  font-family: "Courier New", monospace;
+  color: #3a2810;
+  text-align: right;
+}
+
+.empty-state {
+  font-size: 0.72rem;
+  color: #8a6030;
+  letter-spacing: 0.08em;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE — predictions collapse gracefully
+   ───────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .predictions-card { grid-column: 1 / -1; }
+
+  .pred-row {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pred-row-info { width: 100%; }
+
+  .pred-row-bar-wrap { width: 100%; }
 }

@@ -1,11 +1,15 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
 
+// ─── Response Interfaces ─────────────────────────────────────────────────────
+
 export interface RaceData {
   id: string;
+  roundNumber: number;
   raceName: string;
   circuitName: string;
   country: string;
+  location: string;
   date: string;
 }
 
@@ -14,65 +18,132 @@ export interface HealthResponse {
   message?: string;
 }
 
-// create apiClient
+export interface DriverStanding {
+  position: number;
+  driver_id: string;
+  driver_name: string;
+  team: string;
+  points: number;
+  wins: number;
+}
+
+export interface DriverStandingsResponse {
+  season: number;
+  standings: DriverStanding[];
+}
+
+export interface TeamStanding {
+  position: number;
+  team: string;
+  points: number;
+  wins: number;
+}
+
+export interface TeamStandingsResponse {
+  season: number;
+  standings: TeamStanding[];
+}
+
+export interface DriverPrediction {
+  position: number;
+  driver_id: string;
+  driver_name: string;
+  team: string;
+  confidence_score: number; // 0.0 – 1.0
+}
+
+export interface PredictionResponse {
+  race_id: number;
+  model_version: string;
+  predictions: DriverPrediction[];
+}
+
+// ─── Axios Client ────────────────────────────────────────────────────────────
+
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 10000,
+  timeout: 10_000,
 });
 
-// retry up to three times
 axiosRetry(apiClient, {
   retries: 3,
-  retryDelay: axiosRetry.exponentialDelay
+  retryDelay: axiosRetry.exponentialDelay,
 });
 
-// Request interceptors
 apiClient.interceptors.request.use(
   (config) => {
     config.headers["Content-Type"] = "application/json";
     config.headers["Accept"] = "application/json";
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      console.error(`Backend Error [${error.response.status}]:`, error.response.data);
+      console.error(
+        `Backend Error [${error.response.status}]:`,
+        error.response.data,
+      );
     } else if (error.request) {
       console.error("Network Error: No response received from backend.");
     } else {
       console.error("Error setting up request:", error.message);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
-// API service functions
-// Fetch Health
+// ─── Service Functions ───────────────────────────────────────────────────────
+
 export const fetchHealth = async (): Promise<HealthResponse> => {
   const response = await apiClient.get<HealthResponse>("/health");
   return response.data;
 };
 
-/*
- * Fetches the next race and transforms data
- * into RaceData interface.
- */
 export const fetchNextRace = async (): Promise<RaceData> => {
   const response = await apiClient.get("/api/races/next");
   const data = response.data;
 
-  // Transform the data 
   return {
-    id: data.id || `${data.season}-${data.round_number}`,
-    raceName: data.race_name || data.raceName,
-    circuitName: data.circuit?.name || data.circuitName,
-    country: data.circuit?.country || data.country,
-    date: data.time ? `${data.date.split('T')[0]}T${data.time}Z` : data.date,
+    id: data.id ?? `${data.season}-${data.round_number}`,
+    roundNumber: data.round_number ?? 0,
+    raceName: data.race_name ?? data.raceName,
+    circuitName: data.circuit?.name ?? data.circuitName,
+    country: data.circuit?.country ?? data.country,
+    location: data.circuit?.location ?? data.location ?? "",
+    date: data.time
+      ? `${String(data.date).split("T")[0]}T${data.time}Z`
+      : data.date,
   };
+};
+
+export const fetchDriverStandings =
+  async (): Promise<DriverStandingsResponse> => {
+    const response = await apiClient.get<DriverStandingsResponse>(
+      "/api/standings/drivers/current",
+    );
+    return response.data;
+  };
+
+export const fetchTeamStandings =
+  async (): Promise<TeamStandingsResponse> => {
+    const response = await apiClient.get<TeamStandingsResponse>(
+      "/api/standings/teams/current",
+    );
+    return response.data;
+  };
+
+export const fetchPredictions = async (
+  raceId: number,
+): Promise<PredictionResponse> => {
+  const response = await apiClient.post<PredictionResponse>(
+    "/api/predictions",
+    { race_id: raceId },
+  );
+  return response.data;
 };
 
 export default apiClient;
