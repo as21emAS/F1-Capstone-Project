@@ -153,3 +153,53 @@ export const ALL_RACES = [
   "Las Vegas Grand Prix",
   "Abu Dhabi Grand Prix",
 ];
+
+export const mockDriver = { driver_id: "ver", name: "Max Verstappen", team: "Red Bull Racing", nationality: "Russian", points: 420, position: 8 };
+export const mockDriver2 = { driver_id: "nor", name: "Lando Norris", team: "McLaren", nationality: "Great Britain", points: 374, position: 2 };
+export const mockTeam = { team_id: "redbull", name: "Red Bull Racing", points: 589, position: 1, wins: 12 };
+export const mockTeam2 = { team_id: "mclaren", name: "McLaren", points: 615, position: 2, wins: 5 };
+export const mockRace = { race_id: "monza", name: "Italian Grand Prix", circuit: "Autodromo Nazionale Monza", date: "SEP 06 - 08", round: 16, season: 2026 };
+export const mockRace2 = { race_id: "singapore", name: "Singapore Grand Prix", circuit: "Marina Bay Street Circuit", date: "SEP 20 - 22", round: 17, season: 2026 };
+export const mockPred = { driver: "Max Verstappen", predicted_position: 1, confidence_score: 92 };
+export const mockPred2 = { driver: "Lando Norris", predicted_position: 2, confidence_score: 68 };
+
+export interface DriverStanding {
+  name: string;
+  team: string;
+  points: number;
+  position: number; 
+}
+
+export const mockStandings: DriverStanding[] = [
+  { name: "Max Verstappen", team: "Red Bull Racing", points: 437, position: 1},
+  { name: "Lando Norris", team: "McLaren", points: 374, position: 2},
+  { name: "Charles Leclerc", team: "Ferrari", points: 304, position: 3},
+  { name: "Oscar Piastri", team: "McLaren", points: 267, position: 4},
+  { name: "Carlos Sainz", team: "Ferrari", points: 259, position: 5},
+  { name: "Lewis Hamilton", team: "Mercedes", points: 201, position: 6},
+  { name: "George Russell", team: "Mercedes", points: 195, position: 7},
+  { name: "Sergio Perez", team: "Red Bull Racing", points: 151, position: 8},
+];
+
+export interface TeamStanding {
+  team_id: string;
+  name: string;
+  points: number;
+  position: number;
+  wins?: number;
+  teamColor?: string; 
+}
+
+export const mockTeamStandings: TeamStanding[] = [
+  { team_id: "mclaren", name: "McLaren", points: 615, position: 1, wins: 5, teamColor: "#ff8000" },
+  { team_id: "redbull", name: "Red Bull Racing", points: 589, position: 2, wins: 7, teamColor: "#0600ef" },
+  { team_id: "ferrari", name: "Ferrari", points: 550, position: 3, wins: 3, teamColor: "#ef1a2d" },
+  { team_id: "mercedes", name: "Mercedes", points: 366, position: 4, wins: 3, teamColor: "#00a19c" },
+  { team_id: "aston", name: "Aston Martin", points: 86, position: 5, wins: 0, teamColor: "#00665e" },
+  { team_id: "vcarb", name: "RB", points: 34, position: 6, wins: 0, teamColor: "#6692ff" },
+  { team_id: "haas", name: "Haas", points: 28, position: 7, wins: 0, teamColor: "#ffffff" },
+  { team_id: "alpine", name: "Alpine", points: 16, position: 8, wins: 0, teamColor: "#0090ff" },
+  { team_id: "williams", name: "Williams", points: 14, position: 9, wins: 0, teamColor: "#005aff" },
+  { team_id: "sauber", name: "Kick Sauber", points: 0, position: 10, wins: 0, teamColor: "#00e701" },
+];
+

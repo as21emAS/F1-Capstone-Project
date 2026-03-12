@@ -1,0 +1,130 @@
+/* Team Card Container */
+.team-card {
+  background: #F5F1E8;
+  border: 3px solid #000;
+  box-shadow: 
+    4px 4px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1.25rem;
+}
+
+.team-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 
+    5px 5px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+/* Grid Pattern Background */
+.team-card-grid-pattern {
+  background-image: 
+    linear-gradient(0deg, #000 1px, transparent 1px),
+    linear-gradient(90deg, #000 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* Scanlines Effect */
+.team-card-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* Top Bar - Team Color Accent */
+.team-card-top-bar {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+}
+
+.team-card-top-bar-red {
+  flex: 1;
+  background: #C41E3A;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.team-card-top-bar-team {
+  flex: 2;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.team-card-top-bar-black {
+  flex: 1;
+  background: #000;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Content */
+.team-card-content {
+  color: #000;
+}
+
+/* Labels */
+.team-card-label {
+  color: #C41E3A;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Position Number */
+.team-card-position {
+  color: #000;
+  font-family: monospace;
+  letter-spacing: -0.02em;
+  text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Divider Line */
+.team-card-divider {
+  height: 2px;
+  background: #000;
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.team-card-header {
+  color: #000;
+  text-shadow: 1px 1px 0 rgba(196, 30, 58, 0.15);
+  margin: 0;
+}
+
+/* Stats */
+.team-card-stat {
+  color: #000;
+}
+
+.team-card-stat-label {
+  color: var(--color-baseCard-red);
+  font-weight: bold;
+}
+
+/* Divider Vertical */
+.team-card-divider-vertical {
+  background: #000;
+  opacity: 0.2;
+}
+
+/* Side Accent Stripes */
+.team-card-side-stripe {
+  filter: drop-shadow(1px 0 0 rgba(0, 0, 0, 0.3));
+}
+
+.team-card-side-stripe-segment {
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.team-card-side-stripe-red {
+  background: var(--color-baseCard-red);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.team-card-side-stripe-black {
+  background: var(--color-baseCard-black);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
+}

@@ -22,6 +22,26 @@
   --color-ferrari-red: #ef1a2d;
   --color-redbull-blue: #0600ef;
   --color-redbull-yellow: #ffc72c;
+
+  /* colors from commponets */
+  /* base card colors */
+  --color-baseCard-white: #faf4e8;
+  --color-baseCard-black: #1c1208;
+  --color-baseCard-red: #c8001a;
+  /* dark card colors */
+  --color-darkCard-black: #1c1208;
+  --color-darkCard-yellow: #f0c040;
+  --color-DarkCard-espresso: #3a2810;
+  /* ghost card colors */
+  --color-ghostCard-brown: #8a6030;
+
+/* Error message colors */
+  --color-error-yellow: #f0c040;
+  --color-error-yellow2: #c8750a;
+  --color-error-blue: #2a5080;
+  --color-error-green: #2a6030;
+
+
 }
 
 @layer base {

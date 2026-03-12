@@ -4,6 +4,9 @@ import { Card, CardHeader, CardBody, CardFooter } from "../components/Card";
 import { Input, Select } from "../components/Input";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { ErrorMessage } from "../components/ErrorMessage";
+import { DriverCard, RaceCard, TeamCard, PredictionResultCard, DriverStandingsChart, TeamStandingsChart, LoadingSkeleton, EmptyState, ConfidenceBar} from "../components/index.ts";
+/* Importing all fake data used just to show off UI examples */
+import { mockDriver, mockDriver2, mockTeam, mockTeam2, mockRace, mockRace2, mockPred, mockPred2, mockStandings, mockTeamStandings } from "./Data.ts";
 
 const RACE_OPTIONS = [
   { value: "monza",     label: "Italian Grand Prix — Monza" },
@@ -183,7 +186,107 @@ export default function ComponentDemo() {
           </div>
         </Card.Body>
       </Card>
+      {/* ── Driver Display Cards ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Driver Display Cards" badge="2 COMPONENTS" />
+        <Card.Body>
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
+            <DriverCard {...mockDriver} />
+             <DriverCard {...mockDriver2} />
+          </div>
+        </Card.Body>
+      </Card>
+      {/* ── Team Display Cards ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Team Display Cards" badge="2 COMPONENTS" />
+        <Card.Body>
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <TeamCard {...mockTeam} />
+            <TeamCard {...mockTeam2} />
+          </div>
+        </Card.Body>
+      </Card>
+      {/* ── Race Display Cards ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Race Display Cards" badge="2 COMPONENTS" />
+        <Card.Body>
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <RaceCard {...mockRace} />
+            <RaceCard {...mockRace2} />
+          </div>
+        </Card.Body>
+      </Card>
+       {/* ── Prediction Display Cards ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Pred Display Cards" badge="2 COMPONENTS" />
+        <Card.Body>
+           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <PredictionResultCard {...mockPred} />
+            <PredictionResultCard {...mockPred2} />
+          </div>
+        </Card.Body>
+      </Card>
+        {/* Charts */}
+        <div className="mb-12">
+          <DriverStandingsChart standings={mockStandings}/>
+        </div>
+        <div className="mb-12">
+          <TeamStandingsChart standings={mockTeamStandings}/>
+        </div>
+      {/* ── Loading Skeletons ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Loading Placeholders" badge="3 COMPONENTS" />
+        <Card.Body>
+          <div style={{ display: "grid", flexWrap: "wrap", gap: "2rem", alignItems: "center" }}>
+            {/* Card Skeleton Demo */}
+            <div>
+              <h4 className="font-bold mb-2">Card Variant</h4>
+              <LoadingSkeleton height={250} width={350} variant="card" />
+            </div>
 
+            {/* Table Row Skeleton Demo */}
+            <div>
+              <h4 className="font-bold mb-2">Table Row Variant</h4>
+              <LoadingSkeleton width={400} height={80} variant="table-row" />
+              <LoadingSkeleton width={300} height={80} variant="table-row" />
+              <LoadingSkeleton width={200} height={80} variant="table-row" />
+            </div>
+            {/* Chart Skeleton Demo */}
+            <div className="md:col-span-2">
+              <h4 className="font-bold mb-2">Chart Variant</h4>
+              <LoadingSkeleton width={800} height={300}variant="chart" />
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+      {/* ── Empty States ────────────────────────────────────────────── */}
+      <Card>
+        <Card.Header title="Empty States" badge="2 COMPONENTS" />
+        <Card.Body>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <EmptyState 
+              title="Awaiting Telemetry" 
+              message="There is nothing here." 
+            />
+            <EmptyState
+              title="Wtih Icon"
+              message="Still nothing here."
+              icon=<span>✖</span>
+            />
+          </div>
+        </Card.Body>
+      </Card>
+      {/* ── Confidence Bars ────────────────────────────────────────────── */}
+      <Card>
+        <CardHeader title="Confidence Bars Examples" badge="3 COMPONENTS "/>
+        <CardBody>
+          <div className="flex flex-col gap-2">
+                <ConfidenceBar value={85} hideText />
+                <ConfidenceBar value={55} hideText />
+                <ConfidenceBar value={25} hideText />
+              </div>
+        </CardBody>
+      </Card>
     </div>
   );
 }

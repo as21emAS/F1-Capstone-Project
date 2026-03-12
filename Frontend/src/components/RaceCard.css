@@ -1,0 +1,118 @@
+/* Race Card Container */
+.race-card {
+  background: #F5F1E8;
+  border: 3px solid #000;
+  box-shadow: 
+    4px 4px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1.25rem;
+}
+
+.race-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 
+    5px 5px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+/* Grid Pattern Background */
+.race-card-grid-pattern {
+  background-image: 
+    linear-gradient(0deg, #000 1px, transparent 1px),
+    linear-gradient(90deg, #000 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* Scanlines Effect */
+.race-card-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* Top Color Bar */
+.race-card-top-bar {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+}
+
+.race-card-top-bar-red {
+  flex: 1;
+  background: #C41E3A;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.race-card-top-bar-black {
+  flex: 1;
+  background: #000;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Content */
+.race-card-content {
+  color: #000;
+}
+
+/* Labels */
+.race-card-label {
+  color: #C41E3A;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+  font-family: monospace;
+}
+
+/* Round Number */
+.race-card-round {
+  color: #000;
+  font-family: monospace;
+  letter-spacing: -0.02em;
+  text-shadow: 
+    2px 2px 0 rgba(196, 30, 58, 0.2),
+    1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Divider Line */
+.race-card-divider {
+  height: 2px;
+  background: #000;
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.race-card-header {
+  color: #000;
+  text-shadow: 1px 1px 0 rgba(196, 30, 58, 0.15);
+  margin: 0;
+}
+
+/* Info */
+.race-card-info {
+  color: #000;
+  font-family: monospace;
+}
+
+/* Side Accent Stripes */
+.race-card-side-stripe {
+  filter: drop-shadow(1px 0 0 rgba(0, 0, 0, 0.3));
+}
+
+.race-card-side-stripe-segment {
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.race-card-side-stripe-red {
+  background: #C41E3A;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.race-card-side-stripe-black {
+  background: #000;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
+}
