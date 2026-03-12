@@ -6,7 +6,10 @@ from app.core.config import settings
 
 from app.api.v1.endpoints.races import router as races_router
 from routes.health import router as health_router
-
+from app.api.v1.endpoints.predictions import router as predictions_router
+from app.api.v1.endpoints.standings import router as standings_router
+from app.api.v1.endpoints.races_data import router as races_data_router
+from app.api.v1.endpoints.circuits import router as circuits_router
 
 
 # Configure logging
@@ -35,6 +38,12 @@ app.add_middleware(
 
 app.include_router(races_router, prefix="/api/races", tags=["races"])
 app.include_router(health_router)  # add this after the other include_router
+app.include_router(predictions_router, prefix="/api/predictions", tags=["predictions"])
+app.include_router(standings_router,   prefix="/api/standings",   tags=["standings"])
+app.include_router(races_data_router,  prefix="/api/races",        tags=["data-center-races"])
+app.include_router(circuits_router,    prefix="/api/circuits",     tags=["circuits"])
+
+
 
 @app.get("/health")
 def health_check():

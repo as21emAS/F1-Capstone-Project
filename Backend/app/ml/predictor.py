@@ -1,38 +1,42 @@
 import pandas as pd
-from .model_loader import load_model, get_model_version
+import numpy as np
+from typing import List, Dict
+from .model_loader import load_model, load_model_features, get_model_version
 
 class F1Predictor:
     def __init__(self):
         self.model = load_model()
+        self.features = load_model_features()
         self.version = get_model_version()
     
-    def predict_race_winner(self, driver_win_rate, team_avg_finish, 
-                             driver_recent_form, grid_position):
-        input_data = pd.DataFrame({
-            'driver_win_rate': [driver_win_rate],
-            'team_avg_finish': [team_avg_finish],
-            'driver_recent_form': [driver_recent_form],
-            'grid_position': [grid_position]
-        })
+    def predict_race_winner(self, race_id: int, params: dict = {}) -> List[Dict]:
+        """
+        Predict race winner and rankings for all drivers in a race.
         
-        prob = self.model.predict_proba(input_data)[0][1]
-        prediction = 'WIN' if prob > 0.5 else 'LOSE'
+        Args:
+            race_id: The ID of the race to predict
+            params: Optional parameters (reserved for future use)
+            
+        Returns:
+            List of dicts with driver_id, predicted_position, and confidence_score
+        """
+        # TODO: Implement database query to get driver data for this race
+        # for now, return a placeholder structure that Liv can test with
         
-        if prob > 0.8 or prob < 0.2:
-            confidence_level = 'Very High'
-        elif prob > 0.65 or prob < 0.35:
-            confidence_level = 'High'
-        elif prob > 0.55 or prob < 0.45:
-            confidence_level = 'Medium'
-        else:
-            confidence_level = 'Low'
+        placeholder_drivers = [
+            {"driver_id": "max_verstappen", "predicted_position": 1, "confidence_score": 0.95},
+            {"driver_id": "lewis_hamilton", "predicted_position": 2, "confidence_score": 0.87},
+            {"driver_id": "charles_leclerc", "predicted_position": 3, "confidence_score": 0.82},
+        ]
         
+        return placeholder_drivers
+    
+    def get_model_info(self) -> Dict:
         return {
-            'predicted_winner': prediction,
-            'confidence': round(prob, 3),
-            'win_probability': f"{prob*100:.1f}%",
-            'confidence_level': confidence_level,
-            'model_version': self.version
+            "version": self.version,
+            "features": self.features,
+            "model_type": "RandomForestClassifier"
         }
 
+# singleton instance for import
 predictor = F1Predictor()
