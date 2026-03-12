@@ -224,3 +224,122 @@
     width: 100px;
   }
 }
+/* ─── Append these rules to your existing Simulator.css ──────────────────── */
+
+/* ── Winner row highlight ──────────────────────────────────────────────────── */
+.result-row--winner {
+  background: #fdf6e3;
+  border-left: 3px solid #c8001a;
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+  border-radius: 1px;
+}
+
+.result-row--winner .result-pos {
+  color: #c8001a;
+}
+
+/* ── Confidence bar ────────────────────────────────────────────────────────── */
+.conf-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: #e0d4bc;
+  border: 1px solid #c4b49a;
+  margin-bottom: 0.2rem;
+}
+
+.conf-bar-fill {
+  height: 100%;
+  background: #1c1208;
+  transition: width 0.6s ease;
+}
+
+.conf-bar-fill--winner {
+  background: #c8001a;
+}
+
+/* ── Button group ──────────────────────────────────────────────────────────── */
+.sim-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* ── Loading state ─────────────────────────────────────────────────────────── */
+.sim-loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+/* ── Key factors section ───────────────────────────────────────────────────── */
+.sim-factors-card {
+  margin-top: 1rem;
+}
+
+.sim-factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.sim-factor-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 48px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sim-factor-label {
+  font-size: 0.72rem;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.08em;
+  color: #5a3820;
+  text-transform: uppercase;
+}
+
+.sim-factor-bar-wrap {
+  height: 8px;
+  background: #e0d4bc;
+  border: 1px solid #c4b49a;
+}
+
+.sim-factor-bar-fill {
+  height: 100%;
+  background: #c8001a;
+  transition: width 0.7s ease;
+}
+
+.sim-factor-pct {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.95rem;
+  color: #c8001a;
+  text-align: right;
+}
+
+/* ── Mobile additions ──────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .sim-btn-group {
+    flex-direction: row;
+  }
+
+  .sim-factor-row {
+    grid-template-columns: 1fr 48px;
+    grid-template-rows: auto auto;
+    gap: 0.4rem 0.75rem;
+  }
+
+  .sim-factor-label {
+    grid-column: 1 / -1;
+  }
+
+  .sim-factor-bar-wrap {
+    grid-column: 1;
+  }
+
+  .sim-factor-pct {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}

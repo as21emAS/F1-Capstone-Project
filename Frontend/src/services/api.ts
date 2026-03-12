@@ -146,4 +146,40 @@ export const fetchPredictions = async (
   return response.data;
 };
 
+// ── Interfaces ───────────────────────────────────────────────────────────────
+
+export interface UpcomingRace {
+  race_id: number;
+  round_number: number;
+  race_name: string;
+  circuit_name: string;
+  country: string;
+  date: string;
+  season: number;
+}
+
+export interface SimulatorRequest {
+  race_id: number;
+  weather: string;
+  tire_strategy: string;
+  pit_stops: number;
+}
+
+// ── Service Functions ─────────────────────────────────────────────────────────
+
+export const fetchUpcomingRaces = async (): Promise<UpcomingRace[]> => {
+  const response = await apiClient.get<UpcomingRace[]>("/api/races/upcoming");
+  return response.data;
+};
+
+export const submitSimulation = async (
+  params: SimulatorRequest,
+): Promise<PredictionResponse> => {
+  const response = await apiClient.post<PredictionResponse>(
+    "/api/predictions/",
+    params,
+  );
+  return response.data;
+};
+
 export default apiClient;
