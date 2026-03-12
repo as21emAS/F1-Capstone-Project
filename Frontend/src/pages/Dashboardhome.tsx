@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import "./Dashboardhome.css";
-import { NEWS, TEAM_COLORS } from "./Data.ts";
+import { TEAM_COLORS } from "./Data.ts";
 import NextRaceCard from "../components/NextRaceCard";
 import { ErrorMessage } from "../components/ErrorMessage";
 import {
@@ -8,6 +8,7 @@ import {
   fetchDriverStandings,
   fetchTeamStandings,
   fetchPredictions,
+  fetchNews,
 } from "../services/api";
 
 // ─── Country → flag emoji ────────────────────────────────────────────────────
@@ -32,7 +33,7 @@ const FLAG: Record<string, string> = {
   Thailand: "🇹🇭",
 };
 
-// ─── Skeleton helpers ────────────────────────────────────────────────────────
+// ─── Skeleton helpers ─────────────────────────────────────────────────────────
 function SkeletonRow({ cols }: { cols: number }) {
   return (
     <tr className="skeleton-row">
@@ -82,9 +83,21 @@ function SkeletonPredRow() {
   );
 }
 
+function SkeletonNewsRow() {
+  return (
+    <div className="news-row">
+      <div className="news-tag-wrap">
+        <span className="skeleton-block" style={{ width: 70, height: 10 }} />
+        <span className="skeleton-block" style={{ width: 100, height: 10 }} />
+      </div>
+      <span className="skeleton-block" style={{ width: "90%", height: 13, marginTop: 6 }} />
+    </div>
+  );
+}
+
 // ─── Component ───────────────────────────────────────────────────────────────
 export default function DashboardHome() {
-  // Next race – needed to derive race_id for predictions
+  // Next race — needed to derive race_id for predictions
   const {
     data: nextRace,
     isLoading: nextRaceLoading,
@@ -133,11 +146,22 @@ export default function DashboardHome() {
     queryFn: () => fetchPredictions(raceId),
     enabled: !nextRaceLoading && raceId > 0,
     staleTime: 60 * 1_000,
-    refetchInterval: 60 * 1_000,        // auto-refresh every 60 s
-    refetchOnWindowFocus: true,          // refresh on tab focus
+    refetchInterval: 60 * 1_000,
+    refetchOnWindowFocus: true,
   });
 
-  // Derive normalised max points for relative bar widths
+  // News — live from RSS-to-JSON proxy
+  const {
+    data: newsData,
+    isLoading: newsLoading,
+  } = useQuery({
+    queryKey: ["news"],
+    queryFn: fetchNews,
+    staleTime: 10 * 60 * 1_000,
+    retry: 1,
+  });
+
+  // ─── Derived values ───────────────────────────────────────────────────────
   const maxDriverPts =
     driverStandings?.standings?.length
       ? Math.max(...driverStandings.standings.map((d) => d.points))
@@ -149,6 +173,7 @@ export default function DashboardHome() {
       : 1;
 
   const top5Predictions = predictionsData?.predictions?.slice(0, 5) ?? [];
+  const newsItems = newsData?.items?.slice(0, 4) ?? [];
 
   return (
     <div className="dash-grid">
@@ -263,11 +288,8 @@ export default function DashboardHome() {
                   ))
                 : (driverStandings?.standings ?? []).map((d) => {
                     const flag = FLAG[d.driver_id] ?? "🏎";
-                    const color =
-                      TEAM_COLORS[d.team] ?? "#c8001a";
-                    const pct = Math.round(
-                      (d.points / maxDriverPts) * 100,
-                    );
+                    const color = TEAM_COLORS[d.team] ?? "#c8001a";
+                    const pct = Math.round((d.points / maxDriverPts) * 100);
                     return (
                       <tr key={d.driver_id}>
                         <td>
@@ -293,10 +315,7 @@ export default function DashboardHome() {
                           <div className="mini-bar">
                             <div
                               className="mini-bar-fill"
-                              style={{
-                                width: `${pct}%`,
-                                background: color,
-                              }}
+                              style={{ width: `${pct}%`, background: color }}
                             />
                             <span className="mini-bar-label">{pct}%</span>
                           </div>
@@ -358,24 +377,57 @@ export default function DashboardHome() {
         )}
       </section>
 
-      {/* ── Latest Headlines (static feed) ────────────────────────────────── */}
+      {/* ── Latest Headlines ──────────────────────────────────────────────── */}
       <section className="card news-card">
         <div className="card-header">
           <span className="card-label">LATEST HEADLINES</span>
           <span className="card-badge">LIVE FEED</span>
         </div>
 
-        {NEWS.map((n, i) => (
-          <div key={i} className="news-row">
-            <div className="news-tag-wrap">
-              <span className="news-tag">{n.tag}</span>
-              <span className="news-source">
-                {n.source} · {n.time}
-              </span>
-            </div>
-            <div className="news-headline">{n.headline}</div>
+        {newsLoading ? (
+          Array.from({ length: 4 }).map((_, i) => <SkeletonNewsRow key={i} />)
+        ) : newsItems.length === 0 ? (
+          <div className="news-row" style={{ opacity: 0.5, fontSize: "0.8rem", fontFamily: "monospace" }}>
+            No headlines available.
           </div>
-        ))}
+        ) : (
+          newsItems.map((item, i) => {
+            const titleLower = item.title.toLowerCase();
+            const tag =
+              titleLower.includes("qualify") || titleLower.includes("pole")
+                ? "QUALIFYING"
+                : titleLower.includes("wing") || titleLower.includes("upgrade") || titleLower.includes("technical")
+                ? "TECHNICAL"
+                : titleLower.includes("driver") || titleLower.includes("contract")
+                ? "DRIVER"
+                : titleLower.includes("race") || titleLower.includes("grand prix") || titleLower.includes("gp")
+                ? "RACE"
+                : "F1";
+
+            const pubDate = new Date(item.pubDate);
+            const hoursAgo = Math.max(1, Math.round((Date.now() - pubDate.getTime()) / 3_600_000));
+            const timeLabel = hoursAgo < 24 ? `${hoursAgo}h ago` : pubDate.toLocaleDateString();
+
+            return (
+              <a
+                key={i}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="news-row"
+                style={{ textDecoration: "none", display: "block", cursor: "pointer" }}
+              >
+                <div className="news-tag-wrap">
+                  <span className="news-tag">{tag}</span>
+                  <span className="news-source">
+                    {item.author || "F1 News"} · {timeLabel}
+                  </span>
+                </div>
+                <div className="news-headline">{item.title}</div>
+              </a>
+            );
+          })
+        )}
       </section>
     </div>
   );

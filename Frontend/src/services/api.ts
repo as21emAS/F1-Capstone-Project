@@ -1,64 +1,27 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
 
-// ─── Response Interfaces ─────────────────────────────────────────────────────
+// ─── Re-export all types from the canonical types file ────────────────────────
+export type {
+  HealthResponse,
+  RaceData,
+  UpcomingRace,
+  Driver,
+  Circuit,
+  DriverStanding,
+  DriverStandingsResponse,
+  TeamStanding,
+  TeamStandingsResponse,
+  DriverPrediction,
+  PredictionResponse,
+  SimulatorRequest,
+  NewsItem,
+  NewsResponse,
+  RaceResult,
+  RaceSummary,
+} from "../types/api";
 
-export interface RaceData {
-  id: string;
-  roundNumber: number;
-  raceName: string;
-  circuitName: string;
-  country: string;
-  location: string;
-  date: string;
-}
-
-export interface HealthResponse {
-  status: string;
-  message?: string;
-}
-
-export interface DriverStanding {
-  position: number;
-  driver_id: string;
-  driver_name: string;
-  team: string;
-  points: number;
-  wins: number;
-}
-
-export interface DriverStandingsResponse {
-  season: number;
-  standings: DriverStanding[];
-}
-
-export interface TeamStanding {
-  position: number;
-  team: string;
-  points: number;
-  wins: number;
-}
-
-export interface TeamStandingsResponse {
-  season: number;
-  standings: TeamStanding[];
-}
-
-export interface DriverPrediction {
-  position: number;
-  driver_id: string;
-  driver_name: string;
-  team: string;
-  confidence_score: number; // 0.0 – 1.0
-}
-
-export interface PredictionResponse {
-  race_id: number;
-  model_version: string;
-  predictions: DriverPrediction[];
-}
-
-// ─── Axios Client ────────────────────────────────────────────────────────────
+// ─── Axios Client ─────────────────────────────────────────────────────────────
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -96,17 +59,32 @@ apiClient.interceptors.response.use(
   },
 );
 
-// ─── Service Functions ───────────────────────────────────────────────────────
+// ─── Import types locally for use in function signatures ─────────────────────
+import type {
+  HealthResponse,
+  RaceData,
+  UpcomingRace,
+  Driver,
+  Circuit,
+  DriverStandingsResponse,
+  TeamStandingsResponse,
+  PredictionResponse,
+  SimulatorRequest,
+  NewsResponse,
+} from "../types/api";
 
+// ─── Service Functions ────────────────────────────────────────────────────────
+
+// Health
 export const fetchHealth = async (): Promise<HealthResponse> => {
   const response = await apiClient.get<HealthResponse>("/health");
   return response.data;
 };
 
+// Next race
 export const fetchNextRace = async (): Promise<RaceData> => {
   const response = await apiClient.get("/api/races/next");
   const data = response.data;
-
   return {
     id: data.id ?? `${data.season}-${data.round_number}`,
     roundNumber: data.round_number ?? 0,
@@ -120,6 +98,43 @@ export const fetchNextRace = async (): Promise<RaceData> => {
   };
 };
 
+// Upcoming races (for Simulator dropdown)
+export const fetchUpcomingRaces = async (): Promise<UpcomingRace[]> => {
+  const response = await apiClient.get<UpcomingRace[]>("/api/races/upcoming");
+  return response.data;
+};
+
+// All races, optionally filtered by season
+export const getRaces = async (season?: number): Promise<RaceData[]> => {
+  const params = season ? { season } : {};
+  const response = await apiClient.get("/api/races", { params });
+  const data = response.data?.data ?? response.data;
+  return Array.isArray(data)
+    ? data.map((r: any) => ({
+        id: String(r.race_id),
+        roundNumber: r.round,
+        raceName: r.race_name,
+        circuitName: r.circuit_name ?? "",
+        country: r.country ?? "",
+        location: "",
+        date: r.date ?? "",
+      }))
+    : [];
+};
+
+// Drivers
+export const getDrivers = async (): Promise<Driver[]> => {
+  const response = await apiClient.get<Driver[]>("/api/drivers");
+  return response.data;
+};
+
+// Circuits
+export const getCircuits = async (): Promise<Circuit[]> => {
+  const response = await apiClient.get<Circuit[]>("/api/circuits");
+  return response.data;
+};
+
+// Driver standings
 export const fetchDriverStandings =
   async (): Promise<DriverStandingsResponse> => {
     const response = await apiClient.get<DriverStandingsResponse>(
@@ -128,6 +143,7 @@ export const fetchDriverStandings =
     return response.data;
   };
 
+// Team standings
 export const fetchTeamStandings =
   async (): Promise<TeamStandingsResponse> => {
     const response = await apiClient.get<TeamStandingsResponse>(
@@ -136,42 +152,18 @@ export const fetchTeamStandings =
     return response.data;
   };
 
+// Predictions (dashboard — POST with just race_id)
 export const fetchPredictions = async (
   raceId: number,
 ): Promise<PredictionResponse> => {
   const response = await apiClient.post<PredictionResponse>(
-    "/api/predictions",
+    "/api/predictions/",
     { race_id: raceId },
   );
   return response.data;
 };
 
-// ── Interfaces ───────────────────────────────────────────────────────────────
-
-export interface UpcomingRace {
-  race_id: number;
-  round_number: number;
-  race_name: string;
-  circuit_name: string;
-  country: string;
-  date: string;
-  season: number;
-}
-
-export interface SimulatorRequest {
-  race_id: number;
-  weather: string;
-  tire_strategy: string;
-  pit_stops: number;
-}
-
-// ── Service Functions ─────────────────────────────────────────────────────────
-
-export const fetchUpcomingRaces = async (): Promise<UpcomingRace[]> => {
-  const response = await apiClient.get<UpcomingRace[]>("/api/races/upcoming");
-  return response.data;
-};
-
+// Simulator (POST with all 4 params)
 export const submitSimulation = async (
   params: SimulatorRequest,
 ): Promise<PredictionResponse> => {
@@ -179,6 +171,13 @@ export const submitSimulation = async (
     "/api/predictions/",
     params,
   );
+  return response.data;
+};
+
+// News — fetches from RSS-to-JSON proxy (no backend endpoint needed)
+export const fetchNews = async (): Promise<NewsResponse> => {
+  const url = import.meta.env.VITE_F1_NEWS_URL;
+  const response = await axios.get<NewsResponse>(url, { timeout: 8_000 });
   return response.data;
 };
 

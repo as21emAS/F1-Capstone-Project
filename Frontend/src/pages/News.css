@@ -88,6 +88,76 @@
   color: #faf4e8;
 }
 
+/* ─── Empty / Error State ──────────────────────────────────────────────────── */
+
+.news-empty-state {
+  grid-column: 1 / -1;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 0.78rem;
+  color: #6a5030;
+  opacity: 0.7;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Footer / Load More ───────────────────────────────────────────────────── */
+
+.news-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed #c9b88a;
+}
+
+.news-load-more-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 2px solid #1c1208;
+  color: #1c1208;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  padding: 0.65rem 2.5rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.15s;
+  box-shadow: 3px 3px 0 #1c1208;
+  text-transform: uppercase;
+}
+
+.news-load-more-btn:hover {
+  background: #1c1208;
+  color: #f0c040;
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #c8001a;
+}
+
+.news-load-more-btn:active {
+  transform: translate(0, 0);
+  box-shadow: 1px 1px 0 #1c1208;
+}
+
+.news-load-more-count {
+  font-family: "Courier New", monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  opacity: 0.65;
+  text-transform: lowercase;
+}
+
+.news-all-loaded {
+  font-family: "Courier New", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: #6a5030;
+  opacity: 0.6;
+  text-align: center;
+}
+
 /* ─── Mobile ───────────────────────────────────────────────────────────── */
 
 @media (max-width: 639px) {
@@ -135,6 +205,11 @@
     text-align: center;
     padding: 0.55rem;
     font-size: 0.75rem;
+  }
+
+  .news-load-more-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
   }
 }
 
