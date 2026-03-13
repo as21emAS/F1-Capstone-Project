@@ -66,6 +66,7 @@ import type {
   UpcomingRace,
   Driver,
   Circuit,
+  RaceResult,
   DriverStandingsResponse,
   TeamStandingsResponse,
   PredictionResponse,
@@ -131,6 +132,12 @@ export const getDrivers = async (): Promise<Driver[]> => {
 // Circuits
 export const getCircuits = async (): Promise<Circuit[]> => {
   const response = await apiClient.get<Circuit[]>("/api/circuits");
+  return response.data;
+};
+
+// Race results (Fetches results for a specific race ID)
+export const fetchRaceResults = async (raceId: string | number): Promise<RaceResult[]> => {
+  const response = await apiClient.get<RaceResult[]>(`/api/races/${raceId}/results`);
   return response.data;
 };
 

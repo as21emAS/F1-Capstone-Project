@@ -1,112 +1,242 @@
-import { useState } from "react";
-import "./DataCenter.css";
-import { RACE_DATA, ALL_RACES } from "./Data.ts";
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import './DataCenter.css';
+import { getRaces, getCircuits, fetchRaceResults } from '../services/api';
+import { EmptyState, LoadingSkeleton } from '../components/ui/index';
 
-const TRACK_PATHS: Record<string, string> = {
-  "Italian Grand Prix":
-    "M20,80 L20,40 Q20,20 40,20 L120,20 Q160,20 180,50 L180,80 Q180,100 160,100 L100,100 L100,80 L60,80 L60,100 L40,100 Q20,100 20,80 Z",
-  "Singapore Grand Prix":
-    "M20,80 L20,40 Q20,20 40,20 L120,20 Q160,20 180,50 L180,80 Q180,100 160,100 L100,100 L100,80 L60,80 L60,100 L40,100 Q20,100 20,80 Z",
-  "Japanese Grand Prix":
-    "M20,80 L20,40 Q20,20 40,20 L120,20 Q160,20 180,50 L180,80 Q180,100 160,100 L100,100 L100,80 L60,80 L60,100 L40,100 Q20,100 20,80 Z",
-  "United States Grand Prix":
-    "M20,80 L20,40 Q20,20 40,20 L120,20 Q160,20 180,50 L180,80 Q180,100 160,100 L100,100 L100,80 L60,80 L60,100 L40,100 Q20,100 20,80 Z",
-};
+type TabType = 'overview' | 'circuit' | 'results';
 
-const DEFAULT_PATH = "M20,80 L20,40 Q20,20 40,20 L120,20 Q160,20 180,50 L180,80 Q180,100 160,100 L100,100 L100,80 L60,80 L60,100 L40,100 Q20,100 20,80 Z";
+export default function DataCenter() {
+  // ─── UI State ─────────────────────────────────────────────────────────────
+  const [selectedSeason, setSelectedSeason] = useState<number>(2026);
+  const [selectedRace, setSelectedRace] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<TabType>('overview');
+  
+  // Seasons to select from
+  const seasons = [
+    2010, 2011, 2012, 2013, 2014,
+     2015,2016, 2017, 2018, 2019, 2020,
+      2021, 2022, 2023, 2024, 2025, 2026];
 
-function camelToLabel(key: string) {
-  return key.replace(/([A-Z])/g, " $1").toUpperCase();
-}
+  // ─── Data Fetching  ──────────────────────────────────────────
+  
+  // Fetch Circuits (Cached globally, fetched once)
+  const { data: circuits = [] } = useQuery({
+    queryKey: ['circuits'],
+    queryFn: getCircuits,
+    staleTime: Infinity, // Circuits rarely change, keep them cached indefinitely
+  });
 
-export default function DataView() {
-  const [race, setRace] = useState(ALL_RACES[0]);
+  //  Fetch Races (Re-fetches automatically when selectedSeason changes)
+  const { 
+    data: races = [], 
+    isLoading: isLoadingRaces,
+    isError: isRacesError 
+  } = useQuery({
+    queryKey: ['races', selectedSeason],
+    queryFn: () => getRaces(selectedSeason),
+  });
 
-  const data = RACE_DATA[race] ?? RACE_DATA[ALL_RACES[0]];
-  const path = TRACK_PATHS[race] ?? DEFAULT_PATH;
+  // Fetch Race Results (Only runs if a race is actually selected)
+  const { 
+    data: resultsData = [], 
+    isLoading: isLoadingResults,
+    isError: isResultsError
+  } = useQuery({
+    queryKey: ['raceResults', selectedRace],
+    queryFn: () => fetchRaceResults(selectedRace),
+    enabled: !!selectedRace,
+    
+    // Trasform RaceResult object into array
+    select: (data: any) => {
+      return data?.results ? data.results : (Array.isArray(data) ? data : []);
+    }
+  });
+
+  // ─── Event Handlers ───────────────────────────────────────────────────────
+  const handleSeasonChange = (season: number) => {
+    setSelectedSeason(season);
+    setSelectedRace(''); // Reset race selection when season changes
+  };
+
+  const handleRaceChange = (raceId: string) => {
+    setSelectedRace(raceId);
+    setActiveTab('overview'); // Reset to overview tab when new race selected
+  };
+
+  // ─── Derived Data ─────────────────────────────────────────────────────────
+  const activeRaceData = races.find(r => r.id === selectedRace);
+  const activeCircuitData = activeRaceData 
+    ? circuits.find(c => c.circuit_name === activeRaceData.circuitName) 
+    : null;
+
+  // ─── Render Helpers ───────────────────────────────────────────────────────
+  const isTabLoading = isLoadingResults && activeTab === 'results';
 
   return (
-    <div className="data-wrap">
-      <div className="card">
-        <div className="card-header">
-          <span className="card-label">RACE DATA CENTER</span>
-          <span className="card-badge">TELEMETRY ARCHIVE</span>
+    <div className="data-center">
+      {/* Selectors */}
+      <div className="dc-selectors">
+        <div className="dc-selector-group">
+          <label className="dc-selector-label">SEASON</label>
+          <select
+            className="dc-selector"
+            value={selectedSeason}
+            onChange={(e) => handleSeasonChange(Number(e.target.value))}
+          >
+            {seasons.map(season => (
+              <option key={season} value={season}>{season}</option>
+            ))}
+          </select>
         </div>
 
-        <select
-          className="f1-select data-race-select"
-          value={race}
-          onChange={(e) => setRace(e.target.value)}
-        >
-          {ALL_RACES.map((r) => <option key={r}>{r}</option>)}
-        </select>
+        <div className="dc-selector-divider" />
 
-        <div className="data-grid">
-          {/* ── Left column: Track ──────────────────────────────────────────── */}
-          <div className="data-section">
-            <div className="data-section-title">◈ CIRCUIT PROFILE</div>
-
-            <div className="track-img-placeholder">
-              <div className="track-svg-wrap">
-                <svg viewBox="0 0 200 130" style={{ width: "100%", height: "100%" }}>
-                  <path
-                    d={path}
-                    fill="none"
-                    stroke="#cc0000"
-                    strokeWidth="6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="20" cy="60" r="5" fill="#cc0000" />
-                </svg>
-              </div>
-              <div className="track-label">CIRCUIT SCHEMATIC · {race.toUpperCase()}</div>
-            </div>
-
-            <div className="data-rows">
-              {Object.entries(data.track).map(([k, v]) => (
-                <div key={k} className="data-row">
-                  <span className="data-key">{camelToLabel(k)}</span>
-                  <span className="data-val">{String(v)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Right column: Weather / Car / Strategy ──────────────────────── */}
-          <div className="data-section">
-            <div className="data-section-title">⛅ WEATHER REPORT</div>
-            <div className="data-rows">
-              {Object.entries(data.weather).map(([k, v]) => (
-                <div key={k} className="data-row">
-                  <span className="data-key">{camelToLabel(k)}</span>
-                  <span className="data-val">{String(v)}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="data-section-title">◉ CAR & TYRES</div>
-            <div className="data-rows">
-              {Object.entries(data.car).map(([k, v]) => (
-                <div key={k} className="data-row">
-                  <span className="data-key">{camelToLabel(k)}</span>
-                  <span className="data-val">{String(v)}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="data-section-title">⚑ RACE STRATEGY</div>
-            <div className="data-rows">
-              {Object.entries(data.team).map(([k, v]) => (
-                <div key={k} className="data-row">
-                  <span className="data-key">{camelToLabel(k)}</span>
-                  <span className="data-val">{String(v)}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="dc-selector-group">
+          <label className="dc-selector-label">RACE</label>
+          <select
+            className="dc-selector"
+            value={selectedRace}
+            onChange={(e) => handleRaceChange(e.target.value)}
+            disabled={isLoadingRaces || isRacesError}
+          >
+            <option value="">
+              {isLoadingRaces ? "Loading races..." : isRacesError ? "Error loading races" : "Select a race..."}
+            </option>
+            {races.map(race => (
+              <option key={race.id} value={race.id}>
+                Round {race.roundNumber}: {race.raceName}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
+
+      {/* Tabs */}
+      {selectedRace && (
+        <div className="dc-tabs-container">
+          <div className="dc-tabs-header">
+            <button
+              className={`dc-tab ${activeTab === 'overview' ? 'dc-tab-active' : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              <span className="dc-tab-text">OVERVIEW</span>
+            </button>
+            <button
+              className={`dc-tab ${activeTab === 'circuit' ? 'dc-tab-active' : ''}`}
+              onClick={() => setActiveTab('circuit')}
+            >
+              <span className="dc-tab-text">CIRCUIT INFO</span>
+            </button>
+            <button
+              className={`dc-tab ${activeTab === 'results' ? 'dc-tab-active' : ''}`}
+              onClick={() => setActiveTab('results')}
+            >
+              <span className="dc-tab-text">RACE DATA</span>
+            </button>
+          </div>
+
+          <div className="dc-tab-content">
+            {isTabLoading ? (
+              <div style={{ padding: '20px' }}>
+                 <LoadingSkeleton />
+              </div>
+            ) : (
+              <>
+                {/* Overview */}
+                {activeTab === 'overview' && activeRaceData && (
+                  <div className="dc-content-grid">
+                    <div className="dc-data-row">
+                      <div className="dc-data-label">RACE NAME</div>
+                      <div className="dc-data-value">{activeRaceData.raceName}</div>
+                    </div>
+                    <div className="dc-data-row">
+                      <div className="dc-data-label">DATE</div>
+                      <div className="dc-data-value">{new Date(activeRaceData.date).toLocaleDateString()}</div>
+                    </div>
+                    <div className="dc-data-row">
+                      <div className="dc-data-label">CIRCUIT</div>
+                      <div className="dc-data-value">{activeRaceData.circuitName}</div>
+                    </div>
+                    <div className="dc-data-row">
+                      <div className="dc-data-label">LOCATION</div>
+                      <div className="dc-data-value">{activeRaceData.location || activeRaceData.country}</div>
+                    </div>
+                    <div className="dc-data-row">
+                      <div className="dc-data-label">ROUND</div>
+                      <div className="dc-data-value">{activeRaceData.roundNumber}</div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Circuit Info */}
+                {activeTab === 'circuit' && (
+                  <div className="dc-content-grid">
+                    {activeCircuitData ? (
+                      <>
+                        <div className="dc-data-row">
+                          <div className="dc-data-label">CIRCUIT NAME</div>
+                          <div className="dc-data-value">{activeCircuitData.circuit_name}</div>
+                        </div>
+                        <div className="dc-data-row">
+                          <div className="dc-data-label">LOCATION</div>
+                          <div className="dc-data-value">{activeCircuitData.location}</div>
+                        </div>
+                        <div className="dc-data-row">
+                          <div className="dc-data-label">COUNTRY</div>
+                          <div className="dc-data-value">{activeCircuitData.country}</div>
+                        </div>
+                      </>
+                    ) : (
+                      <EmptyState title="No Data" message="Detailed circuit data not available." icon="📍" />
+                    )}
+                  </div>
+                )}
+
+                {/* Race Data and Results */}
+                {activeTab === 'results' && (
+                  <div className="dc-results-table-container">
+                    {isResultsError ? (
+                      <EmptyState title="Error" message="Error loading race results. Please try again later." icon="❌" />
+                    ) : resultsData.length > 0 ? (
+                      <table className="dc-results-table">
+                        <thead>
+                          <tr>
+                            <th>POS</th>
+                            <th>DRIVER</th>
+                            <th>TEAM</th>
+                            <th>POINTS</th>
+                            <th>GRID</th>
+                            <th>STATUS</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {resultsData.map((result: any, idx: number) => (
+                            <tr key={result.id || idx}>
+                              <td className="dc-results-position">{result.position ?? idx + 1}</td>
+                              <td>{result.driver_name ?? result.driver ?? 'Unknown'}</td>
+                              <td>{result.team_name ?? result.team ?? 'Unknown'}</td>
+                              <td className="dc-results-points">{result.points ?? 0}</td>
+                              <td>{result.grid ?? '-'}</td>
+                              <td>{result.status ?? 'Finished'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      <EmptyState title="No Results" message="No results data available for this race yet." icon="🏁" />
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      {/* Empty State */}
+      {!selectedRace && !isLoadingRaces && (
+          <EmptyState title='Error' message='NO RACE SELECTED' icon="⚠"/>
+      )}
     </div>
   );
 }
