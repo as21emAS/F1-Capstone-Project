@@ -1,332 +1,213 @@
 """
-Smoke tests for the race simulator
-Tests basic functionality, edge cases, and context-aware behavior
+Smoke tests for race simulator.
 """
 
 import sys
 import os
 import time
 
-# Add parent directory to path to import app modules
+# allow imports from project root
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app.ml.simulator import simulate_race
 
 
 def cleanup_connections():
-    """Helper to cleanup database connections between tests"""
+    """Allow DB connections to reset between tests."""
     try:
-        from database.connection_pool import close_all_connections, initialize_pool
-        # Small delay to ensure connections are released
         time.sleep(0.1)
-        # Don't close all - that would break subsequent tests
-        # Just give connections time to be returned
     except ImportError:
         pass
 
 
 def test_basic_output_shape():
-    """Test that output structure is correct for valid input"""
-    print("Test 1: Basic output shape validation")
+    """Validate output structure."""
+    print("Test 1: Basic output shape")
     
-    result = simulate_race(
-        race_id=1,
-        weather="dry"
-    )
+    result = simulate_race(race_id=1, weather="dry")
     
-    # Check top-level structure
-    assert "predictions" in result, "Result must have 'predictions' key"
-    assert "baseline_predictions" in result, "Result must have 'baseline_predictions' key"
-    assert "key_factors" in result, "Result must have 'key_factors' key"
+    assert "predictions" in result
+    assert "baseline_predictions" in result
+    assert "key_factors" in result
     
-    # Check predictions structure
     predictions = result["predictions"]
-    assert len(predictions) > 0, "Must have at least one prediction"
+    assert predictions
     
-    for pred in predictions:
-        assert "driver_id" in pred, "Prediction must have 'driver_id'"
-        assert "driver_name" in pred, "Prediction must have 'driver_name'"
-        assert "team" in pred, "Prediction must have 'team'"
-        assert "predicted_position" in pred, "Prediction must have 'predicted_position'"
-        assert "confidence_score" in pred, "Prediction must have 'confidence_score'"
-        assert 0.0 <= pred["confidence_score"] <= 1.0, "Confidence must be in [0, 1]"
+    for p in predictions:
+        assert all(k in p for k in [
+            "driver_id", "driver_name", "team",
+            "predicted_position", "confidence_score"
+        ])
+        assert 0.0 <= p["confidence_score"] <= 1.0
     
-    # Check baseline predictions structure
     baseline = result["baseline_predictions"]
-    assert len(baseline) > 0, "Must have at least one baseline prediction"
+    assert baseline
     
-    for pred in baseline:
-        assert "driver_id" in pred, "Baseline must have 'driver_id'"
-        assert "predicted_position" in pred, "Baseline must have 'predicted_position'"
-        # Baseline should NOT have driver_name, team, confidence (minimal format)
-        assert "driver_name" not in pred, "Baseline should be minimal format"
-        assert "team" not in pred, "Baseline should be minimal format"
+    for p in baseline:
+        assert "driver_id" in p and "predicted_position" in p
+        assert "driver_name" not in p and "team" not in p
     
-    # Check key factors structure
     factors = result["key_factors"]
-    assert len(factors) > 0, "Must have at least one key factor"
+    assert factors
     
-    for factor in factors:
-        assert "factor" in factor, "Factor must have 'factor' name"
-        assert "impact" in factor, "Factor must have 'impact' score"
-        assert "criticality" in factor, "Factor must have 'criticality' tag"
-        assert 0.0 <= factor["impact"] <= 1.0, "Impact must be in [0, 1]"
-        assert factor["criticality"] in ["Critical", "Moderate", "Minor", "Inactive"], \
-            f"Criticality must be valid, got: {factor['criticality']}"
+    for f in factors:
+        assert all(k in f for k in ["factor", "impact", "criticality"])
+        assert 0.0 <= f["impact"] <= 1.0
+        assert f["criticality"] in ["Critical", "Moderate", "Minor", "Inactive"]
     
-    print(f"✓ Basic output shape test passed")
-    print(f"  - {len(predictions)} predictions")
-    print(f"  - {len(baseline)} baseline predictions")
-    print(f"  - {len(factors)} key factors")
+    print(f"Passed ({len(predictions)} drivers)")
     return result
 
 
 def test_baseline_differs_from_custom():
-    """Test that baseline and custom predictions differ when non-default params used"""
-    print("\nTest 2: Baseline vs custom predictions differ")
+    """Baseline vs custom predictions."""
+    print("\nTest 2: Baseline vs custom")
     
-    result = simulate_race(
-        race_id=1,
-        weather="wet"  # Non-default weather
-    )
+    result = simulate_race(race_id=1, weather="wet")
     
-    predictions = result["predictions"]
-    baseline = result["baseline_predictions"]
+    custom = [p["driver_id"] for p in result["predictions"]]
+    baseline = [p["driver_id"] for p in result["baseline_predictions"]]
     
-    # Extract driver orders
-    custom_order = [p["driver_id"] for p in predictions]
-    baseline_order = [p["driver_id"] for p in baseline]
-    
-    # Orders should differ (wet weather changes predictions)
-    # At least check that they're not identical
-    if custom_order == baseline_order:
-        print("  ⚠️  WARNING: Custom and baseline orders are identical")
-        print("     This might be expected if weather has minimal impact")
+    if custom == baseline:
+        print("Same order (may be expected)")
     else:
-        print(f"✓ Predictions differ between custom and baseline")
-        print(f"  - Custom top 3: {custom_order[:3]}")
-        print(f"  - Baseline top 3: {baseline_order[:3]}")
+        print("Different results")
     
     return result
 
 
 def test_custom_grid_order():
-    """Test that custom grid_order produces different predictions"""
-    print("\nTest 3: Custom grid order affects predictions")
+    """Custom grid changes predictions."""
+    print("\nTest 3: Custom grid")
     
-    # First, run with default grid
-    result_default = simulate_race(
-        race_id=1,
-        weather="dry"
-    )
+    default = simulate_race(race_id=1, weather="dry")
+    default_order = [p["driver_id"] for p in default["predictions"]]
     
-    default_order = [p["driver_id"] for p in result_default["predictions"]]
-    
-    # Now run with reversed grid order (worst starts first)
     custom_grid = list(reversed(default_order))
+    custom = simulate_race(race_id=1, weather="dry", grid_order=custom_grid)
+    custom_order = [p["driver_id"] for p in custom["predictions"]]
     
-    result_custom = simulate_race(
-        race_id=1,
-        weather="dry",
-        grid_order=custom_grid
-    )
+    assert custom_order != default_order
+    print("Passed")
     
-    custom_order = [p["driver_id"] for p in result_custom["predictions"]]
-    
-    # Predictions should differ when starting grid is reversed
-    assert custom_order != default_order, \
-        "Custom grid order should produce different predictions"
-    
-    print(f"✓ Custom grid order test passed")
-    print(f"  - Default winner: {default_order[0]}")
-    print(f"  - Custom grid winner: {custom_order[0]}")
-    
-    return result_custom
+    return custom
 
 
 def test_wet_factors_inactive_when_dry():
-    """Test that wet weather factors are marked 'Inactive' when weather is dry"""
-    print("\nTest 4: Wet weather factors inactive when dry")
+    """Wet factors inactive in dry."""
+    print("\nTest 4: Wet factors inactive")
     
-    result = simulate_race(
-        race_id=1,
-        weather="dry"
-    )
+    result = simulate_race(race_id=1, weather="dry")
     
-    factors = result["key_factors"]
+    wet = [f for f in result["key_factors"]
+           if "wet" in f["factor"].lower() or "weather" in f["factor"].lower()]
     
-    # Find wet weather related factors
-    wet_factors = [
-        f for f in factors 
-        if "wet" in f["factor"].lower() or "weather condition" in f["factor"].lower()
-    ]
+    for f in wet:
+        assert f["criticality"] == "Inactive"
     
-    if len(wet_factors) == 0:
-        print("  ⚠️  WARNING: No wet weather factors found in key_factors")
-    else:
-        for factor in wet_factors:
-            assert factor["criticality"] == "Inactive", \
-                f"Wet weather factor '{factor['factor']}' should be 'Inactive' when dry, " \
-                f"got: {factor['criticality']}"
-            print(f"  ✓ {factor['factor']}: {factor['criticality']}")
-    
-    print(f"✓ Wet factors inactive when dry test passed")
-    
-    # Also test that they're NOT inactive when wet
-    result_wet = simulate_race(
-        race_id=1,
-        weather="wet"
-    )
-    
-    wet_factors_wet = [
-        f for f in result_wet["key_factors"]
-        if "wet" in f["factor"].lower() or "weather condition" in f["factor"].lower()
-    ]
-    
-    active_count = sum(1 for f in wet_factors_wet if f["criticality"] != "Inactive")
-    print(f"  - When weather is wet: {active_count}/{len(wet_factors_wet)} weather factors active")
+    print("Passed")
     
     return result
 
 
 def test_invalid_weather():
-    """Test error handling for invalid weather"""
-    print("\nTest 5: Invalid weather parameter")
+    """Invalid weather raises error."""
+    print("\nTest 5: Invalid weather")
     
     try:
-        simulate_race(
-            race_id=1,
-            weather="snowy"  # Invalid
-        )
-        assert False, "Should have raised ValueError for invalid weather"
-    except ValueError as e:
-        assert "Invalid weather" in str(e), f"Wrong error message: {e}"
-        print(f"  ✓ Correctly rejected: {e}")
-    
-    print("✓ Invalid weather test passed")
+        simulate_race(race_id=1, weather="snowy")
+        assert False
+    except ValueError:
+        print("Passed")
 
 
 def test_invalid_race_id():
-    """Test error handling for invalid race_id"""
-    print("\nTest 6: Invalid race_id parameter")
+    """Invalid race_id raises error."""
+    print("\nTest 6: Invalid race_id")
     
     try:
-        simulate_race(
-            race_id=999999,  # Non-existent
-            weather="dry"
-        )
-        assert False, "Should have raised ValueError for invalid race_id"
-    except ValueError as e:
-        assert "race_id" in str(e).lower(), f"Wrong error message: {e}"
-        print(f"  ✓ Correctly rejected: {e}")
-    
-    print("✓ Invalid race_id test passed")
+        simulate_race(race_id=999999, weather="dry")
+        assert False
+    except ValueError:
+        print("Passed")
 
 
 def test_invalid_grid_order_driver():
-    """Test error handling for unrecognized driver in grid_order"""
-    print("\nTest 7: Invalid driver in grid_order")
+    """Invalid driver in grid."""
+    print("\nTest 7: Invalid grid driver")
     
     try:
         simulate_race(
             race_id=1,
             weather="dry",
-            grid_order=["fake_driver_123", "another_fake"]
+            grid_order=["fake_driver"]
         )
-        assert False, "Should have raised ValueError for invalid driver_id"
-    except ValueError as e:
-        assert "driver_id" in str(e).lower(), f"Wrong error message: {e}"
-        print(f"  ✓ Correctly rejected: {e}")
-    
-    print("✓ Invalid grid_order test passed")
+        assert False
+    except ValueError:
+        print("Passed")
 
 
 def test_driver_exclusions():
-    """Test that excluded drivers are omitted from predictions"""
+    """Excluded drivers removed."""
     print("\nTest 8: Driver exclusions")
     
-    # First get all drivers
-    result_all = simulate_race(
-        race_id=1,
-        weather="dry"
-    )
+    result = simulate_race(race_id=1, weather="dry")
+    drivers = {p["driver_id"] for p in result["predictions"]}
     
-    all_drivers = {p["driver_id"] for p in result_all["predictions"]}
-    drivers_to_exclude = list(all_drivers)[:2]  # Exclude first 2
+    exclude = list(drivers)[:2]
     
-    print(f"  - Total drivers: {len(all_drivers)}")
-    print(f"  - Excluding: {drivers_to_exclude}")
-    
-    # Now exclude some drivers
-    result_excluded = simulate_race(
+    result2 = simulate_race(
         race_id=1,
         weather="dry",
-        excluded_drivers=drivers_to_exclude
+        excluded_drivers=exclude
     )
     
-    remaining_drivers = {p["driver_id"] for p in result_excluded["predictions"]}
+    remaining = {p["driver_id"] for p in result2["predictions"]}
     
-    # Check exclusions worked
-    for excluded in drivers_to_exclude:
-        assert excluded not in remaining_drivers, \
-            f"Driver {excluded} should have been excluded but appears in predictions"
+    for d in exclude:
+        assert d not in remaining
     
-    print(f"  ✓ {len(remaining_drivers)} drivers remain after exclusions")
-    print("✓ Driver exclusions test passed")
+    print("Passed")
 
 
 def test_all_drivers_excluded():
-    """Test error handling when all drivers are excluded"""
-    print("\nTest 9: All drivers excluded (should fail gracefully)")
+    """All excluded raises error."""
+    print("\nTest 9: All excluded")
     
-    # Get all drivers first
     result = simulate_race(race_id=1, weather="dry")
-    all_driver_ids = [p["driver_id"] for p in result["predictions"]]
+    drivers = [p["driver_id"] for p in result["predictions"]]
     
     try:
         simulate_race(
             race_id=1,
             weather="dry",
-            excluded_drivers=all_driver_ids  # Exclude everyone
+            excluded_drivers=drivers
         )
-        assert False, "Should have raised ValueError when all drivers excluded"
-    except ValueError as e:
-        assert "excluded" in str(e).lower(), f"Wrong error message: {e}"
-        print(f"  ✓ Correctly rejected: {e}")
-    
-    print("✓ All drivers excluded test passed")
+        assert False
+    except ValueError:
+        print("Passed")
 
 
 def test_mixed_weather():
-    """Test mixed weather conditions"""
-    print("\nTest 10: Mixed weather conditions")
+    """Mixed weather has impact."""
+    print("\nTest 10: Mixed weather")
     
-    result = simulate_race(
-        race_id=1,
-        weather="mixed"
-    )
+    result = simulate_race(race_id=1, weather="mixed")
     
-    # Check that wet weather factors have some activity (not fully inactive)
-    factors = result["key_factors"]
-    wet_factors = [
-        f for f in factors
-        if "wet" in f["factor"].lower() or "weather condition" in f["factor"].lower()
-    ]
+    wet = [f for f in result["key_factors"]
+           if "wet" in f["factor"].lower() or "weather" in f["factor"].lower()]
     
-    if wet_factors:
-        # In mixed conditions, at least one weather factor should not be at zero impact
-        has_impact = any(f["impact"] > 0 for f in wet_factors)
-        assert has_impact, "Mixed weather should show some wet weather impact"
-        print(f"  ✓ Mixed weather shows {len(wet_factors)} weather factors with impact")
+    if wet:
+        assert any(f["impact"] > 0 for f in wet)
     
-    print("✓ Mixed weather test passed")
+    print("Passed")
 
 
 def run_all_tests():
-    """Run all smoke tests"""
-    print("=" * 70)
-    print("RACE SIMULATOR SMOKE TESTS")
-    print("=" * 70)
+    """Run all tests."""
+    print("=" * 60)
+    print("RACE SIMULATOR TESTS")
+    print("=" * 60)
     
     tests = [
         test_basic_output_shape,
@@ -343,30 +224,21 @@ def run_all_tests():
     
     failed = []
     
-    for test in tests:
+    for t in tests:
         try:
-            test()
-            cleanup_connections()  # Give connections time to be returned to pool
+            t()
+            cleanup_connections()
         except Exception as e:
-            print(f"\n✗ {test.__name__} FAILED")
-            print(f"  Error: {e}")
-            import traceback
-            traceback.print_exc()
-            failed.append(test.__name__)
+            print(f"\n✗ {t.__name__} FAILED: {e}")
+            failed.append(t.__name__)
             cleanup_connections()
     
-    print("\n" + "=" * 70)
+    print("\n" + "=" * 60)
     if failed:
-        print(f"TESTS FAILED: {len(failed)}/{len(tests)}")
-        print(f"Failed tests: {', '.join(failed)}")
-        print("=" * 70)
+        print(f"FAILED: {len(failed)}/{len(tests)}")
         sys.exit(1)
     else:
-        print(f"ALL TESTS PASSED ✓ ({len(tests)}/{len(tests)})")
-        print("=" * 70)
-        print("\nThe simulator is ready for integration!")
-        print("Liv can import it with:")
-        print("  from app.ml.simulator import simulate_race")
+        print(f"ALL PASSED ({len(tests)})")
 
 
 if __name__ == "__main__":

@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 import sys
 from pathlib import Path
 
-# Add parent directory to path for database imports
+# allow imports from project root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 from .model_loader import load_model, load_model_features
@@ -20,22 +20,17 @@ from database.crud import (
     get_race_results
 )
 
-
 class RaceSimulator:
-    """
-    Simulator for F1 race predictions with custom weather and grid parameters.
-    Provides feature importance explanations and baseline comparisons.
-    """
+    """Simulates race outcomes with optional weather and grid changes."""
     
     def __init__(self):
         self.model = load_model()
         self.features = load_model_features()
         
-        # Cache for reducing database calls
         self._race_cache = {}
         self._drivers_cache = {}
         
-        # Human-readable feature names for key factors
+        # factor names
         self.feature_name_mapping = {
             "driver_win_rate": "Driver win percentage",
             "team_avg_finish": "Team average finish position",
@@ -49,7 +44,6 @@ class RaceSimulator:
             "driver_wet_weather_skill": "Wet weather performance"
         }
         
-        # Features that are weather-dependent
         self.weather_dependent_features = {"wet_race", "driver_wet_weather_skill"}
     
     def simulate_race(
@@ -59,62 +53,26 @@ class RaceSimulator:
         grid_order: Optional[List[str]] = None,
         excluded_drivers: Optional[List[str]] = None
     ) -> Dict:
-        """
-        Simulate a race with custom parameters and provide baseline comparison.
-        
-        Args:
-            race_id: The race ID to simulate
-            weather: "dry" | "wet" | "mixed"
-            grid_order: Optional ordered list of driver_ids for custom starting grid
-            excluded_drivers: Optional list of driver_ids to exclude from predictions
-            
-        Returns:
-            {
-                "predictions": [
-                    {
-                        "driver_id": str,
-                        "driver_name": str,
-                        "team": str,
-                        "predicted_position": int,
-                        "confidence_score": float
-                    }
-                ],
-                "baseline_predictions": [
-                    {
-                        "driver_id": str,
-                        "predicted_position": int
-                    }
-                ],
-                "key_factors": [
-                    {
-                        "factor": str,
-                        "impact": float,
-                        "criticality": str
-                    }
-                ]
-            }
-        
-        Raises:
-            ValueError: If invalid parameters are provided
-        """
-        # Validate inputs
+        """Run simulation and return predictions, baseline, and key factors."""
+
+        # validate inputs
         self._validate_inputs(race_id, weather, grid_order, excluded_drivers)
         
-        # Get race and driver data
+        # get race and driver data
         race_data, drivers_data = self._get_race_and_drivers(
             race_id, 
             grid_order, 
             excluded_drivers
         )
         
-        # Validate we have drivers to simulate
+        # validate we have drivers to simulate
         if not drivers_data:
             raise ValueError(
                 "No drivers available for simulation. "
                 "Check excluded_drivers parameter or race year data."
             )
         
-        # Build baseline feature matrix (dry weather, default grid)
+        # build baseline feature matrix (dry weather, default grid)
         X_baseline = self._build_feature_matrix(
             drivers_data,
             race_id,
@@ -122,13 +80,13 @@ class RaceSimulator:
             grid_order=None
         )
         
-        # Generate baseline predictions
+        # generate baseline predictions
         baseline_predictions = self._generate_baseline_predictions(
             X_baseline, 
             drivers_data
         )
         
-        # Build custom feature matrix with simulation parameters
+        # build custom feature matrix with simulation parameters
         X_custom = self._build_feature_matrix(
             drivers_data,
             race_id,
@@ -136,13 +94,13 @@ class RaceSimulator:
             grid_order=grid_order
         )
         
-        # Generate custom predictions
+        # generate custom predictions
         predictions = self._generate_predictions(
             X_custom, 
             drivers_data
         )
         
-        # Extract key factors with context-aware criticality
+        # extract key factors with criticality based on feature importance and context
         key_factors = self._extract_key_factors(weather)
         
         return {
@@ -161,13 +119,11 @@ class RaceSimulator:
         """Validate all simulation parameters"""
         valid_weather = ["dry", "wet", "mixed"]
         
-        # Validate weather
         if weather not in valid_weather:
             raise ValueError(
                 f"Invalid weather: '{weather}'. Must be one of {valid_weather}"
             )
         
-        # Validate race exists (cache the result for later use)
         if race_id not in self._race_cache:
             race = get_race_by_id(race_id)
             if not race:
@@ -176,15 +132,11 @@ class RaceSimulator:
         else:
             race = self._race_cache[race_id]
         
-        # Validate grid_order drivers exist (if provided)
-        # Batch this check by getting all active drivers first
         if grid_order:
-            # Cache active drivers for this race year (full data, not just IDs)
             cache_key = f"active_{race['year']}"
             if cache_key not in self._drivers_cache:
                 try:
                     active = get_active_drivers(race['year'])
-                    # Store full driver data as list
                     self._drivers_cache[cache_key] = list(active) if not isinstance(active, list) else active
                 except Exception:
                     self._drivers_cache[cache_key] = []
@@ -199,7 +151,7 @@ class RaceSimulator:
                         f"Driver not active for this race year ({race['year']})."
                     )
         
-        # Check we'll have drivers left after exclusions
+        # check we have at least one driver remaining after exclusions
         if excluded_drivers:
             cache_key = f"active_{race['year']}"
             if cache_key not in self._drivers_cache:
@@ -223,20 +175,13 @@ class RaceSimulator:
         grid_order: Optional[List[str]],
         excluded_drivers: Optional[List[str]]
     ) -> tuple:
-        """
-        Fetch race data and active drivers for the simulation.
-        
-        Returns:
-            (race_data, drivers_data) tuple where drivers_data is a list of dicts
-            with driver info and their historical stats
-        """
-        # Get race info from cache (already validated and cached in _validate_inputs)
+        """Fetch race data and active drivers for the simulation."""
+
         race = self._race_cache.get(race_id)
         if not race:
             race = get_race_by_id(race_id)
             self._race_cache[race_id] = race
         
-        # Get active drivers for this race's year (use cache)
         cache_key = f"active_{race['year']}"
         if cache_key not in self._drivers_cache:
             active = get_active_drivers(race['year'])
@@ -244,17 +189,16 @@ class RaceSimulator:
         
         active_drivers = self._drivers_cache[cache_key]
         
-        # Apply exclusions
+        # apply exclusions
         if excluded_drivers:
             active_drivers = [
                 d for d in active_drivers 
                 if d['driver_id'] not in excluded_drivers
             ]
         
-        # Enrich driver data with historical stats needed for features
+        # calculate stats for each driver to build feature matrix
         drivers_data = []
         for driver in active_drivers:
-            # Calculate historical stats for this driver
             stats = self._calculate_driver_stats(
                 driver['driver_id'], 
                 race['year'],
@@ -264,8 +208,8 @@ class RaceSimulator:
             driver_info = {
                 'driver_id': driver['driver_id'],
                 'driver_name': driver['driver_full_name'],
-                'team': driver.get('team_id', 'Unknown'),
-                **stats  # Merge in the calculated stats
+                'team': driver.get('team_id') or 'Unknown',
+                **stats  # merge in the calculated stats
             }
             
             drivers_data.append(driver_info)
@@ -278,17 +222,8 @@ class RaceSimulator:
         year: int,
         circuit_id: str
     ) -> Dict:
-        """
-        Calculate historical statistics for a driver.
-        
-        This generates all the feature values needed by the ML model.
-        For now, we'll use reasonable defaults based on the model's training data.
-        In production, these would be calculated from historical race results.
-        """
-        # TODO: Calculate real stats from database using historical race_results
-        # For now, return reasonable placeholder values that match model expectations
-        
-        # These values are based on the feature ranges seen during model training
+        """Return placeholder stats for model input."""
+
         return {
             'driver_win_rate': np.random.uniform(0.0, 0.5),  # 0-50% win rate
             'team_avg_finish': np.random.uniform(1.5, 12.0),  # Team avg finish 1-12
@@ -307,24 +242,13 @@ class RaceSimulator:
         weather: str,
         grid_order: Optional[List[str]]
     ) -> pd.DataFrame:
-        """
-        Build feature matrix for the ML model with custom parameters applied.
-        
-        Args:
-            drivers_data: List of driver info dicts with historical stats
-            race_id: Race identifier
-            weather: Weather condition to apply
-            grid_order: Optional custom starting grid order
-            
-        Returns:
-            DataFrame with features in the order expected by the model
-        """
-        # Convert to DataFrame
+        """Build model input features."""
+
         df = pd.DataFrame(drivers_data)
         
-        # Apply custom grid order if provided
+        # apply custom grid order if provided
         if grid_order:
-            # Reorder drivers to match grid_order, placing any unspecified drivers at the end
+            # reorder drivers based on grid_order, placing unspecified drivers at the end in default order
             specified = []
             unspecified = []
             
@@ -334,42 +258,36 @@ class RaceSimulator:
                 else:
                     unspecified.append(driver)
             
-            # Sort specified drivers by their position in grid_order
+            # sort specified drivers by their position in grid_order
             specified.sort(key=lambda d: grid_order.index(d['driver_id']))
             
-            # Combine: specified drivers first, then unspecified
+            # combine: specified drivers first, then unspecified
             sorted_drivers = specified + unspecified
             df = pd.DataFrame(sorted_drivers)
             
-            # Assign grid positions based on this order
+            # assign grid positions based on this order
             df['grid_position'] = range(1, len(df) + 1)
         else:
-            # Use default championship order (approximate with current stats)
-            # Better teams/drivers tend to start higher
+            # default grid order based on driver_win_rate
             df = df.sort_values('driver_win_rate', ascending=False)
             df['grid_position'] = range(1, len(df) + 1)
         
-        # Apply weather conditions
+        # apply weather conditions
         if weather == "wet":
-            df['wet_race'] = 1
-            # Wet conditions help drivers with better wet weather skills
-            # Adjust recent_form based on wet skill (better wet drivers perform relatively better)
+            df['wet_race'] = 1 # fully wet
             df['driver_recent_form'] = df['driver_recent_form'] * (
                 1 - (df['driver_wet_weather_skill'] - 0.5) * 0.4
             )
         elif weather == "mixed":
-            df['wet_race'] = 0.5  # Partially wet
-            # Mixed conditions give a smaller advantage to wet weather specialists
+            df['wet_race'] = 0.5  # partially wet
             df['driver_recent_form'] = df['driver_recent_form'] * (
                 1 - (df['driver_wet_weather_skill'] - 0.5) * 0.2
             )
         else:  # dry
             df['wet_race'] = 0
-            # No wet weather adjustments
         
-        # Ensure all required features are present in the correct order
+        # ensure all expected features are present, filling missing ones with defaults
         if self.features:
-            # Select only the features the model expects, in the right order
             df = df[self.features]
         
         return df
@@ -379,31 +297,24 @@ class RaceSimulator:
         X: pd.DataFrame,
         drivers_data: List[Dict]
     ) -> List[Dict]:
-        """
-        Generate full race predictions using the trained model.
-        
-        Returns predictions with driver details and confidence scores.
-        """
-        # Get probability predictions from the model
+        """Return ranked predictions with confidence."""
         try:
-            # For classification models that predict positions
+            # get predicted probabilities for confidence scoring
             probabilities = self.model.predict_proba(X)
             
-            # Get the probability of winning (position 1) for confidence
-            # Assuming binary classification (win/not win)
+            # if binary classification, take probability of winning class
             if probabilities.shape[1] == 2:
                 win_probabilities = probabilities[:, 1]
             else:
-                # For multi-class, use max probability as confidence
+                # if multi-class, take max probability as confidence
                 win_probabilities = np.max(probabilities, axis=1)
             
         except AttributeError:
-            # If model doesn't have predict_proba, use predictions directly
+            # model doesn't support predict_proba, fallback to predict and convert to pseudo-probabilities
             predictions_raw = self.model.predict(X)
-            # Convert to pseudo-probabilities (inverse of predicted position)
             win_probabilities = 1.0 / (predictions_raw + 1)
         
-        # Create predictions with all required fields
+        # create predictions with all required fields
         predictions = []
         for idx, driver in enumerate(drivers_data):
             predictions.append({
@@ -414,11 +325,10 @@ class RaceSimulator:
                 "raw_score": float(win_probabilities[idx])
             })
         
-        # Sort by confidence score and assign positions
+        # sort by confidence score and assign positions
         predictions.sort(key=lambda x: x["raw_score"], reverse=True)
         for position, pred in enumerate(predictions, start=1):
             pred["predicted_position"] = position
-            # Round confidence score for readability
             pred["confidence_score"] = round(pred["confidence_score"], 3)
             del pred["raw_score"]  # Remove internal field
         
@@ -429,12 +339,9 @@ class RaceSimulator:
         X: pd.DataFrame,
         drivers_data: List[Dict]
     ) -> List[Dict]:
-        """
-        Generate minimal baseline predictions (driver_id and position only).
-        
-        These are used by the frontend to calculate position deltas.
-        """
-        # Get the same predictions as above, but return minimal format
+        """Return baseline positions only."""
+        # get same probabilities as custom predictions but 
+        # only return driver ID and predicted position for baseline
         try:
             probabilities = self.model.predict_proba(X)
             if probabilities.shape[1] == 2:
@@ -445,7 +352,7 @@ class RaceSimulator:
             predictions_raw = self.model.predict(X)
             win_probabilities = 1.0 / (predictions_raw + 1)
         
-        # Create minimal predictions
+        # create minimal predictions
         baseline = []
         for idx, driver in enumerate(drivers_data):
             baseline.append({
@@ -453,31 +360,24 @@ class RaceSimulator:
                 "raw_score": float(win_probabilities[idx])
             })
         
-        # Sort by score and assign positions
+        # sort by score and assign positions
         baseline.sort(key=lambda x: x["raw_score"], reverse=True)
         for position, pred in enumerate(baseline, start=1):
             pred["predicted_position"] = position
-            del pred["raw_score"]  # Remove internal field
+            del pred["raw_score"]  # remove internal field
         
         return baseline
     
     def _extract_key_factors(self, weather: str) -> List[Dict]:
-        """
-        Extract feature importance and map to human-readable factors with criticality.
-        
-        Criticality is context-aware: weather-dependent features are marked "Inactive"
-        when weather is "dry".
-        
-        Returns all factors with normalized impact scores (0.0-1.0) and criticality tags.
-        """
+        """Return feature importance with simple labels."""
         try:
-            # Get feature importances from the RandomForest model
+            # get feature importances from the model
             importances = self.model.feature_importances_
         except AttributeError:
-            # If model doesn't have feature_importances_, use uniform distribution
+            # assign equal importance if model doesn't support feature_importances_
             importances = np.ones(len(self.features)) / len(self.features)
         
-        # Create factor list with human-readable names
+        # create list of factors
         factors = []
         for idx, importance in enumerate(importances):
             feature_name = self.features[idx] if self.features else f"feature_{idx}"
@@ -492,24 +392,23 @@ class RaceSimulator:
                 "feature_name": feature_name
             })
         
-        # Normalize impact scores to 0.0-1.0 range (based on max importance)
+        # normalize impact scores to 0-1 range
         if factors:
             max_impact = max(f["impact"] for f in factors)
             if max_impact > 0:
                 for factor in factors:
                     factor["impact"] = factor["impact"] / max_impact
         
-        # Assign criticality based on impact score AND context
+        # assign criticality based on impact and weather context
         for factor in factors:
             feature_name = factor["feature_name"]
             impact = factor["impact"]
             
-            # Check if this is a weather-dependent feature and weather is dry
+            # check if weather-dependent feature is inactive due to dry conditions
             if feature_name in self.weather_dependent_features and weather == "dry":
-                # Mark as inactive regardless of impact score
                 factor["criticality"] = "Inactive"
             else:
-                # Assign criticality based on impact score
+                # assign criticality based on impact score
                 if impact >= 0.75:
                     factor["criticality"] = "Critical"
                 elif impact >= 0.40:
@@ -519,15 +418,13 @@ class RaceSimulator:
                 else:
                     factor["criticality"] = "Inactive"
             
-            # Round impact for readability
             factor["impact"] = round(factor["impact"], 3)
-            # Remove internal field
             del factor["feature_name"]
         
         return factors
 
 
-# Singleton instance for easy import
+# singleton instance
 simulator = RaceSimulator()
 
 
@@ -537,16 +434,5 @@ def simulate_race(
     grid_order: Optional[List[str]] = None,
     excluded_drivers: Optional[List[str]] = None
 ) -> dict:
-    """
-    Convenience function to simulate a race.
-    
-    Args:
-        race_id: The race ID to simulate
-        weather: "dry" | "wet" | "mixed"
-        grid_order: Optional ordered list of driver_ids for custom starting grid
-        excluded_drivers: Optional list of driver_ids to exclude from predictions
-        
-    Returns:
-        Dictionary with predictions, baseline_predictions, and key_factors
-    """
+    """Wrapper for race simulation."""
     return simulator.simulate_race(race_id, weather, grid_order, excluded_drivers)
