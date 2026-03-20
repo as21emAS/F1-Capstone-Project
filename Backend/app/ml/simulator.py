@@ -17,7 +17,8 @@ from database.crud import (
     get_race_by_id,
     get_active_drivers,
     get_driver_by_id,
-    get_race_results
+    get_race_results,
+    get_driver_results
 )
 
 class RaceSimulator:
@@ -222,18 +223,118 @@ class RaceSimulator:
         year: int,
         circuit_id: str
     ) -> Dict:
-        """Return placeholder stats for model input."""
-
-        return {
-            'driver_win_rate': np.random.uniform(0.0, 0.5),  # 0-50% win rate
-            'team_avg_finish': np.random.uniform(1.5, 12.0),  # Team avg finish 1-12
-            'driver_recent_form': np.random.uniform(1.0, 15.0),  # Recent avg position
-            'driver_avg_finish': np.random.uniform(1.5, 15.0),  # Career avg finish
-            'driver_podium_rate': np.random.uniform(0.0, 0.6),  # 0-60% podium rate
-            'circuit_driver_performance': np.random.uniform(1.0, 15.0),  # Avg at this circuit
-            'qualifying_position_delta': np.random.uniform(-2.0, 2.0),  # Grid vs finish diff
-            'driver_wet_weather_skill': np.random.uniform(0.3, 0.95)  # Wet weather skill 0-1
-        }
+        """Calculate real driver statistics from historical race results."""
+        
+        try:
+            # get all historical race results for this driver before the simulation year
+            all_results = get_driver_results(driver_id=driver_id, end_year=year)
+            
+            if not all_results or len(all_results) == 0:
+                # no historical data - return conservative defaults for new drivers
+                return {
+                    'driver_win_rate': 0.05,
+                    'team_avg_finish': 12.0,
+                    'driver_recent_form': 12.0,
+                    'driver_avg_finish': 12.0,
+                    'driver_podium_rate': 0.05,
+                    'circuit_driver_performance': 12.0,
+                    'qualifying_position_delta': 0.0,
+                    'driver_wet_weather_skill': 0.5
+                }
+            
+            # calculate basic career statistics
+            total_races = len(all_results)
+            wins = sum(1 for r in all_results if r.get('finish_position') == 1)
+            podiums = sum(1 for r in all_results if r.get('finish_position') and r['finish_position'] <= 3)
+            
+            # career average finish position
+            positions = [r['finish_position'] for r in all_results if r.get('finish_position') is not None]
+            driver_avg_finish = sum(positions) / len(positions) if positions else 12.0
+            
+            # win and podium rates
+            driver_win_rate = wins / total_races if total_races > 0 else 0.0
+            driver_podium_rate = podiums / total_races if total_races > 0 else 0.0
+            
+            # recent form: average finish in last 3 races
+            recent_results = sorted(
+                all_results,
+                key=lambda x: (x.get('year', 0), x.get('round', 0)),
+                reverse=True
+            )[:3]
+            recent_positions = [r['finish_position'] for r in recent_results if r.get('finish_position') is not None]
+            driver_recent_form = sum(recent_positions) / len(recent_positions) if recent_positions else driver_avg_finish
+            
+            # circuit-specific performance
+            circuit_results = [r for r in all_results if str(r.get('circuit_id')) == str(circuit_id)]
+            circuit_positions = [r['finish_position'] for r in circuit_results if r.get('finish_position') is not None]
+            circuit_driver_performance = sum(circuit_positions) / len(circuit_positions) if circuit_positions else driver_avg_finish
+            
+            # qualifying position delta (grid position - finish position, positive = gained places)
+            deltas = []
+            for r in all_results:
+                if r.get('grid_position') is not None and r.get('finish_position') is not None:
+                    delta = r['grid_position'] - r['finish_position']
+                    deltas.append(delta)
+            qualifying_position_delta = sum(deltas) / len(deltas) if deltas else 0.0
+            
+            # wet weather skill
+            wet_results = [r for r in all_results if r.get('weather') in ['wet', 'mixed']]
+            dry_results = [r for r in all_results if r.get('weather') == 'dry']
+            
+            if wet_results and dry_results:
+                wet_positions = [r['finish_position'] for r in wet_results if r.get('finish_position') is not None]
+                dry_positions = [r['finish_position'] for r in dry_results if r.get('finish_position') is not None]
+                
+                if wet_positions and dry_positions:
+                    wet_avg = sum(wet_positions) / len(wet_positions)
+                    dry_avg = sum(dry_positions) / len(dry_positions)
+                    
+                    # better wet performance = lower avg position = higher skill
+                    # normalize to 0-1 range (0.5 = neutral, >0.5 = better in wet)
+                    if dry_avg > 0:
+                        skill_diff = (dry_avg - wet_avg) / dry_avg
+                        driver_wet_weather_skill = 0.5 + (skill_diff * 0.5)
+                        driver_wet_weather_skill = max(0.3, min(0.95, driver_wet_weather_skill))
+                    else:
+                        driver_wet_weather_skill = 0.5
+                else:
+                    driver_wet_weather_skill = 0.5
+            else:
+                # no wet/dry comparison available
+                driver_wet_weather_skill = 0.5
+            
+            # team average finish
+            team_results = [r for r in recent_results if r.get('team_id')]
+            if team_results:
+                team_positions = [r['finish_position'] for r in team_results if r.get('finish_position') is not None]
+                team_avg_finish = sum(team_positions) / len(team_positions) if team_positions else driver_avg_finish
+            else:
+                team_avg_finish = driver_avg_finish
+            
+            return {
+                'driver_win_rate': float(driver_win_rate),
+                'team_avg_finish': float(team_avg_finish),
+                'driver_recent_form': float(driver_recent_form),
+                'driver_avg_finish': float(driver_avg_finish),
+                'driver_podium_rate': float(driver_podium_rate),
+                'circuit_driver_performance': float(circuit_driver_performance),
+                'qualifying_position_delta': float(qualifying_position_delta),
+                'driver_wet_weather_skill': float(driver_wet_weather_skill)
+            }
+            
+        except Exception as e:
+            # if calculation fails, log and return safe defaults
+            print(f"Warning: Could not calculate real stats for {driver_id}: {e}")
+            return {
+                'driver_win_rate': 0.05,
+                'team_avg_finish': 12.0,
+                'driver_recent_form': 12.0,
+                'driver_avg_finish': 12.0,
+                'driver_podium_rate': 0.05,
+                'circuit_driver_performance': 12.0,
+                'qualifying_position_delta': 0.0,
+                'driver_wet_weather_skill': 0.5
+            }
     
     def _build_feature_matrix(
         self,

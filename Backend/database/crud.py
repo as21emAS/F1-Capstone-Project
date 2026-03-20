@@ -225,26 +225,38 @@ def get_race_results(race_id):
     return_connection(conn)
     return results
 
-def get_driver_results(driver_id, year=None):
+def get_driver_results(driver_id, year=None, end_year=None):
    
     conn = get_db_connection()
     cursor = conn.cursor()
     
     if year:
         cursor.execute("""
-            SELECT rr.*, r.race_name, r.date, r.circuit_name, t.team_name
+            SELECT rr.*, r.race_name, r.date, r.circuit_name, r.circuit_id, r.round, 
+                   r.year, t.team_name, rr.team_id
             FROM race_results rr
             JOIN races r ON rr.race_id = r.race_id
-            JOIN teams t ON rr.team_id = t.team_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
             WHERE rr.driver_id = %s AND r.year = %s
             ORDER BY r.date
         """, (driver_id, year))
-    else:
+    elif end_year:
         cursor.execute("""
-            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, t.team_name
+            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, r.circuit_id, r.round,
+                   t.team_name, rr.team_id
             FROM race_results rr
             JOIN races r ON rr.race_id = r.race_id
-            JOIN teams t ON rr.team_id = t.team_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
+            WHERE rr.driver_id = %s AND r.year < %s
+            ORDER BY r.date DESC
+        """, (driver_id, end_year))
+    else:
+        cursor.execute("""
+            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, r.circuit_id, r.round,
+                   t.team_name, rr.team_id
+            FROM race_results rr
+            JOIN races r ON rr.race_id = r.race_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
             WHERE rr.driver_id = %s
             ORDER BY r.date DESC
         """, (driver_id,))

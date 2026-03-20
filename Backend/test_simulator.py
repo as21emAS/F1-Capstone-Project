@@ -80,11 +80,12 @@ def test_custom_grid_order():
     """Custom grid changes predictions."""
     print("\nTest 3: Custom grid")
     
-    default = simulate_race(race_id=1, weather="dry")
+    # use race_id=97 (2015) which has historical data from 2010-2014
+    default = simulate_race(race_id=97, weather="dry")
     default_order = [p["driver_id"] for p in default["predictions"]]
     
     custom_grid = list(reversed(default_order))
-    custom = simulate_race(race_id=1, weather="dry", grid_order=custom_grid)
+    custom = simulate_race(race_id=97, weather="dry", grid_order=custom_grid)
     custom_order = [p["driver_id"] for p in custom["predictions"]]
     
     assert custom_order != default_order
