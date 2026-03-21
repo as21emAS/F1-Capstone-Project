@@ -49,6 +49,7 @@ lerna-debug.log*
 coverage/
 *.lcov
 .nyc_output/
+Frontend/log.txt
 
 # ========================
 # Cache Files
