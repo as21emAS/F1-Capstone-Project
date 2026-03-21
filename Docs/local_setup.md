@@ -43,7 +43,7 @@ cd F1-Capstone-Project
 Checkout the active development branch:
 
 ```bash
-git checkout increment-1
+git checkout increment-2
 ```
 
 ---
@@ -81,7 +81,7 @@ pip install -r requirements.txt
 If you don't have a `requirements.txt` yet, install the core packages manually:
 
 ```bash
-pip install fastapi uvicorn sqlalchemy psycopg2-binary alembic pydantic pydantic-settings python-dotenv
+pip install fastapi uvicorn sqlalchemy psycopg2-binary alembic pydantic pydantic-settings python-dotenv scikit-learn
 ```
 
 ### Configure Environment Variables
@@ -157,11 +157,22 @@ INFO  [alembic.runtime.migration] Running upgrade  -> a93200edc9a1, Initial migr
 
 ### Populate Historical Data
 
+Run the following scripts **in order**. All three are required — skipping `seed_data.py` or `seed_results.py` will cause the simulator to fail with database errors.
+
 ```bash
 python database/scripts/fetch_jolpica.py
 ```
+Fetches historical F1 race data (2010–2025) from the Jolpica-F1 API. May take a few minutes on first run.
 
-This fetches F1 race data (2010–2025) from the Jolpica-F1 API. It may take a few minutes on first run.
+```bash
+python database/scripts/seed_data.py
+```
+Seeds drivers, teams, and circuits into the database.
+
+```bash
+python database/scripts/seed_results.py
+```
+Seeds historical race results.
 
 ### Verify Database Setup
 
@@ -193,6 +204,7 @@ Open `Frontend/.env` and set:
 ```env
 VITE_API_BASE_URL=http://localhost:8000/api
 VITE_ENVIRONMENT=development
+VITE_F1_NEWS_URL=https://api.rss2json.com/v1/api.json?rss_url=https://racer.com/category/formula-1/feed
 ```
 
 ---
@@ -240,7 +252,7 @@ Once both servers are running, confirm the following:
 |-------|-----|----------|
 | Frontend loads | http://localhost:5173 | App renders in browser |
 | Backend root | http://localhost:8000 | `{"message": "F1 Predictor API", "status": "running"}` |
-| Health check | http://localhost:8000/api/health | `{"status": "healthy", "database": "connected", ...}` |
+| Health check | http://localhost:8000/health | `{"status": "healthy", "database": "connected", ...}` |
 | API docs | http://localhost:8000/docs | Swagger UI with all endpoints |
 
 If the health check returns `"status": "healthy"` — you're fully set up. ✅
@@ -384,7 +396,7 @@ cd Backend && source venv/bin/activate && uvicorn app.main:app --reload --port 8
 cd Frontend && npm run dev
 
 # Check DB health
-curl http://localhost:8000/api/health
+curl http://localhost:8000/health
 
 # Reset database (nuclear option)
 psql postgres -c "DROP DATABASE f1_predictor; CREATE DATABASE f1_predictor;"
