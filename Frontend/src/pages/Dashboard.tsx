@@ -22,9 +22,9 @@ export default function Dashboard() {
           <div className="logo-block">
             <div className="checkered" />
             <div>
-              <div className="logo-title">FORMULA 1 PREDICTOR THING</div>
+              <div className="logo-title">RaceTrack!</div>
               <div className="logo-sub">
-                RACE INTELLIGENCE SYSTEM · EST. 1950
+                RACE INTELLIGENCE SYSTEM · EST. 2026
               </div>
             </div>
           </div>
