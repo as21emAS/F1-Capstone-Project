@@ -24,7 +24,7 @@ export type {
 // ─── Axios Client ─────────────────────────────────────────────────────────────
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: '',
   timeout: 10_000,
 });
 

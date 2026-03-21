@@ -9,6 +9,12 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      '/api': { target: 'http://localhost:8000', changeOrigin: true },
+      '/health': { target: 'http://localhost:8000', changeOrigin: true },
+    },
+  },
   resolve: {
     alias: {
       '@components': path.resolve(__dirname, './src/components'),
