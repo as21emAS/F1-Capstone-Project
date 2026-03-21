@@ -175,7 +175,7 @@ export const submitSimulation = async (
   params: SimulatorRequest,
 ): Promise<PredictionResponse> => {
   const response = await apiClient.post<PredictionResponse>(
-    "/api/predictions/",
+    "/api/simulator/simulate",
     params,
   );
   return response.data;
