@@ -18,7 +18,8 @@ from api_clients.data_transformers import (
 )
 
 # Configuration
-SEASONS_TO_SEED = [2020, 2021, 2022, 2023, 2024, 2025]  # Historical seasons
+SEASONS_TO_SEED = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017,
+                   2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]  # Historical seasons
 CURRENT_SEASON = 2026  # Current season for standings
 
 def create_tables():
