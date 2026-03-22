@@ -181,10 +181,12 @@ export const submitSimulation = async (
   return response.data;
 };
 
-// News — fetches from RSS-to-JSON proxy (no backend endpoint needed)
+// Remove or comment out any VITE_F1_NEWS_URL env var reference
+const F1_NEWS_URL =
+  "https://api.rss2json.com/v1/api.json?rss_url=https://www.autosport.com/rss/f1/news/";
+
 export const fetchNews = async (): Promise<NewsResponse> => {
-  const url = import.meta.env.VITE_F1_NEWS_URL;
-  const response = await axios.get<NewsResponse>(url, { timeout: 8_000 });
+  const response = await axios.get<NewsResponse>(F1_NEWS_URL, { timeout: 8_000 });
   return response.data;
 };
 
