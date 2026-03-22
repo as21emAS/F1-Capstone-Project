@@ -3,6 +3,7 @@ from app.schemas.standings import (
     DriverStandingsResponse, DriverStanding,
     TeamStandingsResponse, TeamStanding,
 )
+from app.core.config import settings
 import sys
 from pathlib import Path
 import time
@@ -12,7 +13,7 @@ from api_clients.jolpica_f1_client import JolpicaF1Client
 
 router = APIRouter()
 
-SEASON = 2025
+SEASON = settings.CURRENT_SEASON
 
 # Simple in-memory cache to avoid hammering the API
 _cache = {

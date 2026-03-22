@@ -19,7 +19,7 @@ from api_clients.data_transformers import (
 
 # Configuration
 SEASONS_TO_SEED = [2020, 2021, 2022, 2023, 2024, 2025]  # Historical seasons
-CURRENT_SEASON = 2025  # Current season for standings
+CURRENT_SEASON = 2026  # Current season for standings
 
 def create_tables():
     print("Creating database tables...")
@@ -382,7 +382,7 @@ def seed_current_standings(session, client, year):
 def seed_historical_data():
     # Main seeding function
     print("\n" + "="*70)
-    print("F1 HISTORICAL DATA SEEDER (2020-2025)")
+    print("F1 HISTORICAL DATA SEEDER (2020-2026)")
     print("="*70)
     
     # Initialize API client with retry and rate limiting
@@ -400,12 +400,12 @@ def seed_historical_data():
         create_tables()
         
         # Seed data
-        circuits_count = seed_circuits_for_seasons(session, client, SEASONS_TO_SEED)
-        races_count = seed_races_for_seasons(session, client, SEASONS_TO_SEED)
-        drivers_count = seed_drivers_for_seasons(session, client, SEASONS_TO_SEED)
-        teams_count = seed_teams_for_seasons(session, client, SEASONS_TO_SEED)
-        results_count = seed_race_results_for_seasons(session, client, SEASONS_TO_SEED)
-        
+        circuits_count = seed_circuits_for_seasons(session, client, SEASONS_TO_SEED + [CURRENT_SEASON])
+        races_count = seed_races_for_seasons(session, client, SEASONS_TO_SEED + [CURRENT_SEASON])
+        drivers_count = seed_drivers_for_seasons(session, client, SEASONS_TO_SEED + [CURRENT_SEASON])
+        teams_count = seed_teams_for_seasons(session, client, SEASONS_TO_SEED + [CURRENT_SEASON])
+        results_count = seed_race_results_for_seasons(session, client, SEASONS_TO_SEED)  # historical only
+
         # Seed current season standings
         seed_current_standings(session, client, CURRENT_SEASON)
         
@@ -414,7 +414,7 @@ def seed_historical_data():
         print("SEEDING COMPLETE")
         print("="*70)
         print(f"\n Summary:")
-        print(f"   Seasons seeded: {', '.join(map(str, SEASONS_TO_SEED))}")
+        print(f"   Seasons seeded: {', '.join(map(str, SEASONS_TO_SEED + [CURRENT_SEASON]))}")
         print(f"   Circuits: {circuits_count}")
         print(f"   Races: {races_count}")
         print(f"   Drivers: {drivers_count}")
