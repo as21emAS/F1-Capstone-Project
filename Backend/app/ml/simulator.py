@@ -52,18 +52,29 @@ class RaceSimulator:
         race_id: int,
         weather: str,
         grid_order: Optional[List[str]] = None,
-        excluded_drivers: Optional[List[str]] = None
+        excluded_drivers: Optional[List[str]] = None,
+        drivers: Optional[List[Dict]] = None
     ) -> Dict:
-        """Run simulation and return predictions, baseline, and key factors."""
+        """Run simulation and return predictions, baseline, and key factors.
+        
+        Args:
+            race_id: ID of the race to simulate
+            weather: Weather condition ('dry', 'wet', or 'mixed')
+            grid_order: Optional custom starting grid order
+            excluded_drivers: Optional list of driver IDs to exclude
+            drivers: Optional driver roster (for future races without race_results).
+                     Format: [{"driver_id": str, "driver_name": str, "team": str}]
+        """
 
         # validate inputs
-        self._validate_inputs(race_id, weather, grid_order, excluded_drivers)
+        self._validate_inputs(race_id, weather, grid_order, excluded_drivers, drivers)
         
         # get race and driver data
         race_data, drivers_data = self._get_race_and_drivers(
             race_id, 
             grid_order, 
-            excluded_drivers
+            excluded_drivers,
+            drivers
         )
         
         # validate we have drivers to simulate
@@ -115,7 +126,8 @@ class RaceSimulator:
         race_id: int,
         weather: str,
         grid_order: Optional[List[str]],
-        excluded_drivers: Optional[List[str]]
+        excluded_drivers: Optional[List[str]],
+        drivers: Optional[List[Dict]] = None
     ) -> None:
         """Validate all simulation parameters"""
         valid_weather = ["dry", "wet", "mixed"]
@@ -133,7 +145,12 @@ class RaceSimulator:
         else:
             race = self._race_cache[race_id]
         
-        if grid_order:
+        # Get available drivers (from parameter or database)
+        if drivers:
+            active_drivers = drivers
+            cache_key = f"provided_{race_id}"
+            self._drivers_cache[cache_key] = active_drivers
+        else:
             cache_key = f"active_{race['year']}"
             if cache_key not in self._drivers_cache:
                 try:
@@ -141,25 +158,20 @@ class RaceSimulator:
                     self._drivers_cache[cache_key] = list(active) if not isinstance(active, list) else active
                 except Exception:
                     self._drivers_cache[cache_key] = []
-            
             active_drivers = self._drivers_cache[cache_key]
+        
+        if grid_order:
             active_driver_ids = {d['driver_id'] for d in active_drivers}
             
             for driver_id in grid_order:
                 if driver_id not in active_driver_ids:
                     raise ValueError(
                         f"Invalid driver_id in grid_order: '{driver_id}'. "
-                        f"Driver not active for this race year ({race['year']})."
+                        f"Driver not in the provided roster or not active for year {race['year']}."
                     )
         
         # check we have at least one driver remaining after exclusions
         if excluded_drivers:
-            cache_key = f"active_{race['year']}"
-            if cache_key not in self._drivers_cache:
-                active = get_active_drivers(race['year'])
-                self._drivers_cache[cache_key] = list(active) if not isinstance(active, list) else active
-            
-            active_drivers = self._drivers_cache[cache_key]
             active_driver_ids = {d['driver_id'] for d in active_drivers}
             remaining = [d for d in active_driver_ids if d not in excluded_drivers]
             
@@ -174,7 +186,8 @@ class RaceSimulator:
         self,
         race_id: int,
         grid_order: Optional[List[str]],
-        excluded_drivers: Optional[List[str]]
+        excluded_drivers: Optional[List[str]],
+        drivers: Optional[List[Dict]] = None
     ) -> tuple:
         """Fetch race data and active drivers for the simulation."""
 
@@ -183,12 +196,18 @@ class RaceSimulator:
             race = get_race_by_id(race_id)
             self._race_cache[race_id] = race
         
-        cache_key = f"active_{race['year']}"
-        if cache_key not in self._drivers_cache:
-            active = get_active_drivers(race['year'])
-            self._drivers_cache[cache_key] = list(active) if not isinstance(active, list) else active
-        
-        active_drivers = self._drivers_cache[cache_key]
+        # Use provided drivers or fetch from database
+        if drivers:
+            # Drivers provided directly (e.g., 2026 roster)
+            active_drivers = drivers
+        else:
+            # Fetch from database for historical races
+            cache_key = f"active_{race['year']}"
+            if cache_key not in self._drivers_cache:
+                active = get_active_drivers(race['year'])
+                self._drivers_cache[cache_key] = list(active) if not isinstance(active, list) else active
+            
+            active_drivers = self._drivers_cache[cache_key]
         
         # apply exclusions
         if excluded_drivers:
@@ -206,10 +225,14 @@ class RaceSimulator:
                 race['circuit_id']
             )
             
+            # Handle both database format (driver_full_name) and provided format (driver_name)
+            driver_name = driver.get('driver_full_name') or driver.get('driver_name') or 'Unknown'
+            team_name = driver.get('team_name') or driver.get('team') or 'Unknown'
+            
             driver_info = {
                 'driver_id': driver['driver_id'],
-                'driver_name': driver['driver_full_name'],
-                'team': driver.get('team_id') or 'Unknown',
+                'driver_name': driver_name,
+                'team': team_name,
                 **stats  # merge in the calculated stats
             }
             

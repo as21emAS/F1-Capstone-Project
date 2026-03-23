@@ -4,7 +4,7 @@ from app.ml.predictor import predictor
 
 router = APIRouter()
 
-# 2025 F1 driver roster — driver_id matches what the model was trained on
+# 2026 F1 driver roster — driver_id matches what the model was trained on
 DRIVERS = [
     {"driver_id": "max_verstappen",     "driver_name": "Max Verstappen",     "team": "Red Bull Racing"},
     {"driver_id": "liam_lawson",        "driver_name": "Liam Lawson",        "team": "Red Bull Racing"},
@@ -32,19 +32,21 @@ DRIVERS = [
 @router.post("/", response_model=PredictionResponse)
 def predict_race(request: PredictionRequest):
     """
-    Predict race winner probabilities for all 2025 drivers.
+    Predict race winner probabilities for all 2026 drivers.
 
     Runs the RandomForestClassifier once per driver and ranks them
     by win probability (confidence_score descending).
     """
     try:
+        # pass the 2026 driver roster to predictor
         results = predictor.predict_race_winner(
             race_id=request.race_id,
             params={
                 "weather": request.weather,
                 "tire_strategy": request.tire_strategy,
                 "pit_stops": request.pit_stops,
-            }
+            },
+            drivers=DRIVERS  # use our 2026 roster
         )
 
         # Map predictor output (driver_id + confidence) to full response

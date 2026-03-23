@@ -328,11 +328,11 @@ export default function DashboardHome() {
         )}
       </section>
 
-      {/* ── Constructor Championship ───────────────────────────────────────── */}
+      {/* ── Team Championship ───────────────────────────────────────── */}
       <section className="card teams-card">
         <div className="card-header">
-          <span className="card-label">CONSTRUCTOR CHAMPIONSHIP</span>
-          <span className="card-badge">TITLE FIGHT</span>
+          <span className="card-label">TEAM CHAMPIONSHIP</span>
+          <span className="card-badge">STANDINGS</span>
         </div>
 
         {teamsError ? (
