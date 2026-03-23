@@ -20,13 +20,15 @@ class F1Predictor:
         self.features = load_model_features()
         self.version = get_model_version()
     
-    def predict_race_winner(self, race_id: int, params: dict = {}) -> List[Dict]:
+    def predict_race_winner(self, race_id: int, params: dict = {}, drivers: List[Dict] = None) -> List[Dict]:
         """
         Predict race winner and rankings for all drivers in a race.
         
         Args:
             race_id: The ID of the race to predict
             params: Optional parameters (reserved for future use)
+            drivers: Optional list of drivers with driver_id, driver_name, team fields.
+                    If provided, uses these instead of querying database.
             
         Returns:
             List of dicts with driver_id, predicted_position, and confidence_score
@@ -36,10 +38,27 @@ class F1Predictor:
         if not race:
             raise ValueError(f"Race with id {race_id} not found")
         
-        # get active drivers for the race year
-        active_drivers = get_active_drivers(race['year'])
-        if not active_drivers:
-            raise ValueError(f"No active drivers found for year {race['year']}")
+        # use provided drivers or fetch from database
+        if drivers:
+            # convert provided driver list to expected format
+            active_drivers = [
+                {
+                    'driver_id': d['driver_id'],
+                    'driver_full_name': d['driver_name'],
+                    'team_name': d['team']
+                }
+                for d in drivers
+            ]
+        else:
+            # get active drivers for the race year from database
+            active_drivers = get_active_drivers(race['year'])
+            
+            # fallback: if no drivers for upcoming race year, use previous year's roster
+            if not active_drivers and race['year'] >= 2026:
+                active_drivers = get_active_drivers(race['year'] - 1)
+            
+            if not active_drivers:
+                raise ValueError(f"No active drivers found for year {race['year']}")
         
         # calculate features for all drivers
         drivers_data = []

@@ -9,6 +9,30 @@ from app.ml.simulator import simulate_race
 
 router = APIRouter()
 
+# 2026 F1 driver roster for simulations
+DRIVERS = [
+    {"driver_id": "max_verstappen",     "driver_name": "Max Verstappen",     "team": "Red Bull Racing"},
+    {"driver_id": "liam_lawson",        "driver_name": "Liam Lawson",        "team": "Red Bull Racing"},
+    {"driver_id": "lando_norris",       "driver_name": "Lando Norris",       "team": "McLaren"},
+    {"driver_id": "oscar_piastri",      "driver_name": "Oscar Piastri",      "team": "McLaren"},
+    {"driver_id": "charles_leclerc",    "driver_name": "Charles Leclerc",    "team": "Ferrari"},
+    {"driver_id": "lewis_hamilton",     "driver_name": "Lewis Hamilton",     "team": "Ferrari"},
+    {"driver_id": "george_russell",     "driver_name": "George Russell",     "team": "Mercedes"},
+    {"driver_id": "andrea_antonelli",   "driver_name": "Andrea Kimi Antonelli", "team": "Mercedes"},
+    {"driver_id": "fernando_alonso",    "driver_name": "Fernando Alonso",    "team": "Aston Martin"},
+    {"driver_id": "lance_stroll",       "driver_name": "Lance Stroll",       "team": "Aston Martin"},
+    {"driver_id": "pierre_gasly",       "driver_name": "Pierre Gasly",       "team": "Alpine"},
+    {"driver_id": "jack_doohan",        "driver_name": "Jack Doohan",        "team": "Alpine"},
+    {"driver_id": "carlos_sainz",       "driver_name": "Carlos Sainz",       "team": "Williams"},
+    {"driver_id": "alexander_albon",    "driver_name": "Alexander Albon",    "team": "Williams"},
+    {"driver_id": "yuki_tsunoda",       "driver_name": "Yuki Tsunoda",       "team": "RB"},
+    {"driver_id": "isack_hadjar",       "driver_name": "Isack Hadjar",       "team": "RB"},
+    {"driver_id": "nico_hulkenberg",    "driver_name": "Nico Hulkenberg",    "team": "Sauber"},
+    {"driver_id": "gabriel_bortoleto",  "driver_name": "Gabriel Bortoleto",  "team": "Sauber"},
+    {"driver_id": "oliver_bearman",     "driver_name": "Oliver Bearman",     "team": "Haas"},
+    {"driver_id": "esteban_ocon",       "driver_name": "Esteban Ocon",       "team": "Haas"},
+]
+
 
 class SimulationRequest(BaseModel):
     race_id: int = Field(..., description="ID of the race to simulate")
@@ -90,7 +114,8 @@ def run_simulation(request: SimulationRequest):
             race_id=request.race_id,
             weather=request.weather,
             grid_order=request.grid_order,
-            excluded_drivers=request.excluded_drivers
+            excluded_drivers=request.excluded_drivers,
+            drivers=DRIVERS  # Use 2026 roster for future races
         )
         return result
     
