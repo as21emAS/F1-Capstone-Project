@@ -26,6 +26,7 @@ All HTTP methods and headers are permitted. Credentials are allowed.
 ### Health
 
 #### `GET /health`
+
 Returns API and version status.
 
 **Response `200`:**
@@ -41,6 +42,7 @@ Returns API and version status.
 ### Races
 
 #### `GET /api/races`
+
 Paginated list of all races, optionally filtered by season.
 
 **Query Parameters:**
@@ -75,6 +77,7 @@ Paginated list of all races, optionally filtered by season.
 ---
 
 #### `GET /api/races/next`
+
 Returns the next upcoming F1 race. Data is fetched live from the Jolpica-F1 API and cached for 1 hour.
 
 **Response `200`:**
@@ -98,6 +101,7 @@ Returns the next upcoming F1 race. Data is fetched live from the Jolpica-F1 API 
 ---
 
 #### `GET /api/races/upcoming`
+
 Returns all remaining races in the current season from today onwards, sorted by round. Used to populate the Simulator race dropdown.
 
 **Response `200`:**
@@ -120,6 +124,7 @@ Returns all remaining races in the current season from today onwards, sorted by 
 ---
 
 #### `GET /api/races/{race_id}`
+
 Full details for a single race.
 
 **Path Parameters:**
@@ -147,6 +152,7 @@ Full details for a single race.
 ---
 
 #### `GET /api/races/{race_id}/results`
+
 Finishing results for a specific race.
 
 **Path Parameters:**
@@ -186,6 +192,7 @@ Finishing results for a specific race.
 ### Circuits
 
 #### `GET /api/circuits`
+
 List all circuits.
 
 **Response `200`:**
@@ -203,6 +210,7 @@ List all circuits.
 ---
 
 #### `GET /api/circuits/{circuit_id}`
+
 Full details for a single circuit including coordinates.
 
 **Path Parameters:**
@@ -230,6 +238,7 @@ Full details for a single circuit including coordinates.
 ### Standings
 
 #### `GET /api/standings/drivers/current`
+
 Current season driver championship standings. Fetched live from Jolpica-F1 API and cached for 1 hour.
 
 **Response `200`:**
@@ -254,6 +263,7 @@ Current season driver championship standings. Fetched live from Jolpica-F1 API a
 ---
 
 #### `GET /api/standings/teams/current`
+
 Current season constructor championship standings. Fetched live from Jolpica-F1 API and cached for 1 hour.
 
 **Response `200`:**
@@ -278,7 +288,8 @@ Current season constructor championship standings. Fetched live from Jolpica-F1 
 ### Predictions
 
 #### `POST /api/predictions/`
-Predict race winner probabilities for all 2026 drivers using the trained RandomForestClassifier. Returns all 20 drivers ranked by confidence score descending.
+
+Predict race winner probabilities for all 2026 drivers using the trained RandomForestClassifier. Returns all drivers ranked by confidence score descending.
 
 **Request Body:**
 ```json
@@ -323,13 +334,12 @@ Predict race winner probabilities for all 2026 drivers using the trained RandomF
 
 **Response `500`:** Prediction failed (model error).
 
-> **Note:** The prediction engine currently uses baseline driver statistics. Full DB-backed feature calculation is planned for Increment 3.
-
 ---
 
 ### Simulator
 
 #### `POST /api/simulator/simulate`
+
 Run a "what-if" race simulation with custom parameters. Returns ranked predictions, a baseline comparison, and key factors affecting the outcome.
 
 **Request Body:**
@@ -378,12 +388,12 @@ Run a "what-if" race simulation with custom parameters. Returns ranked predictio
 ```
 
 **Response `400`:** Invalid race_id — race not found in database.
-
 **Response `500`:** Simulation failed.
 
 ---
 
 #### `GET /api/simulator/health`
+
 Check if the simulator ML model is loaded and ready.
 
 **Response `200`:**
