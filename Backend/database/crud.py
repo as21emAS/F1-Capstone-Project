@@ -146,13 +146,43 @@ def get_active_drivers(year):
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT DISTINCT d.*
+        SELECT DISTINCT d.*, t.team_name
         FROM drivers d
         JOIN race_results rr ON d.driver_id = rr.driver_id
         JOIN races r ON rr.race_id = r.race_id
+        LEFT JOIN teams t ON d.team_id = t.team_id
         WHERE r.year = %s
         ORDER BY d.driver_full_name
     """, (year,))
+    
+    drivers = cursor.fetchall()
+    cursor.close()
+    return_connection(conn)
+    return drivers
+
+
+def get_driver_data_for_race(race_id):
+    """
+    Get all drivers for a specific race with their grid positions.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT DISTINCT 
+            d.driver_id,
+            d.driver_full_name,
+            d.driver_code,
+            d.nationality,
+            d.team_id,
+            t.team_name,
+            rr.grid_position
+        FROM drivers d
+        JOIN race_results rr ON d.driver_id = rr.driver_id
+        LEFT JOIN teams t ON d.team_id = t.team_id
+        WHERE rr.race_id = %s
+        ORDER BY rr.grid_position ASC NULLS LAST
+    """, (race_id,))
     
     drivers = cursor.fetchall()
     cursor.close()

@@ -209,7 +209,7 @@ class RaceSimulator:
             driver_info = {
                 'driver_id': driver['driver_id'],
                 'driver_name': driver['driver_full_name'],
-                'team': driver.get('team_id') or 'Unknown',
+                'team': driver.get('team_name') or 'Unknown',
                 **stats  # merge in the calculated stats
             }
             
