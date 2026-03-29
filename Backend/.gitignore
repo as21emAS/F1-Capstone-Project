@@ -48,9 +48,12 @@ wheels/
 .installed.cfg
 *.egg
 
-# Exported data 
+# Exported data
 exported_data/
 *.json
 
 # Logs
 *.log
+
+# Cache directory (api client cache)
+.cache/

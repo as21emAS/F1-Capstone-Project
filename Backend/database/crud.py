@@ -2,11 +2,14 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from dotenv import load_dotenv
-from Backend.database.connection_pool import get_connection, return_connection
+#from Backend.database.connection_pool import get_connection, return_connection
+#from database.connection_pool import get_connection, return_connection
+from database.connection_pool import get_connection, return_connection
 
 load_dotenv()
 try:
-    from Backend.database.connection_pool import get_connection, return_connection
+    #from Backend.database.connection_pool import get_connection, return_connection
+    from database.connection_pool import get_connection, return_connection
     USE_POOL = True
 except ImportError:
     USE_POOL = False
@@ -19,7 +22,7 @@ def get_db_connection():
         return conn
     else:
         # Fallback to direct connection
-        database_url = os.getenv('DATABASE_URL', 'postgresql://livreiter:@localhost:5432/f1_predictor')
+        database_url = os.getenv('DATABASE_URL')
         return psycopg2.connect(database_url, cursor_factory=RealDictCursor)
     
 def db_connection():
@@ -31,7 +34,7 @@ def db_connection():
         if USE_POOL:
             return_connection(conn)
         else:
-            conn.close()
+            return_connection(conn)
 
 def execute_query(query, params=None, fetchone=False, fetchall=True):
     """Helper function to execute queries using connection pool"""
@@ -65,7 +68,8 @@ def get_all_races(year=None):
     
     races = cursor.fetchall()
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return races
 
 def get_upcoming_race():
@@ -82,7 +86,7 @@ def get_upcoming_race():
     
     race = cursor.fetchone()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return race
 
 def get_race_by_id(race_id):
@@ -94,7 +98,8 @@ def get_race_by_id(race_id):
     race = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return race
 
 def get_race_by_year_round(year, round_num):
@@ -106,7 +111,7 @@ def get_race_by_year_round(year, round_num):
     race = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return race
 
 
@@ -120,7 +125,7 @@ def get_all_drivers():
     drivers = cursor.fetchall()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return drivers
 
 def get_driver_by_id(driver_id):
@@ -132,7 +137,7 @@ def get_driver_by_id(driver_id):
     driver = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return driver
 
 def get_active_drivers(year):
@@ -141,17 +146,47 @@ def get_active_drivers(year):
     cursor = conn.cursor()
     
     cursor.execute("""
-        SELECT DISTINCT d.*
+        SELECT DISTINCT d.*, t.team_name
         FROM drivers d
         JOIN race_results rr ON d.driver_id = rr.driver_id
         JOIN races r ON rr.race_id = r.race_id
+        LEFT JOIN teams t ON d.team_id = t.team_id
         WHERE r.year = %s
         ORDER BY d.driver_full_name
     """, (year,))
     
     drivers = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
+    return drivers
+
+
+def get_driver_data_for_race(race_id):
+    """
+    Get all drivers for a specific race with their grid positions.
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT DISTINCT 
+            d.driver_id,
+            d.driver_full_name,
+            d.driver_code,
+            d.nationality,
+            d.team_id,
+            t.team_name,
+            rr.grid_position
+        FROM drivers d
+        JOIN race_results rr ON d.driver_id = rr.driver_id
+        LEFT JOIN teams t ON d.team_id = t.team_id
+        WHERE rr.race_id = %s
+        ORDER BY rr.grid_position ASC NULLS LAST
+    """, (race_id,))
+    
+    drivers = cursor.fetchall()
+    cursor.close()
+    return_connection(conn)
     return drivers
 
 
@@ -164,7 +199,7 @@ def get_all_teams():
     teams = cursor.fetchall()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return teams
 
 def get_team_by_id(team_id):
@@ -176,7 +211,7 @@ def get_team_by_id(team_id):
     team = cursor.fetchone()
     
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return team
 
 def get_active_teams(year):
@@ -195,7 +230,7 @@ def get_active_teams(year):
     
     teams = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return teams
 
 
@@ -216,36 +251,49 @@ def get_race_results(race_id):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    #return_connection(conn)
+    return_connection(conn)
     return results
 
-def get_driver_results(driver_id, year=None):
+def get_driver_results(driver_id, year=None, end_year=None):
    
     conn = get_db_connection()
     cursor = conn.cursor()
     
     if year:
         cursor.execute("""
-            SELECT rr.*, r.race_name, r.date, r.circuit_name, t.team_name
+            SELECT rr.*, r.race_name, r.date, r.circuit_name, r.circuit_id, r.round, 
+                   r.year, t.team_name, rr.team_id
             FROM race_results rr
             JOIN races r ON rr.race_id = r.race_id
-            JOIN teams t ON rr.team_id = t.team_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
             WHERE rr.driver_id = %s AND r.year = %s
             ORDER BY r.date
         """, (driver_id, year))
-    else:
+    elif end_year:
         cursor.execute("""
-            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, t.team_name
+            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, r.circuit_id, r.round,
+                   t.team_name, rr.team_id
             FROM race_results rr
             JOIN races r ON rr.race_id = r.race_id
-            JOIN teams t ON rr.team_id = t.team_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
+            WHERE rr.driver_id = %s AND r.year < %s
+            ORDER BY r.date DESC
+        """, (driver_id, end_year))
+    else:
+        cursor.execute("""
+            SELECT rr.*, r.race_name, r.date, r.year, r.circuit_name, r.circuit_id, r.round,
+                   t.team_name, rr.team_id
+            FROM race_results rr
+            JOIN races r ON rr.race_id = r.race_id
+            LEFT JOIN teams t ON rr.team_id = t.team_id
             WHERE rr.driver_id = %s
             ORDER BY r.date DESC
         """, (driver_id,))
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 def get_team_results(team_id, year=None):
@@ -274,7 +322,7 @@ def get_team_results(team_id, year=None):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 
@@ -303,7 +351,7 @@ def get_driver_standings(year):
     
     standings = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return standings
 
 def get_team_standings(year):
@@ -328,7 +376,7 @@ def get_team_standings(year):
     
     standings = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return standings
 
 
@@ -353,7 +401,7 @@ def get_driver_stats(driver_id):
     
     stats = cursor.fetchone()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return stats
 
 def get_circuit_results(circuit_id, limit=10):
@@ -375,7 +423,7 @@ def get_circuit_results(circuit_id, limit=10):
     
     results = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return results
 
 
@@ -394,7 +442,7 @@ def save_prediction(race_id, predicted_winner_id, confidence_score, predicted_to
     prediction_id = cursor.fetchone()['prediction_id']
     conn.commit()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return prediction_id
 
 def get_predictions_for_race(race_id):
@@ -413,5 +461,45 @@ def get_predictions_for_race(race_id):
     
     predictions = cursor.fetchall()
     cursor.close()
-    conn.close()
+    return_connection(conn)
     return predictions
+
+def upsert_driver(driver_data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO drivers (driver_id, driver_number, driver_code, driver_forename, 
+                           driver_surname, driver_full_name, nationality, team_id)
+        VALUES (%(driver_id)s, %(driver_number)s, %(driver_code)s, %(driver_forename)s,
+                %(driver_surname)s, %(driver_full_name)s, %(nationality)s, %(team_id)s)
+        ON CONFLICT (driver_id) DO UPDATE SET
+            driver_number = EXCLUDED.driver_number,
+            driver_code = EXCLUDED.driver_code,
+            driver_forename = EXCLUDED.driver_forename,
+            driver_surname = EXCLUDED.driver_surname,
+            driver_full_name = EXCLUDED.driver_full_name,
+            nationality = EXCLUDED.nationality,
+            team_id = EXCLUDED.team_id,
+            updated_at = CURRENT_TIMESTAMP
+    """, driver_data)
+    
+    conn.commit()
+    cursor.close()
+    return_connection(conn)  # return to pool instead of closing
+
+def upsert_team(team_data):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO teams (team_id, team_name)
+        VALUES (%(team_id)s, %(team_name)s)
+        ON CONFLICT (team_id) DO UPDATE SET
+            team_name = EXCLUDED.team_name,
+            updated_at = CURRENT_TIMESTAMP
+    """, team_data)
+    
+    conn.commit()
+    cursor.close()
+    return_connection(conn)  # return to pool instead of closing

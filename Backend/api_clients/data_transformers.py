@@ -26,7 +26,9 @@ def transform_driver(driver_data):
         'driver_code': driver_data.get('code'),
         'driver_forename': given,
         'driver_surname': family,
-        'driver_full_name': f"{given} {family}"
+        'driver_full_name': f"{given} {family}",
+        'nationality': driver_data.get('nationality'),
+        'team_id': driver_data.get('constructorId')
     }
 
 #Team info

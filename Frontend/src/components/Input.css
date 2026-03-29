@@ -1,0 +1,160 @@
+/* ─── Screen-reader-only utility ───────────────────────────────────────────── */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ─── Wrapper ──────────────────────────────────────────────────────────────── */
+
+.f1-input-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.f1-input-wrap--full {
+  width: 100%;
+}
+
+/* ─── Label ────────────────────────────────────────────────────────────────── */
+
+.f1-input__label {
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: #6a4820;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.f1-input__required {
+  color: #c8001a;
+}
+
+/* ─── Field Wrapper ────────────────────────────────────────────────────────── */
+
+.f1-input__field-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border: 2px solid #1c1208;
+  background: #faf4e8;
+  transition: box-shadow 0.12s ease, border-color 0.12s ease;
+}
+
+/* Status variants */
+.f1-input__field-wrap--error {
+  border-color: #c8001a;
+  box-shadow: 2px 2px 0 #c8001a;
+}
+
+.f1-input__field-wrap--success {
+  border-color: #2a6030;
+  box-shadow: 2px 2px 0 #2a6030;
+}
+
+/* Focus-within — highlight when child input is focused */
+.f1-input__field-wrap:focus-within {
+  border-color: #c8001a;
+  box-shadow: 3px 3px 0 #c8001a;
+}
+
+.f1-input__field-wrap--error:focus-within {
+  box-shadow: 3px 3px 0 #c8001a;
+}
+
+.f1-input__field-wrap--success:focus-within {
+  border-color: #2a6030;
+  box-shadow: 3px 3px 0 #2a6030;
+}
+
+/* ─── Field ────────────────────────────────────────────────────────────────── */
+
+.f1-input__field {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #1c1208;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  /* Remove browser default number spinners */
+  -moz-appearance: textfield;
+}
+
+.f1-input__field::-webkit-outer-spin-button,
+.f1-input__field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.f1-input__field::placeholder {
+  color: #b0986a;
+  font-style: italic;
+}
+
+.f1-input__field:disabled {
+  color: #a09070;
+  cursor: not-allowed;
+  background: #ede4d0;
+}
+
+.f1-input__field--has-prefix { padding-left: 0.35rem; }
+.f1-input__field--has-suffix { padding-right: 0.35rem; }
+
+/* Select-specific */
+.f1-input__field--select {
+  cursor: pointer;
+  appearance: auto;
+}
+
+/* ─── Prefix / Suffix Slots ────────────────────────────────────────────────── */
+
+.f1-input__prefix,
+.f1-input__suffix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.6rem;
+  background: #e0d4bc;
+  border-right: 2px solid #1c1208;
+  color: #6a4820;
+  font-family: "Courier New", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.f1-input__suffix {
+  border-right: none;
+  border-left: 2px solid #1c1208;
+}
+
+/* ─── Helper & Error Text ──────────────────────────────────────────────────── */
+
+.f1-input__helper {
+  font-family: "Courier New", monospace;
+  font-size: 0.62rem;
+  color: #8a6030;
+  letter-spacing: 0.06em;
+  font-style: italic;
+}
+
+.f1-input__error {
+  font-family: "Courier New", monospace;
+  font-size: 0.62rem;
+  color: #c8001a;
+  letter-spacing: 0.06em;
+  font-weight: bold;
+}

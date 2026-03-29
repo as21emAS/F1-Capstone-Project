@@ -1,0 +1,70 @@
+/* Base Skeleton Container */
+.loading-skeleton {
+  background-color: #E6E1D6; 
+  border: 2px solid #000;
+  position: relative;
+  overflow: hidden;
+}
+
+/* The "shimmer" animation */
+.loading-skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0.05) 20%,
+    rgba(0, 0, 0, 0.15) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  animation: retro-shimmer 1.5s infinite linear;
+  z-index: 5;
+}
+
+@keyframes retro-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Optional Scanline Overlay to match the theme */
+.skeleton-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.04) 0px,
+    rgba(0, 0, 0, 0.04) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index: 2;
+}
+
+/* ─── Variants ───────────────────────────────────────────────────────────── */
+
+.skeleton-card {
+  min-height: 160px;
+  border-width: 3px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+
+.skeleton-chart {
+  min-height: 320px;
+  border-width: 3px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+.skeleton-table-row {
+  min-height: 48px;
+  margin-bottom: 8px;
+  border-width: 2px;
+}
+
+.skeleton-default {
+  min-height: 24px;
+}

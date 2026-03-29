@@ -1,0 +1,124 @@
+/* Prediction Card Container */
+.prediction-card {
+  background: #F5F1E8;
+  border: 3px solid #000;
+  box-shadow: 
+    4px 4px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prediction-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 
+    5px 5px 0 rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(0, 0, 0, 0.1) inset;
+}
+
+/* Grid Pattern Background */
+.prediction-card-grid-pattern {
+  background-image: 
+    linear-gradient(0deg, #000 1px, transparent 1px),
+    linear-gradient(90deg, #000 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* Scanlines Effect */
+.prediction-card-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.03) 0px,
+    rgba(0, 0, 0, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+}
+
+/* Top Color Bar */
+.prediction-card-top-bar {
+  background: repeating-linear-gradient(
+    90deg,
+    #C41E3A 0px,
+    #C41E3A 16px,
+    #000 16px,
+    #000 32px
+  );
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card-top-bar-red {
+  flex: 1;
+  background: #C41E3A;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card-top-bar-black {
+  flex: 1;
+  background: #000;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Content */
+.prediction-card-content {
+  color: #000;
+}
+
+/* Labels */
+.prediction-card-label {
+  color: #C41E3A;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+  font-family: monospace;
+}
+
+/* Position Number */
+.prediction-card-position {
+  color: #000;
+  font-family: monospace;
+  letter-spacing: -0.02em;
+  text-shadow: 
+    2px 2px 0 rgba(196, 30, 58, 0.2),
+    1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Divider Line */
+.prediction-card-divider {
+  height: 2px;
+  background: #000;
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.prediction-card-header {
+  color: #000;
+  text-shadow: 1px 1px 0 rgba(196, 30, 58, 0.15);
+  margin: 0;
+}
+
+/* Side Accent Stripes */
+.prediction-card-side-stripe {
+  background: repeating-linear-gradient(
+    0deg,
+    #C41E3A 0px,
+    #C41E3A 16px,
+    #000 16px,
+    #000 32px
+  );
+  filter: drop-shadow(1px 0 0 rgba(0, 0, 0, 0.3));
+}
+
+.prediction-card-side-stripe-segment {
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card-side-stripe-red {
+  background: #C41E3A;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+.prediction-card-side-stripe-black {
+  background: #000;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
+}

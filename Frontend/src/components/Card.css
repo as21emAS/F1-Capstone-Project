@@ -1,0 +1,206 @@
+/* ─── Base Card ────────────────────────────────────────────────────────────── */
+
+.f1-card {
+  background: #faf4e8;
+  border: 2px solid #1c1208;
+  border-radius: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 #1c1208;
+}
+
+/* Checkered top stripe */
+.f1-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    #c8001a 0px,
+    #c8001a 16px,
+    #faf4e8 16px,
+    #faf4e8 32px
+  );
+  pointer-events: none;
+}
+
+/* ─── No Padding ───────────────────────────────────────────────────────────── */
+
+.f1-card--no-padding .f1-card__body {
+  padding: 0;
+}
+
+/* ─── Clickable ────────────────────────────────────────────────────────────── */
+
+.f1-card--clickable {
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.f1-card--clickable:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #c8001a;
+}
+
+.f1-card--clickable:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #1c1208;
+}
+
+.f1-card--clickable:focus-visible {
+  outline: 3px solid #f0c040;
+  outline-offset: 2px;
+}
+
+/* ─── Variant: Dark ────────────────────────────────────────────────────────── */
+
+.f1-card--dark {
+  background: #1c1208;
+  color: #faf4e8;
+  box-shadow: 4px 4px 0 #c8001a;
+}
+
+.f1-card--dark::before {
+  background: repeating-linear-gradient(
+    90deg,
+    #f0c040 0px,
+    #f0c040 16px,
+    #1c1208 16px,
+    #1c1208 32px
+  );
+}
+
+.f1-card--dark .f1-card__header {
+  border-bottom-color: #c8001a;
+}
+
+.f1-card--dark .f1-card__title {
+  color: #f0c040;
+}
+
+.f1-card--dark .f1-card__badge {
+  background: #c8001a;
+  color: #faf4e8;
+  border-color: #c8001a;
+}
+
+.f1-card--dark .f1-card__footer {
+  border-top-color: #3a2810;
+}
+
+/* ─── Variant: Accent ──────────────────────────────────────────────────────── */
+
+.f1-card--accent {
+  background: #c8001a;
+  color: #faf4e8;
+  border-color: #faf4e8;
+  box-shadow: 4px 4px 0 #1c1208;
+}
+
+.f1-card--accent::before {
+  background: repeating-linear-gradient(
+    90deg,
+    #faf4e8 0px,
+    #faf4e8 16px,
+    rgba(250, 244, 232, 0.3) 16px,
+    rgba(250, 244, 232, 0.3) 32px
+  );
+}
+
+.f1-card--accent .f1-card__header {
+  border-bottom-color: rgba(250, 244, 232, 0.4);
+}
+
+.f1-card--accent .f1-card__title {
+  color: #faf4e8;
+}
+
+.f1-card--accent .f1-card__badge {
+  background: #1c1208;
+  color: #faf4e8;
+  border-color: #1c1208;
+}
+
+.f1-card--accent .f1-card__footer {
+  border-top-color: rgba(250, 244, 232, 0.3);
+}
+
+/* ─── Variant: Ghost ───────────────────────────────────────────────────────── */
+
+.f1-card--ghost {
+  background: transparent;
+  border-color: #8a6030;
+  box-shadow: none;
+}
+
+.f1-card--ghost::before {
+  background: repeating-linear-gradient(
+    90deg,
+    #8a6030 0px,
+    #8a6030 12px,
+    transparent 12px,
+    transparent 24px
+  );
+}
+
+.f1-card--ghost .f1-card__header {
+  border-bottom-color: #8a6030;
+}
+
+.f1-card--ghost .f1-card__title {
+  color: #8a6030;
+}
+
+/* ─── Card Header ──────────────────────────────────────────────────────────── */
+
+.f1-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.25rem 0.75rem;
+  margin-top: 4px; /* clear the stripe */
+  border-bottom: 2px solid #1c1208;
+}
+
+.f1-card__title {
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  color: #c8001a;
+  line-height: 1;
+}
+
+.f1-card__badge {
+  font-family: "Courier New", monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #faf4e8;
+  background: #1c1208;
+  border: 1px solid #1c1208;
+  padding: 0.22rem 0.6rem;
+}
+
+/* ─── Card Body ────────────────────────────────────────────────────────────── */
+
+.f1-card__body {
+  padding: 1.1rem 1.25rem;
+}
+
+/* ─── Card Footer ──────────────────────────────────────────────────────────── */
+
+.f1-card__footer {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #e0d4bc;
+  gap: 0.75rem;
+}
+
+.f1-card__footer--left    { justify-content: flex-start; }
+.f1-card__footer--right   { justify-content: flex-end; }
+.f1-card__footer--center  { justify-content: center; }
+.f1-card__footer--between { justify-content: space-between; }

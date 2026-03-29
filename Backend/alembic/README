@@ -1,1 +1,44 @@
-Generic single-database configuration.
+Database Setup & Migration Guide
+Follow these steps to set up your local PostgreSQL database and apply the schema for Increment 1.
+
+1. Prerequisites
+Ensure you have PostgreSQL installed and running.
+Mac: brew install postgresql
+Windows: Download the installer from postgresql.org
+
+2. Create the Database:
+Create the official development database named f1_predictor.
+
+# Drop it first if it exists (fresh start):
+dropdb f1_predictor --if-exists
+
+# Create the new database:
+createdb f1_predictor
+
+3. Configure Environment
+Create a .env file in the backend/ directory (if you haven't already) and add your connection string
+# inside backend/.env
+# Replace YOUR_USER and YOUR_PASSWORD with your local postgres credentials
+DATABASE_URL=postgresql://YOUR_USER:YOUR_PASSWORD@localhost:5432/f1_predictor
+There is a .env.example file, you can use that to make your own .env with your own credentials and rename it 
+
+4. Run Migrations
+Run Alembic to read the migration file and create the tables (drivers, races, teams, etc.).
+# Run from the 'backend' directory:
+
+alembic upgrade head
+
+
+Run these commands to confirm the tables were created successfully.
+1. Check Alembic Status
+This confirms the database is on the latest revision:
+
+alembic current
+Success: You should see a hash code ending in (head).
+
+2. List the Tables
+This confirms the schema was applied:
+
+psql f1_predictor -c "\dt"
+Success: You should see a list of tables including circuits, drivers, races, teams, etc.
+

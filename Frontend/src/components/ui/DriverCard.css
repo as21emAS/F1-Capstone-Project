@@ -1,0 +1,175 @@
+/* Driver Card Styles */ 
+.driver-card {
+  background: #F5F1E8;
+  border: 3px solid var(--color-baseCard-black);
+  border-radius: 2px;
+  box-shadow: 6px 6px 0px var(--color-baseCard-black), 8px 8px 0px rgba(0, 0, 0, 0.2);
+  padding: 1.25rem;
+}
+
+.driver-card-grid-pattern {
+  background-image: 
+    linear-gradient(0deg, var(--color-baseCard-black) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-baseCard-black) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.driver-card-scanlines {
+  background-image: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.05) 0px, rgba(0, 0, 0, 0.05) 1px, transparent 1px, transparent 3px);
+  z-index: 10;
+}
+
+.driver-card-top-bar {
+  box-shadow: inset 0 -2px 0px rgba(0, 0, 0, 0.3);
+  margin: -1.25rem -1.25rem 1.25rem -1.25rem;
+}
+
+.driver-card-top-bar-red {
+  width: 30%;
+  background: var(--color-baseCard-red);
+}
+
+.driver-card-top-bar-black {
+  width: 30%;
+  background: var(--color-baseCard-black);
+}
+
+.driver-card-top-bar-team {
+  width: 40%;
+}
+
+.driver-card-content {
+  z-index: 2;
+}
+
+.driver-card-label {
+  color: #666666;
+  font-family: monospace;
+  letter-spacing: 0.15em;
+}
+
+.driver-card-position {
+  color: var(--color-baseCard-black);
+  font-family: monospace;
+  letter-spacing: -0.02em;
+  text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.driver-card-status-grid {
+  filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.15));
+}
+
+.driver-card-status-pixel {
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.driver-card-status-pixel-black {
+  background: #000000;
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.5);
+}
+
+.driver-card-status-pixel-red {
+  background: var(--color-baseCard-red);
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.driver-card-divider {
+  border-top: 2px solid var(--color-baseCard-black);
+  box-shadow: 0 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.driver-card-name {
+  color: var(--color-baseCard-black);
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+.driver-card-nationality {
+  color: #666666;
+  font-family: monospace;
+  letter-spacing: 0.15em;
+}
+
+.driver-card-points-box {
+  background: var(--color-baseCard-white);
+  box-shadow: 3px 3px 0px var(--color-baseCard-black), 4px 4px 0px rgba(0, 0, 0, 0.2);
+  
+}
+
+.driver-card-points-value {
+  color: var(--color-baseCard-black);
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+
+.driver-card-team-box {
+  background: var(--color-baseCard-black);
+  box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.driver-card-team-name {
+  color: var(--color-baseCard-white);
+  font-family: monospace;
+  letter-spacing: 0.1em;
+}
+
+.driver-card-team-stripe {
+  box-shadow: inset -1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+.driver-card-team-stripe-red {
+  background: var(--color-baseCard-red);
+  box-shadow: inset -1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+.driver-card-corner {
+  filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.2));
+}
+
+.driver-card-corner-top-left {
+  border-top: 2px solid var(--color-baseCard-black);
+  border-left: 2px solid var(--color-baseCard-black);
+}
+
+.driver-card-corner-top-right {
+  border-top: 2px solid var(--color-baseCard-black);
+  border-right: 2px solid var(--color-baseCard-black);
+}
+
+.driver-card-corner-bottom-left {
+  border-bottom: 2px solid var(--color-baseCard-black);
+  border-left: 2px solid var(--color-baseCard-black);
+}
+
+.driver-card-corner-bottom-right {
+  border-bottom: 2px solid var(--color-baseCard-black);
+  border-right: 2px solid var(--color-baseCard-black);
+}
+
+.driver-card-corner-pixel {
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.driver-card-corner-pixel-red {
+  background: var(--color-baseCard-red);
+  box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.3), inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.driver-card-side-stripe {
+  box-shadow: 1px 0px 0px var(--color-baseCard-white);
+}
+
+.driver-card-side-stripe-segment {
+  box-shadow: inset -1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+.driver-card-side-stripe-red {
+  background: var(--color-baseCard-red);
+  box-shadow: inset -1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+.driver-card-side-stripe-black {
+  background: var(--color-baseCard-black);
+}

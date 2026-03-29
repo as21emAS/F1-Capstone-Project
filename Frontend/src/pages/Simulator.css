@@ -1,0 +1,345 @@
+/* ─── Page Wrapper ─────────────────────────────────────────────────────────── */
+
+.predictor-wrap {
+  max-width: 960px;
+}
+
+/* ─── Parameter Grid ───────────────────────────────────────────────────────── */
+
+.predictor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.1rem;
+}
+
+.predictor-param {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.param-label {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: #6a4820;
+}
+
+/* ─── Run Button ───────────────────────────────────────────────────────────── */
+
+.run-btn {
+  background: #c8001a;
+  border: 2px solid #1c1208;
+  color: #faf4e8;
+  padding: 0.65rem 1.5rem;
+  font-family: "Bebas Neue", "Courier New", monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  box-shadow: 3px 3px 0 #1c1208;
+  align-self: flex-end;
+}
+
+.run-btn:hover {
+  background: #1c1208;
+  color: #f0c040;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #c8001a;
+}
+
+.run-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1c1208;
+}
+
+/* ─── Results ──────────────────────────────────────────────────────────────── */
+
+.results-card {
+  margin-top: 1.5rem;
+  animation: fadeIn 0.35s ease forwards;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e0d4bc;
+  animation: slideIn 0.4s ease forwards;
+}
+
+.result-row:last-child { border-bottom: none; }
+
+.result-pos {
+  font-family: "Bebas Neue", monospace;
+  font-size: 1.6rem;
+  color: #c8001a;
+  width: 40px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.result-info {
+  width: 185px;
+  flex-shrink: 0;
+}
+
+.result-driver {
+  font-size: 0.88rem;
+  font-weight: bold;
+  color: #1c1208;
+  letter-spacing: 0.04em;
+}
+
+.result-team {
+  font-size: 0.6rem;
+  color: #8a6030;
+  letter-spacing: 0.1em;
+  margin-top: 2px;
+  font-style: italic;
+}
+
+.result-factors {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.factor-tag {
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  background: #e8ddc8;
+  border: 1px solid #8a6030;
+  padding: 0.2rem 0.65rem;
+  color: #5a3820;
+  font-family: "Courier New", monospace;
+  text-transform: uppercase;
+}
+
+.result-conf {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.result-conf-num {
+  font-family: "Bebas Neue", monospace;
+  font-size: 1.1rem;
+  color: #c8001a;
+  letter-spacing: 0.05em;
+}
+
+/* ─── Mobile ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+
+  /* Wrapper */
+  .predictor-wrap {
+    max-width: 100%;
+  }
+
+  /* Parameter grid becomes single column */
+  .predictor-grid {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+
+  .param-label {
+    font-size: 0.7rem;
+  }
+
+  /* Run button full width */
+  .run-btn {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Results stack vertically */
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.85rem 0;
+  }
+
+  .result-pos {
+    font-size: 1.4rem;
+    width: auto;
+  }
+
+  .result-info {
+    width: 100%;
+  }
+
+  .result-driver {
+    font-size: 0.85rem;
+  }
+
+  .result-team {
+    font-size: 0.62rem;
+  }
+
+  /* Factor tags wrap naturally */
+  .result-factors {
+    width: 100%;
+  }
+
+  .factor-tag {
+    font-size: 0.6rem;
+  }
+
+  /* Confidence section moves below */
+  .result-conf {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .result-conf-num {
+    font-size: 1rem;
+  }
+}
+
+/* ─── Tablet ───────────────────────────────────────────────────────────── */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+
+  .predictor-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .result-info {
+    width: 150px;
+  }
+
+  .result-conf {
+    width: 100px;
+  }
+}
+/* ─── Append these rules to your existing Simulator.css ──────────────────── */
+
+/* ── Winner row highlight ──────────────────────────────────────────────────── */
+.result-row--winner {
+  background: #fdf6e3;
+  border-left: 3px solid #c8001a;
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+  border-radius: 1px;
+}
+
+.result-row--winner .result-pos {
+  color: #c8001a;
+}
+
+/* ── Confidence bar ────────────────────────────────────────────────────────── */
+.conf-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: #e0d4bc;
+  border: 1px solid #c4b49a;
+  margin-bottom: 0.2rem;
+}
+
+.conf-bar-fill {
+  height: 100%;
+  background: #1c1208;
+  transition: width 0.6s ease;
+}
+
+.conf-bar-fill--winner {
+  background: #c8001a;
+}
+
+/* ── Button group ──────────────────────────────────────────────────────────── */
+.sim-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* ── Loading state ─────────────────────────────────────────────────────────── */
+.sim-loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+/* ── Key factors section ───────────────────────────────────────────────────── */
+.sim-factors-card {
+  margin-top: 1rem;
+}
+
+.sim-factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.sim-factor-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 48px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sim-factor-label {
+  font-size: 0.72rem;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.08em;
+  color: #5a3820;
+  text-transform: uppercase;
+}
+
+.sim-factor-bar-wrap {
+  height: 8px;
+  background: #e0d4bc;
+  border: 1px solid #c4b49a;
+}
+
+.sim-factor-bar-fill {
+  height: 100%;
+  background: #c8001a;
+  transition: width 0.7s ease;
+}
+
+.sim-factor-pct {
+  font-family: "Bebas Neue", monospace;
+  font-size: 0.95rem;
+  color: #c8001a;
+  text-align: right;
+}
+
+/* ── Mobile additions ──────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  .sim-btn-group {
+    flex-direction: row;
+  }
+
+  .sim-factor-row {
+    grid-template-columns: 1fr 48px;
+    grid-template-rows: auto auto;
+    gap: 0.4rem 0.75rem;
+  }
+
+  .sim-factor-label {
+    grid-column: 1 / -1;
+  }
+
+  .sim-factor-bar-wrap {
+    grid-column: 1;
+  }
+
+  .sim-factor-pct {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}

@@ -51,3 +51,24 @@ Our application leverages a combination of historical racing databases, real-tim
 ### **Implementation Note**
 
 To mitigate risks related to API rate limits and to optimize performance, our backend includes a **caching layer** and scheduled sync scripts that periodically fetch and store data in our local **PostgreSQL** database.
+
+## Local Development
+
+### Prerequisites
+- Node 20+ recommended (**not v24** — known Vite/babel incompatibility)
+- Backend running on port 8000 (see [Backend/README.md](../Backend/README.md))
+
+### Setup & Run
+```bash
+cd Frontend
+npm install
+npm run dev
+```
+
+### Notes
+- No `.env` file needed. The Vite proxy automatically routes `/api/*` and `/health` to `localhost:8000`.
+- Start the backend first in a separate terminal:
+```bash
+  cd Backend
+  uvicorn app.main:app --reload
+```

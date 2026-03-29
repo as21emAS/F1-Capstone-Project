@@ -1,11 +1,11 @@
-# F1 Race Winner Predictor
+# Racetrack - F1 Race Winner Predictor
 
-[![F1 Race Predictor](https://img.shields.io/badge/F1-Race%20Predictor-red?style=for-the-badge&logo=formula1)](https://github.com/as21emAS/F1-Capstone-Project)
-[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python)](https://www.python.org/)
+![F1 Race Predictor](https://img.shields.io/badge/F1-Race%20Predictor-red?style=for-the-badge&logo=formula1)
+![React](https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=flat-square&logo=fastapi)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python)
 
 **Florida State University | CEN 4090L: Software Engineering Lab**
 **Spring 2026 - Group Capstone Project**
@@ -15,9 +15,10 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [Current Status](#current-status)
+- [Motivation](#motivation)
 - [Features](#features)
 - [System Architecture](#system-architecture)
+- [Performance Considerations](#performance-considerations)
 - [Tech Stack](#tech-stack)
 - [Installation & Setup](#installation--setup)
 - [Project Structure](#project-structure)
@@ -32,73 +33,35 @@
 
 ## Overview
 
-The **F1 Race Winner Predictor** is a full-stack web application that leverages machine learning to predict Formula 1 race outcomes based on historical performance data, real-time weather conditions, and customizable race strategy parameters. Built as a semester-long capstone project, the application provides fans, analysts, and enthusiasts with data-driven insights into race predictions, driver/team standings, and comprehensive historical race data.
+**Racetrack** is a full-stack web application that uses machine learning to predict Formula 1 race outcomes based on historical performance data, real-time weather conditions, and customizable race strategy parameters. Built as a semester-long capstone project, the application provides fans, analysts, and enthusiasts with data-driven insights into race predictions, driver/team standings, and comprehensive historical race data.
 
 Unlike existing F1 prediction platforms that focus on gamification and fantasy leagues, our application prioritizes **detailed, data-backed prediction results** with transparent confidence scoring and key influencing factors.
 
 **Live Demo**: Coming Soon
-**API Documentation**: `http://localhost:8000/docs` (local)
+**API Documentation**: Run the backend locally and visit `http://localhost:8000/docs`
 
 ---
 
-## Current Status
+## Motivation
 
-> **Last updated: March 2026 — Increment 2 in progress**
+Over the past few years, Formula 1 has experienced a surge in global popularity. Similar to other sports, there is growing interest in accurately predicting race outcomes — whether for dedicated fans seeking deeper insights, bettors looking for data-driven decisions, or data enthusiasts exploring predictive analytics.
 
-### ✅ Increment 1 — Complete (Delivered Feb 23, 2026)
+Our web application aims to fill the gap in the market by providing:
 
-**Backend Infrastructure**
-- FastAPI application with health check endpoint running on port 8000
-- PostgreSQL database with full schema designed and implemented via SQLAlchemy
-- Alembic database migrations configured and running
-- Database seeding scripts for historical F1 data population
-- Core API endpoints scaffolded
-
-**Machine Learning**
-- Proof-of-concept ML pipeline built using scikit-learn
-- Initial model trained on historical race data achieving high training accuracy
-- Feature engineering exploration completed in Jupyter notebooks
-- ML architecture validated; production accuracy targets set at **45–50% exact winner prediction** and **70%+ podium prediction** (random baseline is ~5%)
-
-**Frontend**
-- React + TypeScript + Vite project initialized with Tailwind CSS
-- Four pages scaffolded: **Dashboard**, **Race Predictor (Simulator)**, **Data Center**, and **Newsroom**
-- Routing, layout, and navigation structure in place
-- UI currently renders with dummy/static data — live backend integration is the primary focus of Increment 2
-
-**Repository & DevOps**
-- Branching strategy established (`main`, `develop`, `increment-*`, `feature/*`)
-- GitHub Issues automation via YAML config + Python script (`create_issues_inc2.py`)
-- CI/CD groundwork laid with GitHub Actions workflows
-- Local dev documentation written for all team members
-
----
-
-### 🔄 Increment 2 — In Progress (Due Mar 23, 2026)
-
-**Primary focus: Wire all four frontend pages to live backend data**
-
-- [ ] Axios + React Query setup on frontend
-- [ ] Dashboard page connected to live standings and prediction endpoints
-- [ ] Race Predictor wired to ML prediction API
-- [ ] Data Center connected to historical race database
-- [ ] Newsroom connected to news aggregation endpoint
-- [ ] ML model serialization (`.pkl`) and prediction endpoint (`POST /api/predict/race`)
-- [ ] Database seeding via Jolpica-F1 API
-- [ ] Shared component library and global UI state management
-- [ ] End-to-end ML pipeline testing
-- [ ] UI design refinement toward a more polished aesthetic
+- **ML-powered predictions** with confidence percentages and honest accuracy targets
+- **Real-time race simulations** with customizable parameters
+- **Comprehensive historical race data** from 2000 to present
+- **Transparent prediction explanations** showing key influencing factors
 
 ---
 
 ## Features
 
 ### Dashboard
-- **Next Race Prediction**: Real-time countdown with ML-powered winner prediction
+- **Next Race Prediction**: Real-time display of the next upcoming race with ML-powered winner prediction
 - **Top 5 Predicted Finishers**: Confidence percentages for podium positions
-- **Driver Standings**: Current championship standings with win probabilities
+- **Driver Standings**: Current championship standings sourced live from Jolpica-F1 API
 - **Constructor Standings**: Team championship standings with visualizations
-- **Auto-refresh**: Updates every 6 hours with latest data
 
 ### Race Prediction Simulator
 - **Custom Race Scenarios**: Adjust multiple parameters to simulate "what-if" situations
@@ -109,22 +72,14 @@ Unlike existing F1 prediction platforms that focus on gamification and fantasy l
   - Expected pit stops (1–3 stops)
 - **Detailed Results**: Winner prediction with confidence scores and top 10 finishers
 - **Key Factors Display**: Shows which factors most influenced the prediction
-- **Lightweight Design**: Results rendered only after calculation
+- **Lightweight Design**: Results rendered only after calculation to ensure optimal performance
 
-### Race Data Center
-- **Comprehensive Historical Database**: All races from 2010 to present
-- **Three-Tab Interface**:
-  - **Overview Tab**: Race info, date, location, weather, track status
-  - **Circuit Info Tab**: Track visualization, circuit length, lap count, lap records
-  - **Race Results Tab**: Complete finishing order with lap times and race statistics
-- **Search & Filter**: Find specific races by season, circuit, or driver
+### Race Data Center *(Increment 3)*
+- Comprehensive historical race database with search and filter
+- Circuit information, race results, and statistics
 
-### News Feed
-- **Aggregated F1 News**: Latest articles from reputable sources
-- **Sources**: Formula1.com, ESPN F1, Motorsport.com, The Race
-- **Category Filtering**: Race Results, Technical Updates, Team News, Driver Interviews
-- **Auto-refresh**: Updates every 6 hours
-- **External Links**: Direct links to full articles
+### News Feed *(Increment 3)*
+- Aggregated F1 news from multiple sources with category filtering
 
 ---
 
@@ -134,35 +89,35 @@ Our application follows a **modern three-tier architecture** with clear separati
 
 **Full System Architecture Diagram**: [View on Lucidchart](https://lucid.app/lucidchart/be45b62d-d0bd-4587-9be7-bfaf271b04e2/edit?viewport_loc=-1057%2C-1141%2C4340%2C2570%2C0_0&invitationId=inv_fc5c455d-eff5-46e4-97c2-c549a3126b81)
 
+### High-Level Architecture Overview
+
 ```
 ┌─────────────────────────────────────────────────────────┐
-│           CLIENT LAYER (React + TypeScript)             │
-│   Dashboard | Simulator | Data Center | News Feed       │
+│         CLIENT LAYER (React + TypeScript)               │
+│     Dashboard | Simulator | Data Center | News Feed     │
 └─────────────────────────────────────────────────────────┘
-                           ▲ │
-                    HTTPS/REST API
-                           │ ▼
+                         ▲
+                         │  HTTPS/REST API
+                         ▼
 ┌─────────────────────────────────────────────────────────┐
-│         APPLICATION LAYER (FastAPI + Python)            │
-│  API Endpoints | Business Logic | ML Integration        │
-│         External API Integration Layer                  │
+│       APPLICATION LAYER (FastAPI + Python)              │
+│    API Endpoints | Business Logic | ML Integration      │
+│          External API Integration Layer                 │
 └─────────────────────────────────────────────────────────┘
-                           ▲ │
-                           │ ▼
+                         ▲
+                         │
+                         ▼
 ┌─────────────────────────────────────────────────────────┐
-│           DATA LAYER (PostgreSQL + SQLAlchemy)          │
-│  drivers | teams | circuits | races | race_results     │
+│       DATA LAYER (PostgreSQL + SQLAlchemy)              │
+│  drivers | circuits | races | race_results | predictions│
 └─────────────────────────────────────────────────────────┘
-
 ┌─────────────────────────────────────────────────────────┐
-│     ML LAYER (scikit-learn/XGBoost + Pandas/NumPy)     │
-│      Trained Model (.pkl) | Training Pipeline          │
+│      ML LAYER (scikit-learn + Pandas/NumPy)             │
+│    Trained Model (.pkl) | Inference Pipeline            │
 └─────────────────────────────────────────────────────────┘
-
 ┌─────────────────────────────────────────────────────────┐
-│            EXTERNAL SERVICES                            │
-│  Jolpica-F1 API | OpenF1 API | Visual Crossing         │
-│  OpenWeatherMap | F1 News RSS Feeds                    │
+│                  EXTERNAL SERVICES                      │
+│  Jolpica-F1 API | OpenWeatherMap | Visual Crossing      │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -170,75 +125,129 @@ Our application follows a **modern three-tier architecture** with clear separati
 
 - **RESTful API Design**: Standard HTTP methods for predictable client-server communication
 - **Separation of Concerns**: Clear boundaries between frontend, backend, database, and ML layers
-- **Dual-API Redundancy**: Both Jolpica-F1 and OpenF1 APIs used for historical data validation and ML data quality
-- **Caching Strategy**: Reduces API calls and improves response times for frequently accessed data
+- **Caching Strategy**: Reduces external API calls and improves response times for frequently accessed data (1-hour TTL on live Jolpica responses)
 - **Asynchronous Processing**: FastAPI's async capabilities for handling concurrent requests
-- **Model Persistence**: Pre-trained ML model loaded once at server startup for fast predictions
-- **Infrastructure-First Approach**: Solid foundation in Increment 1 enables parallel feature development across all team members in Increment 2+
+- **Model Persistence**: Pre-trained ML model loaded once at server startup for fast inference
+- **External API Management**: Centralized wrapper functions with error handling and fallback behavior
+- **Stateless Backend**: Enables horizontal scaling for production deployment
+
+---
+
+## Performance Considerations
+
+Our application is designed with performance as a core requirement. Many similar applications suffer from scroll lag and poor responsiveness due to DOM overload, excessive re-renders, and unoptimized event handling.
+
+### Design Principles for Optimal Performance
+
+#### 1. Minimal DOM Size
+
+**Problem**: Rendering all race data simultaneously (e.g., 10 races × 20 drivers = 200+ DOM elements) causes severe scroll lag.
+
+**Our Solution**:
+- Simulator renders configuration panel and results separately
+- Results only displayed after user clicks "Calculate Predictions"
+- Top 10 finishers shown instead of full 20-driver grid
+
+```typescript
+function Simulator() {
+  const [prediction, setPrediction] = useState(null);
+  return (
+    <div>
+      <ConfigPanel onSubmit={calculatePrediction} />
+      {prediction && <Results data={prediction.top10} />}
+    </div>
+  );
+}
+```
+
+#### 2. Optimized Re-renders
+
+- `React.memo()` wrapping expensive components
+- Debounced form inputs (300ms delay)
+- Memoized calculations with `useMemo()`
+- Results components only re-render when prediction data changes
+
+#### 3. Efficient Event Handling
+
+- Passive scroll listeners to prevent blocking
+- Debounced scroll handlers (100ms)
+- Event delegation for repeated elements
+- Proper cleanup of event listeners
+
+#### 4. Chart Optimization
+
+- Limited data points in Recharts (max 50)
+- Lazy loading of chart components
+- Responsive chart sizing
+
+### Performance Targets
+
+| Metric | Target |
+|--------|--------|
+| Initial Load | < 2 seconds |
+| Prediction Response | < 2 seconds |
+| Scroll Performance | 60 FPS |
+| Form Interactions | < 100ms |
+| Chart Rendering | < 500ms |
 
 ---
 
 ## Tech Stack
 
 ### Frontend
+
 | Technology | Purpose |
 |------------|---------|
 | **React 18.x** | UI Framework |
 | **TypeScript** | Type-safe JavaScript |
-| **Vite** | Fast build tool and dev server |
-| **Tailwind CSS** | Utility-first CSS framework |
+| **Vite** | Fast build tool and dev server (port 5173) |
+| **Tailwind CSS v4** | Utility-first CSS framework |
 | **React Query** | Server state management |
 | **Axios** | HTTP client for API requests |
 | **Recharts** | Data visualization library |
+| **React Router** | Client-side routing |
 
 ### Backend
+
 | Technology | Purpose |
 |------------|---------|
 | **FastAPI** | High-performance web framework |
 | **Python 3.11+** | Core programming language |
-| **Uvicorn** | ASGI server |
+| **Uvicorn** | ASGI server (port 8000) |
 | **SQLAlchemy** | SQL ORM for database interactions |
-| **Pydantic** | Data validation and serialization |
+| **Pydantic / pydantic-settings** | Data validation and configuration |
+| **Alembic** | Database migrations |
 
 ### Database
+
 | Technology | Purpose |
 |------------|---------|
 | **PostgreSQL 16** | Primary relational database |
-| **Alembic** | Database migration tool |
 
 ### Machine Learning
+
 | Technology | Purpose |
 |------------|---------|
-| **scikit-learn** | ML model training and evaluation |
-| **XGBoost** | Gradient boosting algorithm |
-| **Pandas** | Data manipulation and analysis |
+| **scikit-learn** | RandomForestClassifier, model training and evaluation |
+| **joblib** | Model serialization |
+| **Pandas** | Data manipulation and DataFrame construction |
 | **NumPy** | Numerical computing |
 
 ### External APIs
+
 | Service | Purpose | Documentation |
 |---------|---------|---------------|
-| **Jolpica-F1 API** | Historical F1 race data (replaces deprecated Ergast) | [jolpi.ca/ergast](https://jolpi.ca/ergast/) |
-| **OpenF1 API** | Real-time F1 telemetry and race data | [openf1.org](https://openf1.org/) |
-| **Visual Crossing** | Historical weather data for ML training (free tier back to 1970) | [visualcrossing.com](https://www.visualcrossing.com/) |
-| **OpenWeatherMap** | Real-time weather forecasts for race weekends | [openweathermap.org](https://openweathermap.org/api) |
-| **F1 News RSS Feeds** | Latest F1 news articles | Various sources |
-
-> **Note**: The original Ergast API was deprecated during initial planning. Jolpica-F1 was evaluated and adopted as a fully compatible replacement. Dual-API coverage via OpenF1 provides redundancy for ML training data quality.
-
-### Development & Deployment
-| Tool | Purpose |
-|------|---------|
-| **Git & GitHub** | Version control and collaboration |
-| **Figma** | UI/UX prototyping |
-| **Vercel** | Frontend hosting (Free Tier) |
-| **Heroku/Railway** | Backend hosting |
-| **GitHub Actions** | CI/CD pipeline |
+| **Jolpica-F1 API** | Historical F1 race data (replaces deprecated Ergast) | [jolpi.ca](https://jolpi.ca) |
+| **OpenF1** | Real-time F1 session data | [openf1.org](https://openf1.org) |
+| **OpenWeatherMap** | Current and forecast weather | [openweathermap.org/api](https://openweathermap.org/api) |
+| **Visual Crossing** | Historical weather data for ML training | [visualcrossing.com](https://www.visualcrossing.com) |
 
 ---
 
 ## Installation & Setup
 
 ### Prerequisites
+
 - **Node.js** 18.x or higher
 - **Python** 3.11 or higher
 - **PostgreSQL** 16 or higher
@@ -250,98 +259,89 @@ Our application follows a **modern three-tier architecture** with clear separati
 ```bash
 git clone https://github.com/as21emAS/F1-Capstone-Project.git
 cd F1-Capstone-Project
-git checkout increment-2
 ```
 
 ### 2. Backend Setup
 
+#### Install Python Dependencies
+
 ```bash
 cd Backend
 python -m venv venv
-
-# Mac/Linux:
-source venv/bin/activate
-# Windows (Git Bash):
-source venv/Scripts/activate
-
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+pip install pydantic-settings  # install separately if not in requirements
 ```
 
 #### Environment Configuration
 
-Use the provided setup script or configure manually:
+Copy the example env file and fill in your credentials:
 
 ```bash
-# Mac/Linux:
-bash scripts/setup_env.sh
+cp .env.example .env
 ```
 
-Or manually create `Backend/.env`:
-```
-DATABASE_URL=postgresql://user:password@localhost/f1_predictor_dev
+Edit `Backend/.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/f1_predictor
 OPENWEATHER_API_KEY=your_key_here
-SECRET_KEY=your_secret_key
+SECRET_KEY=your_secret_key_here
 API_CACHE_TTL=6
 API_RATE_LIMIT=2.0
 ```
 
-#### Database Initialization
+> **Note**: If your PostgreSQL password contains special characters (e.g., `@`, `#`, `%`), URL-encode them in `DATABASE_URL`. For example, `p@ss` becomes `p%40ss`.
+
+#### Initialize Database
 
 ```bash
-# Create the database
-createdb f1_predictor_dev
-
-# On Windows if psql is not on PATH:
-# /c/Program\ Files/PostgreSQL/17/bin/createdb f1_predictor_dev
-
-# Run migrations
+createdb f1_predictor
 alembic upgrade head
-
-# Seed with historical data
-python scripts/seed_database.py
+python scripts/fetch_jolpica.py
+python scripts/seed_data.py
+python scripts/seed_results.py
 ```
 
-#### Start Backend
+See `Docs/local_setup.md` for detailed seeding instructions.
+
+#### Start Backend Server
 
 ```bash
-# Must be run from within the Backend/ directory
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend available at `http://localhost:8000`
-Swagger UI: `http://localhost:8000/docs`
+Backend will be available at `http://localhost:8000`
+API docs (Swagger UI): `http://localhost:8000/docs`
 
 ### 3. Frontend Setup
 
+#### Install Dependencies
+
 ```bash
 cd Frontend
-
-# Note: use --legacy-peer-deps due to TypeScript peer dependency conflicts
-npm install --legacy-peer-deps
+npm install
 ```
 
-Create `Frontend/.env`:
+#### Environment Configuration
+
+```bash
+cp .env.example .env
 ```
+
+Default values in `.env` work for local development:
+
+```env
 VITE_API_BASE_URL=http://localhost:8000
-VITE_JOLPICA_BASE_URL=https://jolpi.ca/ergast/f1
-VITE_OPENF1_BASE_URL=https://api.openf1.org/v1
-VITE_F1_NEWS_URL=https://www.formula1.com/en/latest/all.html
 ```
+
+#### Start Development Server
 
 ```bash
 npm run dev
 ```
 
-Frontend available at `http://localhost:5173`
-
-### 4. ML Pipeline
-
-```bash
-cd ml-model
-python train_model.py
-```
-
-This loads historical data, performs feature engineering, trains the model, and saves it as `Backend/models/model.pkl` for the prediction API to load on startup.
+Frontend will be available at `http://localhost:5173`
 
 ---
 
@@ -349,64 +349,58 @@ This loads historical data, performs feature engineering, trains the model, and 
 
 ```
 F1-Capstone-Project/
-├── Backend/                   # FastAPI Python backend
-│   ├── app/
-│   │   ├── api/               # Route handlers
-│   │   │   └── endpoints/
-│   │   │       ├── races.py
-│   │   │       ├── drivers.py
-│   │   │       ├── teams.py
-│   │   │       ├── predictions.py
-│   │   │       ├── simulator.py
-│   │   │       └── news.py
-│   │   ├── core/              # Configuration
-│   │   ├── db/
-│   │   │   ├── models.py      # SQLAlchemy models
-│   │   │   └── session.py     # Database session
-│   │   ├── ml/                # ML integration
-│   │   │   ├── model_loader.py
-│   │   │   ├── predictor.py
-│   │   │   └── feature_engineering.py
-│   │   ├── external/          # External API clients
-│   │   │   ├── jolpica.py     # Jolpica-F1 client
-│   │   │   ├── openf1.py      # OpenF1 client
-│   │   │   ├── weather.py     # Visual Crossing + OpenWeatherMap
-│   │   │   └── news_aggregator.py
-│   │   ├── schemas/           # Pydantic schemas
-│   │   └── main.py
-│   ├── models/                # Trained ML models (.pkl)
-│   ├── scripts/
-│   │   └── seed_database.py
-│   ├── requirements.txt
-│   └── alembic/               # Migrations
-│
-├── Frontend/                  # React TypeScript frontend
+├── Frontend/                   # React TypeScript frontend
 │   ├── src/
-│   │   ├── components/        # Reusable UI components
-│   │   ├── pages/
+│   │   ├── components/         # Reusable UI components
+│   │   │   ├── SkewCard.tsx
+│   │   │   ├── F1Button.tsx
+│   │   │   ├── TelemetryRow.tsx
+│   │   │   ├── StatusIndicator.tsx
+│   │   │   └── ...
+│   │   ├── pages/              # Main application pages
 │   │   │   ├── Dashboard.tsx
 │   │   │   ├── Simulator.tsx
 │   │   │   ├── DataCenter.tsx
-│   │   │   └── News.tsx
-│   │   ├── services/          # Axios API clients (Increment 2)
-│   │   ├── hooks/             # React Query hooks (Increment 2)
-│   │   ├── types/             # TypeScript types
+│   │   │   └── Stories.tsx
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── types/              # TypeScript type definitions
 │   │   └── App.tsx
+│   ├── public/
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── Data/                      # Training datasets and raw data
+├── Backend/                    # FastAPI Python backend
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── endpoints/
+│   │   │       ├── races.py
+│   │   │       ├── circuits.py
+│   │   │       ├── standings.py
+│   │   │       ├── predictions.py
+│   │   │       └── simulator.py
+│   │   ├── ml/
+│   │   │   ├── predictor.py        # Inference pipeline
+│   │   │   └── models/
+│   │   │       └── f1_winner_model_v2.pkl
+│   │   ├── crud.py                 # Database query functions
+│   │   ├── models.py               # SQLAlchemy ORM models
+│   │   ├── schemas.py              # Pydantic schemas
+│   │   └── main.py
+│   ├── scripts/
+│   │   ├── fetch_jolpica.py
+│   │   ├── seed_data.py
+│   │   └── seed_results.py
+│   ├── tests/
+│   │   └── test_predictor.py
+│   ├── alembic/
+│   └── requirements.txt
 │
-├── ml-model/                  # ML development
-│   ├── notebooks/             # Jupyter exploration notebooks
-│   ├── train_model.py
-│   └── evaluate_model.py
+├── Docs/
+│   ├── api-specification.md
+│   ├── database-schema.md
+│   ├── ml-model.md
+│   └── local_setup.md
 │
-├── Docs/                      # Project documentation
-├── ISSUE_TEMPLATE/            # GitHub issue templates
-├── create_issues_inc2.py      # GitHub issue automation script
-├── increment_2_issues.yml     # Issue definitions for Increment 2
-├── setup.sh
 └── README.md
 ```
 
@@ -414,133 +408,139 @@ F1-Capstone-Project/
 
 ## API Documentation
 
-### Base URL
-```
-Development: http://localhost:8000/api
-```
+Full interactive documentation is available via Swagger UI at `http://localhost:8000/docs` when the backend is running.
 
-### Core Endpoints
+For the complete endpoint reference including request/response schemas, see [`Docs/api-specification.md`](Docs/api-specification.md).
 
-#### Races
-```
-GET    /api/races                    # List all races
-GET    /api/races/next               # Get next upcoming race
-GET    /api/races/{id}               # Get race details
-GET    /api/races/{id}/results       # Get race results
-GET    /api/races/{id}/weather       # Get race weather data
-```
+### Endpoint Summary
 
-#### Drivers & Teams
-```
-GET    /api/drivers                  # List all drivers
-GET    /api/drivers/{id}/stats       # Driver statistics
-GET    /api/teams                    # List all teams
-GET    /api/teams/{id}/stats         # Team statistics
-```
-
-#### Standings
-```
-GET    /api/standings/drivers/current        # Current driver standings
-GET    /api/standings/teams/current          # Current constructor standings
-GET    /api/standings/drivers/{season}       # Historical driver standings
-GET    /api/standings/teams/{season}         # Historical constructor standings
-```
-
-#### Predictions
-```
-POST   /api/predict/race             # Get ML race prediction
-POST   /api/simulator/predict        # Simulate custom race scenario
-```
-
-**Simulator Request Example**:
-```json
-{
-  "race_id": "2026_monaco_gp",
-  "weather": "wet",
-  "tire_strategy": "medium-hard",
-  "expected_pit_stops": 2
-}
-```
-
-#### News
-```
-GET    /api/news                     # Latest F1 news
-GET    /api/news?category=technical  # Filter by category
-```
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/health` | API health check |
+| `GET` | `/api/races` | Paginated race list |
+| `GET` | `/api/races/next` | Next upcoming race (live, cached 1hr) |
+| `GET` | `/api/races/upcoming` | All remaining races this season |
+| `GET` | `/api/races/{race_id}` | Race details |
+| `GET` | `/api/races/{race_id}/results` | Race finishing results |
+| `GET` | `/api/circuits` | All circuits |
+| `GET` | `/api/circuits/{circuit_id}` | Circuit details |
+| `GET` | `/api/standings/drivers/current` | Current driver standings (live, cached 1hr) |
+| `GET` | `/api/standings/teams/current` | Current constructor standings (live, cached 1hr) |
+| `POST` | `/api/predictions/` | Race winner predictions from ML model |
+| `POST` | `/api/simulator/simulate` | What-if race simulation |
+| `GET` | `/api/simulator/health` | Simulator model health check |
 
 ---
 
 ## Machine Learning Model
 
-### Approach
+### Overview
 
-Our prediction model uses an ensemble approach combining **Random Forest** and **XGBoost** classifiers to predict race winners with confidence scores.
+The prediction model uses a **RandomForestClassifier** (scikit-learn) trained on historical F1 race data from 2000–2024. At inference time, the model takes a feature vector for each driver in a given race and outputs a probability score via `predict_proba()`. Drivers are ranked by confidence score descending to produce the final prediction.
 
-### Honest Performance Expectations
+**Saved artifact**: `Backend/app/ml/models/f1_winner_model_v2.pkl` (joblib format)
 
-F1 race prediction is an inherently difficult problem. Random chance would produce ~5% accuracy (1 in 20 drivers). Our targets reflect this reality:
+### Accuracy Targets
 
-| Metric | Target | Notes |
-|--------|--------|-------|
-| **Exact Winner Prediction** | 45–50% | Significantly above random baseline of ~5% |
-| **Podium Prediction (Top 3)** | 70%+ | More achievable given smaller candidate pool |
+| Prediction Type | Target | Baseline (Random Guess) |
+|----------------|--------|--------------------------|
+| Exact race winner | ~45–50% | ~5% (1 in 20 drivers) |
+| Podium finish (top 3) | 70%+ | ~15% |
 
-> The proof-of-concept model trained in Increment 1 showed high in-sample accuracy, but production accuracy will be lower due to F1's inherent unpredictability (mechanical failures, crashes, safety cars, weather changes mid-race). We prioritize honest reporting over inflated metrics.
+These are intentionally realistic targets. F1 outcomes are inherently unpredictable due to mechanical failures, safety cars, and strategy calls. Meaningful predictions that outperform baseline are more valuable than inflated numbers.
 
-### Features (40+ engineered)
+### Feature Set
 
-- **Driver**: Career win %, recent form (last 5 races), circuit-specific history, qualifying position
-- **Team**: Constructor standings, pit stop efficiency, reliability metrics
-- **Circuit**: Track layout type, overtaking difficulty, DRS zones, historical lap records
-- **Weather**: Temperature, precipitation probability, wind speed, track temperature
-- **Strategy**: Tire compound, expected pit stop count
+The model uses 10 features per driver:
+
+| Feature | Description |
+|---------|-------------|
+| `driver_win_rate` | Historical win rate across all races |
+| `driver_avg_finish` | Historical average finishing position |
+| `driver_podium_rate` | Historical podium (top 3) rate |
+| `driver_recent_form` | Average finishing position over last 3–5 races |
+| `grid_position` | Starting grid position for the race |
+| `qualifying_position_delta` | Difference between qualifying and race finish |
+| `team_avg_finish` | Constructor's historical average finishing position |
+| `circuit_driver_performance` | Driver's historical performance at this specific circuit |
+| `wet_race` | Boolean flag indicating wet race conditions |
+| `driver_wet_weather_skill` | Driver's historical performance in wet conditions |
+
+### Inference Pipeline
+
+`predict_race_winner(race_id)` in `Backend/app/ml/predictor.py`:
+
+1. Fetches all drivers for the race via `get_driver_data_for_race(race_id)` in `crud.py`
+2. Calculates all 10 features from historical data in the database
+3. Builds a pandas DataFrame (one row per driver)
+4. Calls `self.model.predict_proba()` on the DataFrame
+5. Returns a ranked list sorted by confidence score descending
 
 ### Training Data
-- **Timespan**: 2010–2024 (15 seasons)
-- **Source**: Jolpica-F1 API + OpenF1 API for validation
-- **Weather labels**: Visual Crossing historical weather data
+
+- **Source**: Jolpica-F1 API (replacement for deprecated Ergast API)
+- **Range**: 2000–2024 seasons
+- **Validation strategy**: Leave-one-season-out cross-validation
+
+### Testing
+
+```bash
+cd Backend
+pytest tests/test_predictor.py
+```
+
+A passing run returns ranked predictions for all drivers in the specified race.
+
+For full model documentation, see [`Docs/ml-model.md`](Docs/ml-model.md).
 
 ---
 
 ## Development Timeline
 
-### ✅ Increment 1 — Foundation (Weeks 1–5) — Delivered Feb 23, 2026
+### Increment 1: Foundation & Infrastructure — ✅ Complete
+*Delivered: Feb 23, 2026*
 
-- Database schema, Alembic migrations, FastAPI health check
-- ML proof-of-concept pipeline
-- Four frontend pages scaffolded with static data
-- Repository organization, CI/CD groundwork, local dev docs
+- PostgreSQL database schema with Alembic migrations
+- Core backend API endpoints (races, circuits, health)
+- Frontend application skeleton with routing across all 4 pages
+- F1 design system: color tokens, typography (Chakra Petch / Titillium Web), and reusable component library (`SkewCard`, `F1Button`, `TelemetryRow`, `StatusIndicator`)
+- Database seeding pipeline using Jolpica-F1 API
+- CORS configuration for local development
 
-### 🔄 Increment 2 — Integration (Weeks 6–8) — Due Mar 23, 2026
+### Increment 2: ML Integration & Simulator — ✅ Complete
+*Delivered: Mar 23, 2026*
 
-- Frontend-backend integration across all four pages
-- ML model serialization and prediction API
-- Jolpica-F1 database seeding
-- React Query + Axios setup
-- Shared component library
-- UI design polish
+- **ML model**: Trained RandomForestClassifier (`f1_winner_model_v2.pkl`) with 10-feature inference pipeline fully wired end-to-end — `predict_race_winner()` now calls `model.predict_proba()` and returns real ranked predictions
+- **Database queries**: `get_driver_data_for_race(race_id)` added to `crud.py` providing race-specific driver data with actual grid positions; `get_active_drivers()` enhanced to include team names
+- **Backend endpoints**: `GET /api/races/next` live via Jolpica-F1 with caching; `GET /api/circuits` DB-backed; simulator endpoints (`POST /api/simulator/simulate`, `GET /api/simulator/health`) operational
+- **Simulator frontend**: What-if race simulation UI with configurable weather, tire strategy, and grid parameters
+- **Documentation**: API specification, database schema, and ML model docs updated to reflect actual implementation
 
-### ⬜ Increment 3 — Polish & Production (Weeks 9–14) — Due Apr 27, 2026
+### Increment 3: Full Redesign & Production — 🔲 In Progress
+*Due: Apr 27, 2026*
 
-- Full feature completion and production deployment (Vercel + Heroku/Railway)
-- Comprehensive testing, performance optimization
-- Final capstone presentation
+- Full frontend redesign per design spec
+- Data Center page with historical race database
+- Newsroom page with aggregated F1 news
+- Live race clock and real-time data fetching
+- Real circuit SVGs
+- Hosting and deployment
 
 ---
 
 ## Team Members
 
-| Name | FSUID | GitHub | Role | Responsibilities |
-|------|-------|--------|------|-----------------|
-| **Alexander Hsieh** | ach22h | [@alex-hsieh](https://github.com/alex-hsieh) | Project Manager & Data Lead | Project management, data sourcing/processing, ML data pipeline, gap-filling across all areas |
-| **Julissa Su** | js22cu | [@julissasu](https://github.com/julissasu) | ML Engineer | Feature engineering, model training, prediction engine, simulator logic |
-| **Liv Reiter** | or22a | [@or22a](https://github.com/or22a) | Database Engineer | Database design, schema management, Alembic migrations, SQLAlchemy ORM |
-| **Yulissa Fu** | yaf22b | [@YulissaFu](https://github.com/YulissaFu) | Backend Engineer (APIs) | External API integration (Jolpica-F1, OpenF1, weather), data fetching automation |
-| **Brooklyn Metzger** | bem23b | — | Frontend (Data Center/News) | Data Center UI, News Feed, chart components, shared component library |
-| **Aleksandar Stavreski** | as21em | [@as21emAS](https://github.com/as21emAS) | Frontend (Dashboard/Simulator) | Dashboard UI, Simulator UI, React architecture, frontend optimization |
+| Name | FSUID | Role | Responsibilities |
+|------|-------|------|-----------------|
+| **Alexander Hsieh** | ach22h | Project Manager & Data Lead | Project management, data sourcing/processing, frontend gap-filling, documentation |
+| **Julissa Su** | js22cu | Machine Learning Engineer | Model training, feature engineering, full inference pipeline, predictor tests |
+| **Liv Reiter** | or22a | Database Engineer | Database design, schema management, CRUD queries, SQLAlchemy ORM |
+| **Yulissa Fu** | yaf22b | Backend Engineer (APIs) | External API integration (Jolpica-F1, OpenWeatherMap), data fetching automation |
+| **Brooklyn Metzger** | bem23b | Frontend Developer (Data Center / News) | Data Center UI, Newsroom UI, chart components, shared component library |
+| **Aleksandar Stavreski** | as21emAS | Frontend Developer (Dashboard / Simulator) | Dashboard UI, Simulator UI, React architecture, frontend optimization |
 
 **Team Communication**: Discord
-**Weekly Meetings**: Sundays 3:00 PM – 5:00 PM
+**Meetings**: Sundays 3:00 PM – 5:00 PM
 
 ---
 
@@ -548,36 +548,52 @@ F1 race prediction is an inherently difficult problem. Random chance would produ
 
 This is an academic project for Florida State University's Software Engineering Lab. External contributions are not accepted during the semester.
 
-### For Team Members
+### Branch Strategy
 
-#### Branch Strategy
-- `main` — production-ready code
-- `increment-N` — per-increment integration branch
-- `feature/<feature-name>` — individual feature branches
-- `bugfix/<bug-description>` — bug fix branches
+- `main` — stable, graded snapshots
+- `increment-N` — integration branch for each increment
+- `feature/<initials>-<description>` — individual feature branches
 
-#### Commit Convention
+### Commit Message Convention
+
 ```
 <type>(<scope>): <subject>
 ```
+
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 **Examples**:
 ```
-feat(dashboard): connect standings to live API endpoint
-fix(ml): resolve feature mismatch in prediction pipeline
-docs(readme): update current status for increment 2
+feat(simulator): wire predict endpoint to ML model
+fix(backend): resolve CORS issue for localhost:5173
+docs(readme): update increment 2 accomplishments
 ```
 
-#### Pull Request Process
-1. Branch from `increment-2`
-2. Implement changes with tests
-3. Submit PR with descriptive title
-4. Request review from at least one team member
-5. Merge after approval and CI passing
+### Pull Request Process
 
-#### GitHub Issue Automation
-Issues for each increment are generated via `create_issues_inc2.py` using the YAML config in `increment_2_issues.yml`. Run after creating the milestone manually in the GitHub web UI.
+1. Create feature branch from the current `increment-N` branch
+2. Implement changes
+3. Submit PR with descriptive title and description
+4. Request review from at least one team member
+5. Merge after approval
+
+---
+
+## Testing
+
+### Backend
+
+```bash
+cd Backend
+pytest tests/ -v
+```
+
+### Frontend
+
+```bash
+cd Frontend
+npm run test
+```
 
 ---
 
@@ -589,11 +605,22 @@ This project is developed as part of an academic course at Florida State Univers
 
 ---
 
-## Contact
+## Acknowledgments
 
-- **Project Manager**: Alexander Hsieh — ach22h@fsu.edu
-- **Repository**: [github.com/as21emAS/F1-Capstone-Project](https://github.com/as21emAS/F1-Capstone-Project)
+- **Florida State University** — Department of Computer Science
+- **Jolpica-F1** — For the Ergast-compatible F1 data API
+- **OpenWeatherMap / Visual Crossing** — For weather data
+- **F1 Community** — For inspiration and support
 
 ---
 
-**Built by FSU Software Engineering Lab — Spring 2026**
+## Additional Resources
+
+- **API Specification**: [`Docs/api-specification.md`](Docs/api-specification.md)
+- **Database Schema**: [`Docs/database-schema.md`](Docs/database-schema.md)
+- **ML Model Documentation**: [`Docs/ml-model.md`](Docs/ml-model.md)
+- **Local Setup Guide**: [`Docs/local_setup.md`](Docs/local_setup.md)
+
+---
+
+*Built with care by FSU Software Engineering Lab — Spring 2026*
