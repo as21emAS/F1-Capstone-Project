@@ -1,0 +1,694 @@
+milestone: "Increment 3"
+due: "2026-04-19"
+
+# Labels used:
+#   increment-3, frontend, backend, ml, data, devops, infra, core, buffer, blocked
+
+issues:
+
+  # ─────────────────────────────────────────────
+  # INFRA / FILE STRUCTURE
+  # ─────────────────────────────────────────────
+
+  - title: "[INFRA] Restructure project file organization"
+    assignees: ["alex-hsieh"]   # Alex — fill in your GitHub username
+    labels: ["increment-3", "infra", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      The repo layout has grown organically across two increments and is now messy.
+      Clean it up so the codebase is easy to navigate for the final stretch and for
+      graders reviewing the repo.
+
+      ## Tasks
+      - [ ] Audit current folder structure — document what exists vs. what makes sense
+      - [ ] Move all frontend source into `frontend/src/` with clear subdirectories:
+            `pages/`, `components/`, `hooks/`, `api/`, `assets/`, `styles/`
+      - [ ] Move all backend source into `backend/app/` with: `routes/`, `models/`,
+            `schemas/`, `services/`, `ml/`, `jobs/` (for scheduler)
+      - [ ] Confirm path aliases (`@pages/`, `@components/`) still resolve after move
+      - [ ] Remove any leftover scratch files, duplicate configs, or dead code
+      - [ ] Update `README.md` to reflect new structure
+      - [ ] Verify `npm run dev` and `uvicorn` both start cleanly after restructure
+
+      ## Notes
+      Do this first — a clean structure makes all subsequent Increment 3 PRs easier
+      to review and avoids merge conflicts from everyone touching the same directories.
+
+  # ─────────────────────────────────────────────
+  # FRONTEND — FOUNDATION (Prompt 1)
+  # ─────────────────────────────────────────────
+
+  - title: "[FE] Foundation: routing, theme, CSS vars, Header redesign, naming cleanup"
+    assignees: ["alex-hsieh"]   # Alex
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Apply the FRONTEND_REDESIGN_v3 global spec: rename the app to RACETRACK
+      everywhere, wire up CSS variables and fonts, and rebuild the persistent Header
+      component per the redesign. This is the foundation all other FE issues build on.
+
+      ## Tasks
+      - [ ] Rename app from "RaceWise" to "RACETRACK" everywhere (package.json, title,
+            README, component text, HTML `<title>`)
+      - [ ] Rename route `/predictor` → `/simulator` in React Router and all internal
+            links
+      - [ ] Standardize "Newsroom" everywhere — replace any instance of "Stories" in
+            nav labels, route references, and component names
+      - [ ] Apply global CSS variables to `index.css`:
+            `--bg: #15151E`, `--surface: #1E1E2A`, `--surface-alt: #242430`,
+            `--accent: #E8002D`, `--accent-muted: #9B0020`,
+            `--text: #fff`, `--text-muted: #9a9a9a`, `--text-dim: #555566`
+      - [ ] Add Google Fonts import: Barlow Condensed (700), Titillium Web (400/600)
+      - [ ] Rebuild Header per spec:
+            - RACETRACK logo top-left (bold, boxed, Barlow Condensed), links to `/`
+            - Nav links: Home · Simulator · Data Center · Newsroom · Contact
+            - Active nav link: red `--accent` underline
+            - Top-right race clock block: "GLOBAL CLOCK · {city}" / "MY TIME · TRACK TIME"
+              (static placeholder text for now — live clock is a separate buffer issue)
+      - [ ] Update 2026 team color tokens in frontend constants/theme file:
+            Mercedes=#00D2BE, Ferrari=#E8002D, McLaren=#FF8000, Haas=#B6BABD,
+            Alpine=#0093CC, Red Bull=#1E41FF, Racing Bulls=#1434CB, Audi=#C0C0C0,
+            Williams=#005AFF, Cadillac=#CC0000, Aston Martin=#006F62
+
+      ## Acceptance Criteria
+      - All 4 pages load with dark `#15151E` background (no white flash)
+      - Header renders correctly on all pages
+      - No references to "RaceWise", "Stories", or `/predictor` remain in codebase
+
+  # ─────────────────────────────────────────────
+  # FRONTEND — DASHBOARD (Prompts 2 & 3)
+  # ─────────────────────────────────────────────
+
+  - title: "[FE] Dashboard: hero section redesign"
+    assignees: ["as21emAS"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Rebuild the Dashboard hero section per FRONTEND_REDESIGN_v3 Prompt 2.
+      Full-screen video background with race info overlay.
+
+      ## Tasks
+      - [ ] Full-screen `<video>` element (autoplay, muted, loop, src="" stub)
+      - [ ] Dark gradient overlay: transparent top → `rgba(21,21,30,0.95)` bottom
+      - [ ] Left side (dominant):
+            - "NEXT RACE:" label (small, muted, uppercase, Titillium Web)
+            - Race name large (Barlow Condensed 700, white)
+            - Circuit + date small with inline flag icon
+            - Divider
+            - "UPCOMING RACE:" label + same pattern below
+      - [ ] Right side (de-emphasized):
+            - "YOUR F1 DATA COMPANION TOOL" — weight 400, `--text-dim` color, ~60%
+              of left headline size (reads as background texture, not competing headline)
+            - Diagonal red slash divider (`skewX(-3deg)`) separating left from right
+      - [ ] Animated scroll-down chevron anchoring to below-fold section
+      - [ ] Fetch from `GET /api/races/next` and `GET /api/races/upcoming`
+      - [ ] Fallback: China GP (Mar 12–16) / Japan GP (Mar 21–23) if endpoints unreachable
+
+      ## Notes
+      Right side tagline must NOT look like a headline — intentionally dim and secondary.
+      Refer to redesign spec: "reads as background texture, not a competing headline."
+
+  - title: "[FE] Dashboard: championship standings section redesign"
+    assignees: ["as21emAS"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Rebuild the below-fold Dashboard section per FRONTEND_REDESIGN_v3 Prompt 3.
+      Two-column layout with race cards on the left and championship chart on the right.
+
+      ## Tasks
+      - [ ] Two-column layout: left 30% / right 70%, dark background below hero
+      - [ ] Left panel: "NEXT RACE" card + "UPCOMING RACE" card
+            (flag, circuit name, location, date range — from `/api/races/next` and
+            `/api/races/upcoming`)
+      - [ ] Right panel heading: "CHAMPIONSHIP STANDINGS" (Barlow Condensed, uppercase)
+      - [ ] Color-coded horizontal bar chart — all 22 drivers:
+            - Each row: position number, driver name, team color dot, bar, point total
+            - Bar length ∝ points; bar color = team color token
+            - Hover tooltip: driver name, team, pts, win %
+      - [ ] Below chart: standings table — POS / DRIVER (flag) / TEAM (color dot) / PTS / WIN CHANCE
+      - [ ] Team Standings section below driver standings — same bar chart pattern
+      - [ ] Fetch from `GET /api/championship/standings` and
+            `GET /api/championship/team-standings`
+      - [ ] Fallback dummy data using 2026 team/driver lineup
+
+      ## Notes
+      Use 2026 team color tokens (see foundation issue). Recharts or a custom SVG
+      are both fine for the bar chart.
+
+  # ─────────────────────────────────────────────
+  # FRONTEND — SIMULATOR (Prompts 4, 5, 6)
+  # ─────────────────────────────────────────────
+
+  - title: "[FE] Simulator: Step 1 — Circuit Select"
+    assignees: ["as21emAS"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Build Simulator page (`/simulator`) Step 1 per FRONTEND_REDESIGN_v3 Prompt 4.
+
+      ## Tasks
+      - [ ] Three-step progress stepper at top: ①Circuit → ②Conditions → ③Prediction
+            Active = filled red circle, completed = checkmark, future = outlined/muted
+      - [ ] Left panel (30%, persistent): track SVG placeholder + "Select a circuit to begin"
+            After selection: circuit name, flag, location, dates, track SVG placeholder
+            _(weather widget does NOT appear yet — only in Step 2)_
+      - [ ] Right panel: "SELECT CIRCUIT" heading + 4-column responsive card grid
+            Each card: track thumbnail + circuit name
+      - [ ] Selected card: red border + checkmark overlay
+      - [ ] Fetch from `GET /api/circuits`; fallback 8 circuits
+            (Bahrain, Saudi Arabia, Australia, Japan, China, Miami, Monaco, Canada)
+      - [ ] "NEXT ›" button bottom-right, disabled until a circuit is selected
+      - [ ] Store wizard state (circuit, conditions, grid) in parent context
+
+      ## Notes
+      NEXT › leads to Step 2, not Step 3. The redesign sketch showing PREDICT
+      in Step 1 was outdated — ignore it.
+
+  - title: "[FE] Simulator: Step 2 — Conditions + Starting Grid"
+    assignees: ["as21emAS"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Build Simulator Step 2 per FRONTEND_REDESIGN_v3 Prompt 5.
+
+      ## Tasks
+      - [ ] Left panel: circuit info from Step 1 persists; add 3-day weather widget
+            (FRIDAY / SATURDAY / SUNDAY columns — icon + temp per day)
+      - [ ] Stepper: ② active
+      - [ ] "SELECT CONDITIONS" heading
+      - [ ] Weather toggle: 3 large icon buttons — WINDY / SUNNY / RAINY
+            Selected state: red outline + highlighted label
+      - [ ] "SELECT STARTING GRID" section:
+            - Two-column layout: positions 1–11 left, 12–22 right
+            - Each row: position number + driver dropdown
+            - Deduplicated dropdowns (selecting a driver removes them from other slots)
+            - 22 drivers from `GET /api/drivers`; fallback 2026 driver list
+      - [ ] "PREDICT ›" button bottom-center, red
+            Enabled only when: weather condition selected AND at least P1 set in grid
+
+  - title: "[FE] Simulator: Step 3 — Prediction Results"
+    assignees: ["BrooklynMetzger"] # Brooklyn
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Build Simulator Step 3 (results display) per FRONTEND_REDESIGN_v3 Prompt 6.
+
+      ## Tasks
+      - [ ] Left panel: persists with circuit info + weather summary from Step 2
+      - [ ] Stepper: ③ active
+      - [ ] Podium section — 3 cards (2nd left smaller / 1st center tallest red border / 3rd right smaller)
+            Each card: position badge, driver name, team, confidence %
+      - [ ] Team Confidence list: ranked constructors with % + short horizontal bar
+      - [ ] Key Metrics (4 stats): Starting Grid Position %, Overtaking Opportunity %,
+            Driver Circuit History %, Team Race Pace %
+            Color-coded values: green (strong) / amber (moderate) / red (weak)
+      - [ ] Full predicted standings: scrollable table P1–P22, driver + team + confidence %
+      - [ ] "NEW PREDICTION" button — resets wizard to Step 1
+      - [ ] POST to `POST /api/predictions/` with `{ circuit_id, weather, starting_grid }`
+      - [ ] Fallback: mock result using entered grid order when backend unreachable
+
+  # ─────────────────────────────────────────────
+  # FRONTEND — DATA CENTER & NEWSROOM (Prompts 7, 8)
+  # ─────────────────────────────────────────────
+
+  - title: "[FE] Data Center page redesign"
+    assignees: ["BrooklynMetzger"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Build the Data Center page (`/data-center`) per FRONTEND_REDESIGN_v3 Prompt 7.
+
+      ## Tasks
+      - [ ] Left sidebar (25%): search input + scrollable circuit list
+            Each row: small thumbnail + circuit name + type (Circuit / Autocross / Street)
+            Selected row: red left-border highlight
+            Fetch from `GET /api/circuits`
+      - [ ] Main panel (75%): selected circuit detail
+      - [ ] Circuit header: name (large, Barlow Condensed) + circuit SVG map placeholder
+      - [ ] Weather widget top-right: temp, condition, humidity, wind
+            (OpenWeatherMap or Visual Crossing — coordinate with Yulissa on API key)
+      - [ ] Tab row: OVERVIEW · CIRCUIT RECORDS · RACE DATA
+      - [ ] Overview tab:
+            - Stats bar: track length, laps, race distance, DRS zones, turns
+            - Lap record: time + driver + year (large, highlighted)
+            - Telemetry line chart: speed trace across a lap
+            - Circuit DNA radar chart (pentagon): Engine Power / Cornering / Grip /
+              Stability / Braking — filled red polygon
+      - [ ] Circuit Records tab: Year · Driver · Team · Fastest Lap · Race Winner table
+      - [ ] Race Data tab: historical results for selected circuit
+            (Year · Winner · Team · Avg Speed · Weather) — updated with 2026 data
+      - [ ] Fetch from `GET /api/circuits/:id`; fallback Monaco hardcoded data
+
+  - title: "[FE] Newsroom page redesign"
+    assignees: ["BrooklynMetzger"]
+    labels: ["increment-3", "frontend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Build the Newsroom page (`/newsroom`) per FRONTEND_REDESIGN_v3 Prompt 8.
+      This replaces the current "Stories" page — standardize to "Newsroom" everywhere.
+
+      ## Tasks
+      - [ ] Race filter tabs at top: ALL + one tab per completed 2026 race
+            (dynamic from race calendar data; hardcode initial list if API unavailable)
+      - [ ] Search bar top-right: live filter on article title/tags
+      - [ ] Main content (65%):
+            - Featured article card (full-width): large thumbnail, category tag, headline, blurb
+            - 3-column article grid below: thumbnail, tag, headline, blurb per card
+            - Clicking article headline → external link (new tab)
+      - [ ] Right sidebar (35%):
+            - "TOP STORIES": text list, 5–7 headlines + source label
+            - "TRENDING VIDEOS": 2–3 thumbnail cards
+      - [ ] Fetch from `GET /api/news`; fallback hardcoded F1 article headlines
+      - [ ] Ensure category tag styling: FEATURED / BREAKING / ANALYSIS badges
+
+  # ─────────────────────────────────────────────
+  # BACKEND — FIX HOLLOW ENDPOINTS (Liv)
+  # ─────────────────────────────────────────────
+
+  - title: "[BE] Fix /api/championship/standings — return real 2026 data (not zeros)"
+    assignees: ["or22a"] # Liv
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      The standings endpoint currently returns hardcoded zeros. Wire it to real data
+      from the database (seeded from Jolpica-F1).
+
+      ## Tasks
+      - [ ] Query `driver_standings` table and return sorted list of drivers with
+            points, position, team, win probability
+      - [ ] Ensure response schema matches what the Dashboard frontend expects:
+            `{ position, driver_name, team, points, win_chance }`
+      - [ ] If `driver_standings` table is empty, fall back to fetching live from
+            `https://api.jolpi.ca/ergast/f1/2026/driverStandings/` and caching result
+      - [ ] Add response caching (TTL: 5 minutes) to avoid hammering Jolpica
+
+  - title: "[BE] Fix /api/championship/team-standings — return real 2026 constructor data"
+    assignees: ["or22a"]
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Companion to the driver standings fix — same pattern for constructor standings.
+
+      ## Tasks
+      - [ ] Query `team_standings` table and return sorted list with points, team color
+      - [ ] Response schema: `{ position, team_name, points, color, win_chance }`
+      - [ ] Fallback: live fetch from Jolpica constructorStandings if DB is empty
+      - [ ] Response caching (TTL: 5 minutes)
+
+  - title: "[BUFFER] Implement /api/races/upcoming endpoint"
+    assignees: []
+    labels: ["increment-3", "backend", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      This endpoint is referenced by the Dashboard but does not exist in the codebase.
+
+      ## Tasks
+      - [ ] Add `GET /api/races/upcoming` route in FastAPI
+      - [ ] Query `race_calendar` table for the race after the current `next` race
+            (i.e., find the next two races by comparing `end_datetime` against `NOW()`,
+            return the second one)
+      - [ ] Response schema mirrors `GET /api/races/next`:
+            `{ round, race_name, circuit_name, location, country_flag, date_range }`
+      - [ ] Fallback: Japan GP (Mar 21–23) if calendar table is empty
+
+      ## Dependency
+      Requires `race_calendar` table — blocked until that seeding issue is done.
+
+  - title: "[BE] Implement /api/circuits/:id endpoint"
+    assignees: ["YulissaFu"] # Yulissa
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Data Center page needs per-circuit detail. No endpoint exists for this yet.
+
+      ## Tasks
+      - [ ] Add `GET /api/circuits/{circuit_id}` route in FastAPI
+      - [ ] Return full circuit detail: name, location, country, track_length_km, laps,
+            race_distance_km, drs_zones, turns, lap_record (time + driver + year),
+            circuit_type, circuit_dna scores (engine_power, cornering, grip,
+            stability, braking — 0–100 each)
+      - [ ] Also return recent race results for that circuit (used in Race Data tab)
+      - [ ] Fallback: Monaco hardcoded data if circuit not found
+
+  - title: "[BUFFER] Implement /api/drivers endpoint — 2026 grid (22 drivers)"
+    assignees: []
+    labels: ["increment-3", "backend", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Simulator Step 2 needs the full 2026 driver grid for the starting grid dropdowns.
+
+      ## Tasks
+      - [ ] Add `GET /api/drivers` route in FastAPI
+      - [ ] Return list of all 22 2026-season drivers with: driver_id, name, team,
+            team_color, country_flag, number
+      - [ ] 2026 lineup (11 teams × 2): Mercedes (Hamilton/Russell), Ferrari
+            (Leclerc/Sainz), McLaren (Norris/Piastri), Red Bull (Verstappen/Perez),
+            Aston Martin (Alonso/Stroll), Alpine (Gasly/Doohan), Williams
+            (Albon/Colapinto), Racing Bulls (Tsunoda/Hadjar), Haas (Bearman/Ocon),
+            Audi (Hulkenberg/Bortoleto), Cadillac (Drugovich/Maini)
+            _(Verify against actual 2026 confirmed lineup — some seats changed late)_
+      - [ ] If drivers table exists in DB, query it; otherwise return hardcoded list
+
+  - title: "[BUFFER] Create and seed race_calendar DB table — all 2026 rounds"
+    assignees: []
+    labels: ["increment-3", "backend", "data", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Multiple endpoints (`/api/races/next`, `/api/races/upcoming`, auto-updater
+      scheduler) all depend on a `race_calendar` table with `end_datetime` UTC for
+      each 2026 round. This table does not exist yet.
+
+      ## Tasks
+      - [ ] Create `race_calendar` table via Alembic migration:
+            `round (int PK), race_name, circuit_id (FK), location, country,
+             start_datetime (UTC), end_datetime (UTC), is_sprint (bool)`
+      - [ ] Seed all 2026 rounds with accurate UTC end datetimes
+            (race ends approx. 2 hours after scheduled race start)
+      - [ ] Update `GET /api/races/next` to query this table against `NOW()` —
+            no hardcoded race values anywhere in the codebase
+      - [ ] Provide a seed script or Alembic data migration so any teammate can
+            populate their local DB with `alembic upgrade head`
+
+  - title: "[BE] Auto-updater: APScheduler setup + Jolpica fetch jobs (API side)"
+    assignees: ["YulissaFu"]
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Set up APScheduler in FastAPI and implement the Jolpica-F1 fetch functions
+      that run after each race weekend. This is the external API / scheduling half
+      of the auto-updater. Liv owns the DB write half (see companion issue).
+
+      Per FRONTEND_REDESIGN_v3 Prompt 9.
+
+      ## Tasks
+      - [ ] Install and configure APScheduler in the FastAPI app (add to startup)
+      - [ ] Schedule trigger: run ~2 hours after each race weekend's `end_datetime`
+            in `race_calendar` (date-aware trigger, not a fixed interval)
+      - [ ] Implement `fetch_driver_standings()` — calls
+            `https://api.jolpi.ca/ergast/f1/2026/driverStandings/`, parses response,
+            returns normalized list ready for DB upsert
+      - [ ] Implement `fetch_constructor_standings()` — same pattern for constructors
+      - [ ] Implement `fetch_race_results(round)` — calls
+            `https://api.jolpi.ca/ergast/f1/2026/results/`, parses and normalizes
+      - [ ] Add a manual trigger endpoint `POST /api/admin/sync` that calls the
+            full job on demand (no auth — internal testing only)
+      - [ ] Add job-level logging (job start, data fetched, rows returned, any errors)
+
+      ## Dependency
+      `race_calendar` table must exist (buffer issue). Coordinate with Liv on
+      the normalized data shape her upsert functions expect.
+
+  - title: "[BE] Auto-updater: DB upsert + cache invalidation (DB side)"
+    assignees: ["or22a"]
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Implement the database write half of the auto-updater job. Yulissa's fetch
+      functions return normalized data — this issue is about receiving that data
+      and writing it correctly to the DB, then invalidating stale caches.
+
+      ## Tasks
+      - [ ] Implement `upsert_driver_standings(data)` — upsert into `driver_standings`
+            table; on conflict update points, position, win_chance
+      - [ ] Implement `upsert_team_standings(data)` — same for `team_standings`
+      - [ ] Implement `insert_race_results(data)` — insert new rows into `race_results`
+            with fields: `race_id, circuit_id, driver_id, team_id, grid_position,
+            finish_position, points_scored, race_date` (schema per data contract issue)
+      - [ ] Invalidate cached responses for `/api/championship/standings`,
+            `/api/championship/team-standings`, `/api/races/next`, `/api/races/upcoming`
+            after each successful write
+      - [ ] Add row-level logging (how many rows inserted/updated per table)
+      - [ ] Coordinate with Yulissa: agree on the normalized dict shape passed
+            between her fetch functions and these upsert functions
+
+      ## Dependency
+      ML training data schema must be locked (Julissa + Alex) before
+      `insert_race_results` schema is finalized.
+
+  # ─────────────────────────────────────────────
+  # BACKEND — NEWS (Yulissa)
+  # ─────────────────────────────────────────────
+
+  - title: "[BE] Implement /api/news — RSS feed integration"
+    assignees: ["YulissaFu"]
+    labels: ["increment-3", "backend", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Newsroom page needs a news feed endpoint. Implement using RSS parsing from
+      reliable F1 news sources.
+
+      ## Tasks
+      - [ ] Add `GET /api/news` route in FastAPI
+      - [ ] Parse RSS feeds from 2–3 F1 news sources:
+            - Autosport: `https://www.autosport.com/rss/f1/news/`
+            - Motorsport.com: `https://www.motorsport.com/rss/f1/news/`
+            - The Race: `https://www.the-race.com/feed/`
+            _(Verify these URLs are still active before implementing)_
+      - [ ] Normalize each article to: `{ id, title, blurb, source, url, published_at,
+            category, image_url }`
+      - [ ] Cache results for 6 hours to respect rate limits
+      - [ ] Support optional `?race=` query param filter for Newsroom race tabs
+      - [ ] Fallback: return hardcoded 6–8 recent F1 headlines if all feeds fail
+      - [ ] Handle feed fetch errors gracefully (don't crash the endpoint)
+
+  # ─────────────────────────────────────────────
+  # BACKEND — HOSTING (Yulissa)
+  # ─────────────────────────────────────────────
+
+  - title: "[DEVOPS] Deploy backend to production (Dokploy)"
+    assignees: ["YulissaFu"]
+    labels: ["increment-3", "devops", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Deploy the FastAPI backend to production using Dokploy as planned.
+
+      ## Tasks
+      - [ ] Provision server / Dokploy environment
+      - [ ] Dockerize backend if not already (`Dockerfile` + `docker-compose.yml`)
+      - [ ] Configure PostgreSQL in production (or use managed DB)
+      - [ ] Run Alembic migrations on production DB
+      - [ ] Set all production environment variables (see `.env.example`):
+            `DATABASE_URL`, API keys (OpenWeatherMap, etc.), `ALLOWED_ORIGINS`
+      - [ ] Configure CORS to allow Vercel frontend domain (not just localhost)
+      - [ ] Verify all endpoints respond at production URL
+      - [ ] Document production URL in README so team can update frontend base URL
+
+      ## Notes
+      Don't store secrets in the repo. Use Dokploy's environment variable panel or
+      a `.env` file that's gitignored.
+
+  - title: "[BUFFER] Deploy frontend to Vercel (free tier)"
+    assignees: []
+    labels: ["increment-3", "devops", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Deploy the Vite/React frontend to Vercel free tier as originally planned.
+
+      ## Tasks
+      - [ ] Connect `as21emAS/F1-Capstone-Project` repo to Vercel
+      - [ ] Set build settings: root = `frontend/`, build command = `npm run build`,
+            output dir = `dist`
+      - [ ] Add production environment variable: `VITE_API_BASE_URL` pointing to
+            Dokploy backend URL
+      - [ ] Verify React Router client-side routing works (add `vercel.json` with
+            rewrite rule: `"source": "/(.*)", "destination": "/index.html"`)
+      - [ ] Test all 4 pages load correctly in production
+      - [ ] Add Vercel deployment URL to README
+
+      ## Dependency
+      Backend must be deployed first (need its URL for `VITE_API_BASE_URL`).
+
+  # ─────────────────────────────────────────────
+  # ML — PREDICTION INTEGRATION (Julissa)
+  # ─────────────────────────────────────────────
+
+  - title: "[ML] Wire f1_winner_model_v2.pkl into /api/predictions/ — real inference"
+    assignees: ["julissasu"] # Julissa
+    labels: ["increment-3", "ml", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      `POST /api/predictions/` currently returns 3 hardcoded drivers and never
+      invokes the model. `predictor.py` has a TODO in the function body. Fix both.
+
+      ## Tasks
+      - [ ] Complete the function body in `predictor.py` — load `f1_winner_model_v2.pkl`
+            using `joblib.load()` and run actual inference
+      - [ ] Map incoming request payload `{ circuit_id, weather, starting_grid }`
+            to the feature vector the model expects
+      - [ ] Return a proper ranked result: list of 22 drivers sorted by predicted
+            finish position with confidence scores
+      - [ ] The `/api/predictions/` route handler should call the real predictor
+            function — remove the hardcoded 3-driver return
+      - [ ] Test locally: POST a real payload and confirm ranked output (not placeholder)
+      - [ ] Document the feature vector format in a comment so future teammates
+            can understand input/output contract
+
+      ## Notes
+      If the model's feature engineering requires fields not in the request payload
+      (e.g. historical stats), the predictor can look them up from the DB internally.
+      Confidence scores should be honest — 45–50% exact winner range is expected.
+
+  - title: "[ML] Lock ML training data schema with Alex (data contract)"
+    assignees: ["julissasu"]
+    labels: ["increment-3", "ml", "data", "core"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      The auto-updater (post-race sync job) will write new race results to the DB,
+      and those results need to be in the exact format Julissa's model expects for
+      retraining or incremental scoring. This schema must be agreed and locked
+      before the auto-updater is built to avoid blocking dependencies.
+
+      ## Tasks
+      - [ ] Julissa: document the feature columns and dtypes the model currently
+            expects at training time
+      - [ ] Alex: confirm which fields the ingestion pipeline can reliably provide
+            from Jolpica-F1 results
+      - [ ] Together: agree on the canonical row schema:
+            `race_id, circuit_id, driver_id, team_id, grid_position,
+             finish_position, weather_condition, fastest_lap, points_scored, race_date`
+            (and any additional columns needed for feature engineering)
+      - [ ] Add the agreed schema as a comment block in `predictor.py` and as a
+            `# DATA CONTRACT` section in the backend README
+      - [ ] Ensure DB migration for `race_results` table matches this schema
+
+      ## Acceptance Criteria
+      Schema is written down and both Alex and Julissa have signed off in PR review
+      before the auto-updater PR is merged.
+
+  # ─────────────────────────────────────────────
+  # BUFFER ISSUES — grab these if you have bandwidth
+  # No role restrictions. Anyone can pick these up.
+  # ─────────────────────────────────────────────
+
+  - title: "[BUFFER] Seed 2026 race calendar — static JSON + DB migration"
+    assignees: []
+    labels: ["increment-3", "data", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Several backend endpoints and the auto-updater scheduler depend on a populated
+      `race_calendar` table. Anyone can knock this out — it's research + JSON + a
+      seed script.
+
+      ## Tasks
+      - [ ] Research the full 2026 F1 calendar (24 rounds, starts Mar 16 Bahrain)
+      - [ ] Build a `race_calendar_seed.json` with all rounds:
+            `round, race_name, circuit_id, location, country, start_datetime (UTC),
+             end_datetime (UTC, ~race_start + 2h), is_sprint`
+      - [ ] Verify UTC offsets are correct for each host country
+      - [ ] Provide as an Alembic data migration or `seed_calendar.py` script
+      - [ ] Ensure `circuit_id` FK values match Liv's circuits table
+
+  - title: "[BUFFER] Implement live race clock in Header"
+    assignees: []
+    labels: ["increment-3", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      The Header race clock block currently shows static placeholder text.
+      Make it tick in real time.
+
+      ## Tasks
+      - [ ] Use `setInterval` to tick every second from JS `Date`
+      - [ ] Fetch current next race city + timezone from `GET /api/races/next`
+      - [ ] Compute "MY TIME" = local time, "TRACK TIME" = local time offset by
+            the race city's UTC offset
+      - [ ] Display format: "GLOBAL CLOCK · {CITY}" / "MY TIME {HH:MM} · TRACK TIME {HH:MM}"
+      - [ ] Fallback: static "C2 CHINA · MY TIME 16:29 · TRACK TIME 07:24"
+      - [ ] Clean up `clearInterval` on unmount to avoid memory leaks
+
+  - title: "[BUFFER] Replace circuit SVG placeholders with real outlines"
+    assignees: []
+    labels: ["increment-3", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Simulator left panel and Data Center main panel both show placeholder boxes
+      where circuit SVG maps should appear. Replace with real circuit outlines.
+
+      ## Tasks
+      - [ ] Source clean SVG outlines for the circuits in our circuit list
+            (good source: https://github.com/f1laps/f1-track-outlines or similar
+            open-license repos)
+      - [ ] Place SVGs in `frontend/src/assets/circuits/` named by circuit_id
+            (e.g. `monaco.svg`, `bahrain.svg`)
+      - [ ] Update Simulator left panel and Data Center panel to load the correct
+            SVG based on selected circuit
+      - [ ] Style: white or `--accent` stroke on transparent background, viewBox scaled
+            to fit container
+
+  - title: "[BUFFER] Source and wire in Dashboard hero video"
+    assignees: []
+    labels: ["increment-3", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      The hero `<video>` element has an empty `src=""` stub. Find a suitable video
+      and wire it in.
+
+      ## Tasks
+      - [ ] Source a royalty-free F1 race footage clip (try: Pexels, Pixabay, or an
+            official F1 YouTube clip if embeddable)
+      - [ ] Host it in `public/` or link to a CDN URL
+      - [ ] Drop URL into the `<video src="">` stub in the Dashboard hero component
+      - [ ] Verify autoplay works in Chrome/Safari/Firefox (muted required for autoplay)
+      - [ ] Check that the gradient overlay still looks correct over the video
+
+  - title: "[BUFFER] Cross-browser and responsive testing — all 4 pages"
+    assignees: []
+    labels: ["increment-3", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      Final QA pass across all pages on multiple browsers and screen sizes before
+      the April 19 deadline and April 27 grading.
+
+      ## Tasks
+      - [ ] Test all 4 pages (Dashboard, Simulator, Data Center, Newsroom) in:
+            Chrome, Firefox, Safari, Edge
+      - [ ] Test at common breakpoints: 1440px desktop, 1024px tablet, 375px mobile
+      - [ ] Document any layout breakages as separate issues or fixes
+      - [ ] Verify no white flash on load (dark background must appear immediately)
+      - [ ] Check font loading (Barlow Condensed + Titillium Web) — no FOUT/FOIT issues
+      - [ ] Verify Recharts charts render correctly at different widths
+
+  - title: "[BUFFER] Update README for Increment 3"
+    assignees: []
+    labels: ["increment-3", "buffer"]
+    milestone: "Increment 3"
+    body: |
+      ## Description
+      README needs to reflect the current state of the project after Increment 3 ships.
+
+      ## Tasks
+      - [ ] Update project name to RACETRACK everywhere in README
+      - [ ] Update tech stack section (confirm Tailwind v4, Vite, APScheduler, etc.)
+      - [ ] Update file structure section to reflect new organization
+      - [ ] Add "Getting Started" section: exact commands to run frontend + backend locally
+      - [ ] Add production URLs (Vercel + Dokploy) once deployed
+      - [ ] Update ML section: honest accuracy targets (45–50% exact winner, 70%+ podium)
+            and remove any inflated numbers from Increment 1/2
+      - [ ] Add environment variable reference (`.env.example` for both frontend/backend)
