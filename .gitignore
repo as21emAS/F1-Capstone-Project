@@ -426,3 +426,6 @@ FodyWeavers.xsd
 *.png
 *.jpg
 *.jpeg
+
+# Compressed files
+*.zip
