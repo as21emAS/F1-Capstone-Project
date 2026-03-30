@@ -53,7 +53,7 @@ def check_milestone(name: str):
     if name not in milestones:
         print(f"✗ Milestone '{name}' not found.")
         print(f"  Create it first:")
-        print(f"    gh api repos/{REPO}/milestones --method POST --field title=\"{name}\" --field due_on=\"2026-04-27T23:59:59Z\"")
+        print(f"    gh api repos/{REPO}/milestones --method POST --field title=\"{name}\" --field due_on=\"gi026-04-27T23:59:59Z\"")
         sys.exit(1)
     print(f"✓ Milestone '{name}' exists")
 

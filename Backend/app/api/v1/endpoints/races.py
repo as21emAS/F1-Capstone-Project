@@ -6,10 +6,7 @@ import time
 from app.schemas.races import NextRaceResponse, CircuitInfo
 from pydantic import BaseModel
 
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
-from api_clients.jolpica_f1_client import JolpicaF1Client
+from app.external.jolpica import JolpicaF1Client
 
 router = APIRouter()
 

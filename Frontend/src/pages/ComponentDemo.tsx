@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Button } from "../components/Button.tsx";
-import { Card, CardHeader, CardBody, CardFooter } from "../components/Card";
+import { Card, CardHeader, CardBody } from "../components/Card";
 import { Input, Select } from "../components/Input";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { ErrorMessage } from "../components/ErrorMessage";
-import { DriverCard, RaceCard, TeamCard, PredictionResultCard, DriverStandingsChart, TeamStandingsChart, LoadingSkeleton, EmptyState, ConfidenceBar} from "../components/ui/index.ts";
+import { LoadingSkeleton, EmptyState, ConfidenceBar } from "../components/ui/index.ts";
+import { DriverCard, RaceCard, TeamCard, PredictionResultCard, DriverStandingsChart, TeamStandingsChart } from "../components/data/index.ts";
 /* Importing all fake data used just to show off UI examples */
 import { mockDriver, mockDriver2, mockTeam, mockTeam2, mockRace, mockRace2, mockPred, mockPred2, mockStandings, mockTeamStandings } from "./Data.ts";
 

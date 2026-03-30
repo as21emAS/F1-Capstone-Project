@@ -8,12 +8,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from sqlalchemy import func
 from database.database import SessionLocal, engine
-from models import Base, Circuit, Race, Driver, Team, RaceResult, DriverStanding, TeamStanding
-from api_clients.jolpica_f1_client import JolpicaF1Client
-from api_clients.data_transformers import (
-    transform_race, 
-    transform_driver, 
-    transform_team, 
+from app.models.models import Base, Circuit, Race, Driver, Team, RaceResult, DriverStanding, TeamStanding
+from app.external.jolpica import JolpicaF1Client
+from app.external.transformers import (
+    transform_race,
+    transform_driver,
+    transform_team,
     transform_result
 )
 

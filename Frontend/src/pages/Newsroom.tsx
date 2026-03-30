@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./News.css";
+import "./Newsroom.css";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNews } from "../services/api";
 

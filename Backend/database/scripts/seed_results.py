@@ -3,8 +3,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from api_clients.jolpica_f1_client import JolpicaF1Client
-from api_clients.data_transformers import transform_result
+from app.external.jolpica import JolpicaF1Client
+from app.external.transformers import transform_result
 from database.crud import get_db_connection
 from database.connection_pool import return_connection
 

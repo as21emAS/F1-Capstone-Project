@@ -103,7 +103,8 @@ export function TeamStandingsChart({ standings }: TeamStandingsChartProps) {
               cx="50%"
               cy="45%"
               labelLine={false}
-              label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+              label={({ cx, cy, midAngle, outerRadius, percent }) => {
+                if (midAngle === undefined || percent === undefined) return null;
                 const RADIAN = Math.PI / 180;
                 const radius = outerRadius + 18;
                 const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -115,8 +116,8 @@ export function TeamStandingsChart({ standings }: TeamStandingsChartProps) {
                     fill="#000"
                     textAnchor={x > cx ? 'start' : 'end'}
                     dominantBaseline="central"
-                    style={{ 
-                      fontSize: '13px', 
+                    style={{
+                      fontSize: '13px',
                       fontWeight: 'bold',
                       fontFamily: 'monospace'
                     }}
