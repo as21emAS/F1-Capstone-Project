@@ -3,7 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import "./Global.css";
 import "./Layout.css";
 
-export default function Dashboard() {
+export default function Layout() {
   const [timeStr, setTimeStr] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -80,7 +80,7 @@ export default function Dashboard() {
           </NavLink>
 
           <NavLink
-            to="/news"
+            to="/newsroom"
             className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >

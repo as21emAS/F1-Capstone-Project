@@ -1,7 +1,7 @@
 #More testing of API client and data transformers
 
-from api_clients.jolpica_f1_client import JolpicaF1Client
-from api_clients.data_transformers import transform_race, transform_result, transform_driver, transform_team
+from app.external.jolpica import JolpicaF1Client
+from app.external.transformers import transform_race, transform_result, transform_driver, transform_team
 
 client = JolpicaF1Client()
 

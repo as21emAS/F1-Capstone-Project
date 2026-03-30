@@ -10,7 +10,7 @@ export interface RaceCardProps {
 }
 
 export function RaceCard({
-  race_id,
+  race_id: _race_id,
   name,
   circuit,
   date,

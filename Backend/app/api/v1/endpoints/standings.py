@@ -4,12 +4,9 @@ from app.schemas.standings import (
     TeamStandingsResponse, TeamStanding,
 )
 from app.core.config import settings
-import sys
-from pathlib import Path
 import time
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from api_clients.jolpica_f1_client import JolpicaF1Client
+from app.external.jolpica import JolpicaF1Client
 
 router = APIRouter()
 

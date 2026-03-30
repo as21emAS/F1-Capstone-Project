@@ -75,7 +75,7 @@ def transform_result(result_data):
 
 #Test
 if __name__ == "__main__":
-    from jolpica_f1_client import JolpicaF1Client
+    from app.external.jolpica import JolpicaF1Client
     
     print("\nTesting Data Transformers\n")
     

@@ -1,5 +1,5 @@
 import './PredictionResultCard.css';
-import { ConfidenceBar } from './index';
+import { ConfidenceBar } from '../ui/ConfidenceBar';
 
 export interface PredictionResultCardProps {
   driver: string;
