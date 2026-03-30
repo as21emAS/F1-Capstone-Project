@@ -431,4 +431,4 @@ FodyWeavers.xsd
 *.zip
 
 # stuff
-# *.claude
+*.claude
