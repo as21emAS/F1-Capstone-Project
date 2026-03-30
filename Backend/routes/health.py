@@ -9,7 +9,7 @@ from sqlalchemy.exc import DatabaseError, OperationalError, SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from database.database import get_db
-from models import Circuit, Driver, Race
+from app.models.models import Circuit, Driver, Race
 
 # ── Logger ────────────────────────────────────────────────────────────────────
 logger = logging.getLogger(__name__)

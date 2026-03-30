@@ -7,7 +7,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from sqlalchemy import func
 from database.database import SessionLocal, engine
-from models import Base, Circuit, Race
+from app.models.models import Base, Circuit, Race
 from app.external.jolpica import JolpicaF1Client
 
 # Create all tables if they don't exist

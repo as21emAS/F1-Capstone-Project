@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from database.database import get_db
-from models import Race, Driver, Circuit
+from app.models.models import Race, Driver, Circuit
 
 app = FastAPI(title="F1 Predictor API")
 
