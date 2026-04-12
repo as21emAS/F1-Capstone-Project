@@ -276,7 +276,7 @@ def seed_race_results_for_seasons(session, client, seasons):
                     existing_result.grid_position = int(result_data.get('grid', 0))
                     existing_result.finish_position = int(position) if position else None
                     existing_result.position_text = result_data.get('positionText', '')
-                    existing_result.points = float(result_data.get('points', 0))
+                    existing_result.points_scored = float(result_data.get('points', 0))
                     existing_result.laps_completed = int(result_data.get('laps', 0))
                     existing_result.status = status
                     existing_result.time = result_data.get('Time', {}).get('time')
@@ -293,7 +293,7 @@ def seed_race_results_for_seasons(session, client, seasons):
                         grid_position=int(result_data.get('grid', 0)),
                         finish_position=int(position) if position else None,
                         position_text=result_data.get('positionText', ''),
-                        points=float(result_data.get('points', 0)),
+                        points_scored=float(result_data.get('points', 0)),
                         laps_completed=int(result_data.get('laps', 0)),
                         status=status,
                         time=result_data.get('Time', {}).get('time'),

@@ -19,7 +19,7 @@ def upsert_race_result(result_data):
     cursor.execute("""
         INSERT INTO race_results (
             race_id, driver_id, team_id, grid_position, finish_position,
-            position_text, points, laps_completed, status, time, finished, dnf
+            position_text, points_scored, laps_completed, status, time, finished, dnf
         )
         SELECT
             r.race_id,
@@ -41,7 +41,7 @@ def upsert_race_result(result_data):
             grid_position   = EXCLUDED.grid_position,
             finish_position = EXCLUDED.finish_position,
             position_text   = EXCLUDED.position_text,
-            points          = EXCLUDED.points,
+            points_scored   = EXCLUDED.points_scored,
             laps_completed  = EXCLUDED.laps_completed,
             status          = EXCLUDED.status,
             time            = EXCLUDED.time,

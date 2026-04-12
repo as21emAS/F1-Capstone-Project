@@ -5,6 +5,24 @@ from .model_loader import load_model, load_model_features, get_model_version
 import sys
 from pathlib import Path
 
+# =============================================================================
+# DATA CONTRACT — race_results table
+# Agreed by Julissa (ML) and Alex (ingestion) — must be finalized before
+# the auto-updater PR is merged.
+#
+# Column               dtype       Source
+# ----------------------------------------------------------------------------
+# race_id              INTEGER     Jolpica
+# circuit_id           VARCHAR     Jolpica
+# driver_id            VARCHAR     Jolpica
+# team_id              VARCHAR     Jolpica
+# grid_position        FLOAT       Jolpica — GridPosition
+# finish_position      FLOAT       Jolpica — Position (penalty-adjusted)
+# points_scored        FLOAT       Jolpica
+# race_date            DATE        Jolpica
+# weather_condition    VARCHAR     OpenWeather API ("dry", "wet", "mixed")
+# =============================================================================
+
 # allow imports from project root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 

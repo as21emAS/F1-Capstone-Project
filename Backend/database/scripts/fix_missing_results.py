@@ -35,13 +35,13 @@ def insert_result(cursor, result_data, race_id):
     cursor.execute("""
         INSERT INTO race_results 
         (race_id, driver_id, team_id, grid_position, finish_position, position_text, 
-         points, laps_completed, status, time, finished, dnf)
+         points_scored, laps_completed, status, time, finished, dnf)
         VALUES (%(race_id)s, %(driver_id)s, %(team_id)s, %(grid_position)s, %(finish_position)s, 
                 %(position_text)s, %(points)s, %(laps_completed)s, %(status)s, %(time)s, 
                 %(finished)s, %(dnf)s)
         ON CONFLICT (race_id, driver_id) DO UPDATE SET
             finish_position = EXCLUDED.finish_position,
-            points = EXCLUDED.points,
+            points_scored = EXCLUDED.points_scored,
             status = EXCLUDED.status
     """, {**result_data, 'race_id': race_id})
 
