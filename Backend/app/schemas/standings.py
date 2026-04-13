@@ -4,19 +4,19 @@ from typing import List
 
 class DriverStanding(BaseModel):
     position: int
-    driver_id: str
+    #driver_id: str
     driver_name: str
     team: str
     points: float
-    wins: int
-
+    #wins: int
+    win_chance: float = 0.0  
 
 class TeamStanding(BaseModel):
     position: int
-    team: str
+    team_name: str
     points: float
-    wins: int
-
+    color: str = "#000000"
+    win_chance: float = 0.0
 
 class DriverStandingsResponse(BaseModel):
     season: int
