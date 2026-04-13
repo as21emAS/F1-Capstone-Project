@@ -21,6 +21,27 @@ class CircuitSummary(BaseModel):
     country: Optional[str] = None
 
 
+class LapRecord(BaseModel):
+    time: str
+    driver: str
+    year: int
+
+
+class CircuitDNA(BaseModel):
+    engine_power: int
+    cornering: int
+    grip: int
+    stability: int
+    braking: int
+
+
+class RecentRaceResult(BaseModel):
+    year: int
+    race_name: str
+    winner: str
+    podium: List[str]
+
+
 class CircuitDetail(BaseModel):
     circuit_id: str
     circuit_name: str
@@ -28,6 +49,16 @@ class CircuitDetail(BaseModel):
     country: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
+    
+    track_length_km: Optional[float] = None
+    laps: Optional[int] = None
+    race_distance_km: Optional[float] = None
+    drs_zones: Optional[int] = None
+    turns: Optional[int] = None
+    lap_record: Optional[LapRecord] = None
+    circuit_type: Optional[str] = None
+    circuit_dna: Optional[CircuitDNA] = None
+    recent_results: List[RecentRaceResult] = []
 
 
 # ── Races ─────────────────────────────────────────────────────────────────────
