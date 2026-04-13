@@ -13,5 +13,6 @@ class Settings(BaseSettings):
     DATABASE_MAX_OVERFLOW: int = 20
     CURRENT_SEASON: int = 2026
     OPENWEATHER_API_KEY: Optional[str] = None
+    VISUALCROSSING_API_KEY: Optional[str] = None
 
 settings = Settings()
