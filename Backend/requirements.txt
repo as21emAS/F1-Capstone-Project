@@ -15,6 +15,7 @@ python-dotenv==1.2.1
 # HTTP clients (external API calls)
 requests==2.32.5
 httpx==0.28.1
+feedparser==6.0.12
 
 # Machine learning
 scikit-learn==1.8.0
