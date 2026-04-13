@@ -432,3 +432,5 @@ FodyWeavers.xsd
 
 # stuff
 *.claude
+
+venv/

@@ -337,7 +337,7 @@ def get_driver_standings(year):
             d.driver_id,
             d.driver_full_name,
             d.driver_code,
-            SUM(rr.points) as total_points,
+            SUM(rr.points_scored) as total_points,
             COUNT(CASE WHEN rr.finish_position = 1 THEN 1 END) as wins,
             COUNT(CASE WHEN rr.finish_position <= 3 THEN 1 END) as podiums,
             COUNT(*) as races_entered
@@ -363,7 +363,7 @@ def get_team_standings(year):
         SELECT 
             t.team_id,
             t.team_name,
-            SUM(rr.points) as total_points,
+            SUM(rr.points_scored) as total_points,
             COUNT(CASE WHEN rr.finish_position = 1 THEN 1 END) as wins,
             COUNT(CASE WHEN rr.finish_position <= 3 THEN 1 END) as podiums
         FROM race_results rr

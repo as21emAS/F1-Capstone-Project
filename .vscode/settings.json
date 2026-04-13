@@ -1,5 +1,8 @@
 {
     "python.terminal.useEnvFiles": true,
-    "python.envFile": "${workspaceFolder}/Backend/.env"
+    "python.envFile": "${workspaceFolder}/Backend/.env",
+    "cSpell.words": [
+        "Jolpica"
+    ]
 }
 

@@ -72,13 +72,20 @@ class RaceResult(Base):
     __tablename__ = "race_results"
     
     result_id = Column(Integer, primary_key=True, autoincrement=True)
+    
+    # Data contract columns (required for auto-updater)
     race_id = Column(Integer, ForeignKey('races.race_id'))
+    circuit_id = Column(String(100), ForeignKey('circuits.circuit_id'))
     driver_id = Column(String(100), ForeignKey('drivers.driver_id'))
     team_id = Column(String(100), ForeignKey('teams.team_id'))
-    grid_position = Column(Integer)
-    finish_position = Column(Integer)
+    grid_position = Column(Float)
+    finish_position = Column(Float)
+    points_scored = Column(Float)
+    race_date = Column(Date)
+    weather_condition = Column(String(50))  # "dry", "wet", "mixed"
+    
+    # Additional columns for backward compatibility
     position_text = Column(String(10))
-    points = Column(Numeric(5, 2))
     laps_completed = Column(Integer)
     status = Column(String(255))
     time = Column(String(50))
@@ -91,6 +98,7 @@ class RaceResult(Base):
     race = relationship("Race", back_populates="results")
     driver = relationship("Driver", back_populates="results")
     team = relationship("Team", back_populates="results")
+    circuit = relationship("Circuit")
 
 class WeatherData(Base):
     __tablename__ = "weather_data"
