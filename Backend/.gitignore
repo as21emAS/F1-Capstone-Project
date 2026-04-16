@@ -57,3 +57,4 @@ exported_data/
 
 # Cache directory (api client cache)
 .cache/
+.DS_Store
