@@ -181,13 +181,68 @@ export const submitSimulation = async (
   return response.data;
 };
 
-// Remove or comment out any VITE_F1_NEWS_URL env var reference
-const F1_NEWS_URL =
-  "https://api.rss2json.com/v1/api.json?rss_url=https://www.autosport.com/rss/f1/news/";
+// Diffrent F1 news feeds for more news
+// Change revert to orginal one news calls without creating
+// Errors for news page
+const F1_NEWS_FEEDS = [
+  "https://www.autosport.com/rss/f1/news/",
+  "https://www.motorsport.com/rss/f1/news/",
+];
 
 export const fetchNews = async (): Promise<NewsResponse> => {
-  const response = await axios.get<NewsResponse>(F1_NEWS_URL, { timeout: 8_000 });
-  return response.data;
+  // Create an array of Axios requests for every URL
+  const requests = F1_NEWS_FEEDS.map((feedUrl) => {
+    const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+    return axios.get<NewsResponse>(rss2jsonUrl, { timeout: 8_000 });
+  });
+  // Wait for all of them to finish 
+  const responses = await Promise.allSettled(requests);
+  // Combine all the articles into 1 array
+  let combinedItems: any[] = [];
+  responses.forEach((response) => {
+    // If the fetch was successful, add its articles to combined news list
+    if (response.status === "fulfilled" && response.value.data.items) {
+      combinedItems = [...combinedItems, ...response.value.data.items];
+    } else if (response.status === "rejected") {
+      console.error("Failed to fetch one of the F1 news feeds:", response.reason);
+    }
+  });
+  // Sort array based upon publish data and time
+  combinedItems.sort((a, b) => {
+    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
+  });
+
+  return {
+    status: "ok",
+    items: combinedItems,
+    // Dummy object for errors
+    feed: {
+      url: "",
+      title: "Combined F1 News Feed",
+      link: "",
+      author: "",
+      description: "Aggregated F1 news from multiple sources",
+      image: ""
+    }
+  } as NewsResponse;
+};
+
+// Fetch Latest Videos from the Official F1 YouTube Channel
+export const fetchVideos = async () => {
+  try {
+    // The official Formula 1 YouTube Channel ID
+    const f1ChannelId = "UCB_qr75-ydFVKSF9Dmo6izg";
+    const youtubeRSSUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${f1ChannelId}`;
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(youtubeRSSUrl)}`;
+    const response = await axios.get(apiUrl, { timeout: 8000 });
+    if (response.data && response.data.status === 'ok') {
+      return response.data.items;
+    }
+    return [];
+  } catch (error) {
+    console.error("Failed to fetch YouTube videos:", error);
+    return [];
+  }
 };
 
 export default apiClient;
