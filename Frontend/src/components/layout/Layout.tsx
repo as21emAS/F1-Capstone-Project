@@ -9,7 +9,7 @@ export default function Layout() {
 
   useEffect(() => {
     const update = () =>
-      setTimeStr(new Date().toUTCString().replace("GMT", "UTC"));
+      setTimeStr(new Date().toLocaleTimeString("en-US", { hour12: false }));
     update();
     const t = setInterval(update, 1000);
     return () => clearInterval(t);
@@ -19,23 +19,15 @@ export default function Layout() {
     <div className="app-root">
       <header className="header">
         <div className="header-inner">
-          <div className="logo-block">
-            <div className="checkered" />
-            <div>
-              <div className="logo-title">RaceTrack</div>
-              <div className="logo-sub">
-                RACE INTELLIGENCE SYSTEM · EST. 2026
-              </div>
-            </div>
+          <NavLink to="/" className="logo-block">
+            <span className="logo-title">RACETRACK</span>
+          </NavLink>
+
+          <div className="race-clock">
+            <div className="race-clock-label">GLOBAL CLOCK · LOCAL</div>
+            <div>{timeStr}</div>
           </div>
 
-          <div className="live-badge">
-            <span className="live-dot" />
-            <span className="live-text">LIVE</span>
-            <span className="live-time">{timeStr}</span>
-          </div>
-
-          {/* Hamburger — mobile only, shown via CSS */}
           <button
             className={`hamburger${menuOpen ? " open" : ""}`}
             onClick={() => setMenuOpen((o) => !o)}
@@ -60,7 +52,7 @@ export default function Layout() {
             className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
-            ◉ DASHBOARD
+            HOME
           </NavLink>
 
           <NavLink
@@ -68,7 +60,7 @@ export default function Layout() {
             className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
-            ⧖ RACE PREDICTOR
+            SIMULATOR
           </NavLink>
 
           <NavLink
@@ -76,7 +68,7 @@ export default function Layout() {
             className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
-            ◈ DATA CENTER
+            DATA CENTER
           </NavLink>
 
           <NavLink
@@ -84,7 +76,7 @@ export default function Layout() {
             className={({ isActive }) => `nav-btn${isActive ? " active" : ""}`}
             onClick={() => setMenuOpen(false)}
           >
-            ◷ NEWSROOM
+            NEWSROOM
           </NavLink>
 
           <NavLink
@@ -94,7 +86,7 @@ export default function Layout() {
             }
             onClick={() => setMenuOpen(false)}
           >
-            ⬡ UI COMPONENTS
+            UI COMPONENTS
           </NavLink>
         </nav>
       </header>
@@ -105,8 +97,8 @@ export default function Layout() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <span>FORMULA 1 PREDICTOR THING © 2026</span>
-          <span>POWERED BY FSU'S BEST AND BRIGHTEST</span>
+          <span>RACETRACK © 2026</span>
+          <span>FSU CEN 4090L CAPSTONE</span>
         </div>
       </footer>
     </div>
