@@ -279,17 +279,25 @@ CALENDAR_2026 = [
 ]
 
 
-def seed():
+def seed(update=False):
     session = Session()
     added = 0
     skipped = 0
+    updated = 0
 
     try:
         for r in CALENDAR_2026:
             existing = session.query(Race).filter_by(year=2026, round=r["round"]).first()
             if existing:
-                print(f"  SKIP R{r['round']:02d} {r['race_name']} (already exists)")
-                skipped += 1
+                if update:
+                    existing.start_datetime = dt(r["start_datetime"])
+                    existing.end_datetime = dt(r["end_datetime"])
+                    existing.is_sprint = r["is_sprint"]
+                    print(f"  UPDATE R{r['round']:02d} {r['race_name']}")
+                    updated += 1
+                else:
+                    print(f"  SKIP R{r['round']:02d} {r['race_name']}")
+                    skipped += 1
                 continue
 
             race = Race(
@@ -309,7 +317,7 @@ def seed():
             added += 1
 
         session.commit()
-        print(f"\nDone. {added} added, {skipped} skipped.")
+        print(f"\nDone. {added} added, {updated} updated, {skipped} skipped.")
     except Exception as e:
         session.rollback()
         print(f"ERROR: {e}")
@@ -319,4 +327,6 @@ def seed():
 
 
 if __name__ == "__main__":
-    seed()
+    import sys
+    update_mode = "--update" in sys.argv
+    seed(update=update_mode)

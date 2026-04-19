@@ -30,6 +30,9 @@ class Race(Base):
     circuit_name = Column(String(255))
     country = Column(String(100))
     date = Column(Date)
+    start_datetime = Column(DateTime(timezone=True))  
+    end_datetime = Column(DateTime(timezone=True))    
+    is_sprint = Column(Boolean, default=False) 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     
