@@ -121,22 +121,25 @@ def upsert_race_results(data: list[dict[str, Any]]) -> int:
 
     sql = """
         INSERT INTO race_results (
-            race_id, driver_id, team_id,
+            race_id, circuit_id, race_date, driver_id, team_id,
             grid_position, finish_position, position_text,
-            points_scored, laps_completed, status, time, dnf
+            points_scored, laps_completed, status, time, dnf, weather_condition
         )
         VALUES (
-            %(race_id)s, %(driver_id)s, %(team_id)s,
+            %(race_id)s, %(circuit_id)s, %(race_date)s, %(driver_id)s, %(team_id)s,
             %(grid_position)s, %(finish_position)s, %(position_text)s,
-            %(points_scored)s, %(laps_completed)s, %(status)s, %(time)s, %(dnf)s
+            %(points_scored)s, %(laps_completed)s, %(status)s, %(time)s, %(dnf)s, %(weather_condition)s
         )
         ON CONFLICT (race_id, driver_id)
         DO UPDATE SET
+            circuit_id = EXCLUDED.circuit_id,
+            race_date = EXCLUDED.race_date,
             finish_position = EXCLUDED.finish_position,
             points_scored = EXCLUDED.points_scored,
             grid_position = EXCLUDED.grid_position,
             status = EXCLUDED.status,
-            dnf = EXCLUDED.dnf
+            dnf = EXCLUDED.dnf,
+            weather_condition = EXCLUDED.weather_condition
     """
 
     conn = _get_db()

@@ -35,6 +35,10 @@ async def lifespan(app: FastAPI):
     updater.start_scheduler()
     logger.info("Auto-updater scheduler started")
     
+    # Schedule upcoming 2026 races
+    scheduled = updater.schedule_upcoming_races(2026)
+    logger.info(f"Scheduled {scheduled} upcoming race updates")
+    
     yield
     
     # Shutdown

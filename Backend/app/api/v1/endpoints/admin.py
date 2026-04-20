@@ -121,7 +121,7 @@ def sync_status():
     return {
         "scheduler_running": updater.scheduler.running if updater.scheduler else False,
         "scheduled_jobs": len(updater.scheduler.get_jobs()) if updater.scheduler else 0,
-        "message": "Scheduler running. Race-based scheduling pending (races.end_datetime is NULL)",
+        "message": f"Scheduler running. {len(updater.scheduler.get_jobs())} races scheduled for auto-update.",
         "manual_sync_available": True,
         "endpoints": {
             "manual_sync": "POST /api/admin/sync?year=2026&round_number=5",

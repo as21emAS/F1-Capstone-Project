@@ -32,6 +32,43 @@ class F1AutoUpdater:
         else:
             logger.info("[AUTO-UPDATER] Scheduler already running")
     
+    def schedule_upcoming_races(self, year: int = 2026):
+        """
+        Schedule auto-update jobs for all upcoming races in the given year.
+        Jobs trigger 2 hours after race end_datetime.
+        
+        Args:
+            year: Season year to schedule races for
+        """
+        from database.database import SessionLocal
+        from app.models.models import Race
+        from datetime import timezone
+        
+        logger.info(f"[AUTO-UPDATER] Scheduling upcoming races for {year}...")
+        
+        session = SessionLocal()
+        
+        # Get all races for the year that haven't ended yet
+        now = datetime.now(timezone.utc)
+        upcoming_races = session.query(Race).filter(
+            Race.year == year,
+            Race.end_datetime.isnot(None),
+            Race.end_datetime > now
+        ).order_by(Race.round).all()
+        
+        logger.info(f"[AUTO-UPDATER] Found {len(upcoming_races)} upcoming races")
+        
+        scheduled_count = 0
+        for race in upcoming_races:
+            if race.end_datetime:
+                self.schedule_race_update(race.end_datetime, year, race.round)
+                scheduled_count += 1
+        
+        session.close()
+        
+        logger.info(f"[AUTO-UPDATER] ✓ Scheduled {scheduled_count} upcoming races for {year}")
+        return scheduled_count
+
     def stop_scheduler(self):
         """Stop the APScheduler background scheduler"""
         if self.scheduler.running:
@@ -46,8 +83,6 @@ class F1AutoUpdater:
             race_end_time: When the race weekend ends (from races.end_datetime)
             year: Season year
             round_number: Race round number
-        
-        TODO: Wire this to races table when end_datetime is populated
         """
         # Schedule for 2 hours after race end
         trigger_time = race_end_time + timedelta(hours=2)
@@ -208,9 +243,9 @@ class F1AutoUpdater:
                 logger.warning(f"[AUTO-UPDATER] No race results data returned for {year} round {round_number}")
                 return []
             
-            # Get race_id and circuit_id from database
+            # Get race_id, circuit_id, and weather from database
             from database.database import SessionLocal
-            from app.models.models import Race
+            from app.models.models import Race, WeatherData
             
             session = SessionLocal()
             race = session.query(Race).filter(
@@ -226,6 +261,27 @@ class F1AutoUpdater:
             race_id = race.race_id
             circuit_id = race.circuit_id
             race_date = race.date
+            
+            # Query weather data for this race
+            weather_data = session.query(WeatherData).filter(
+                WeatherData.race_id == race_id
+            ).first()
+            
+            # Determine weather condition from weather data
+            weather_condition = 'dry'  # Default
+            if weather_data and weather_data.conditions:
+                conditions_lower = weather_data.conditions.lower()
+                if 'rain' in conditions_lower:
+                    weather_condition = 'wet'
+                elif 'partially cloudy' in conditions_lower and 'rain' not in conditions_lower:
+                    weather_condition = 'dry'
+                elif 'clear' in conditions_lower:
+                    weather_condition = 'dry'
+                
+                logger.info(f"[AUTO-UPDATER] Weather: {weather_data.conditions} → {weather_condition}")
+            else:
+                logger.info(f"[AUTO-UPDATER] No weather data found, defaulting to {weather_condition}")
+            
             session.close()
             
             # Normalize data for database
@@ -245,7 +301,7 @@ class F1AutoUpdater:
                     'status': result['status'],
                     'time': result.get('Time', {}).get('time', None) if 'Time' in result else None,
                     'dnf': result['status'] != 'Finished',
-                    'weather_condition': 'dry'  # TODO: Get actual weather data
+                    'weather_condition': weather_condition
                 }
                 normalized.append(normalized_entry)
             
