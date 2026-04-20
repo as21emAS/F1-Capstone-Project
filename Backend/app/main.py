@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
+from contextlib import asynccontextmanager
 
 from app.core.config import settings
+from app.services.auto_updater import get_updater
 
 from app.api.v1.endpoints.races import router as races_router
 from routes.health import router as health_router
@@ -13,6 +15,7 @@ from app.api.v1.endpoints.circuits import router as circuits_router
 from app.api.v1.endpoints.simulator import router as simulator_router
 from app.api.v1.endpoints.weather import router as weather_router
 from app.api.v1.endpoints.news import router as news_router
+from app.api.v1.endpoints.admin import router as admin_router
 
 
 # Configure logging
@@ -22,12 +25,30 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Lifespan context manager for startup/shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle startup and shutdown events"""
+    # Startup
+    logger.info("Starting F1 Predictor API...")
+    updater = get_updater()
+    updater.start_scheduler()
+    logger.info("Auto-updater scheduler started")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down F1 Predictor API...")
+    updater.stop_scheduler()
+    logger.info("Auto-updater scheduler stopped")
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="F1 Predictor API",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # CORS middleware
@@ -48,6 +69,7 @@ app.include_router(circuits_router,    prefix="/api/circuits",     tags=["circui
 app.include_router(simulator_router,   prefix="/api/simulator",    tags=["simulator"])
 app.include_router(weather_router,     prefix="/api/weather",      tags=["weather"])
 app.include_router(news_router,        prefix="/api/news",         tags=["news"])
+app.include_router(admin_router,       prefix="/api/admin",        tags=["admin"])
 
 
 @app.get("/health")
