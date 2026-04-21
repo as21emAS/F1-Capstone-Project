@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
                 END IF;
             END $$;
         """))
-    conn.commit()
+        conn.commit()
 
     # Startup
     logger.info("Starting F1 Predictor API...")
