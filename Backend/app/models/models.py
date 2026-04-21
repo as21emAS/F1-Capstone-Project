@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime, Boolean, Numeric, func
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from database.database import Base
 
 class Circuit(Base):
     __tablename__ = "circuits"

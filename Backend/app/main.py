@@ -18,6 +18,7 @@ from app.api.v1.endpoints.news import router as news_router
 from app.api.v1.endpoints.admin import router as admin_router
 
 from database.database import Base, engine
+import app.models.models
 
 # Configure logging
 logging.basicConfig(
