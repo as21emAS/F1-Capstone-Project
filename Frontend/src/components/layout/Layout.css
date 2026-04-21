@@ -1,16 +1,16 @@
-/* ─── Root ─────────────────────────────────────────────────────────────────── */
+/* ─── Root ───────────────────────────────────────────────────────────────────── */
 
 .app-root {
   min-height: 100vh;
-  background: #f0e6d0;
-  color: #1c1208;
+  background: #F5F1E8;
+  color: #1E1E1E;
   font-family: "Courier New", Courier, monospace;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
 }
 
-/* ─── Racing Stripe ────────────────────────────────────────────────────────── */
+/* ─── Racing Stripe (left edge) ──────────────────────────────────────────────── */
 
 .app-root::after {
   content: "";
@@ -19,18 +19,25 @@
   width: 8px;
   background: repeating-linear-gradient(
     180deg,
-    #c8001a 0px,  #c8001a 20px,
-    #1c1208 20px, #1c1208 40px
+    #E8002D 0px,  #E8002D 20px,
+    #1E1E1E 20px, #1E1E1E 40px
   );
   z-index: 50;
   pointer-events: none;
 }
 
-/* ─── Header ───────────────────────────────────────────────────────────────── */
+/* ─── Header ─────────────────────────────────────────────────────────────────── */
 
 .header {
-  background: #1c1208;
-  border-bottom: 4px solid #c8001a;
+  background: #F5F1E8;
+  /* Checkered flag top border — v4 signature element */
+  border-top: 8px solid;
+  border-image: repeating-linear-gradient(
+    90deg,
+    #E8002D 0px, #E8002D 20px,
+    #ffffff 20px, #ffffff 40px
+  ) 8;
+  border-bottom: 3px solid #000000;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -40,106 +47,77 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.85rem 2.5rem 0.85rem 3rem;
+  padding: 0.75rem 2.5rem 0.75rem 3rem;
 }
 
-/* ─── Logo ─────────────────────────────────────────────────────────────────── */
+/* ─── Logo ───────────────────────────────────────────────────────────────────── */
 
 .logo-block {
   display: flex;
   align-items: center;
-  gap: 1.1rem;
-}
-
-.checkered {
-  width: 40px;
-  height: 40px;
-  background-image: repeating-conic-gradient(#faf4e8 0% 25%, #1c1208 0% 50%);
-  background-size: 10px 10px;
-  border: 2px solid #faf4e8;
-  flex-shrink: 0;
+  gap: 0;
+  text-decoration: none;
 }
 
 .logo-title {
-  font-family: "Bebas Neue", "Courier New", monospace;
-  font-size: 2rem;
-  letter-spacing: 0.3em;
-  color: #faf4e8;
+  font-family: "Barlow Condensed", "Impact", "Arial Narrow", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #1E1E1E;
+  border: 3px solid #000000;
+  padding: 8px 16px;
+  background: #F5F1E8;
+  text-decoration: none;
   line-height: 1;
-  text-shadow: 2px 2px 0 #c8001a;
 }
 
-.logo-sub {
-  font-size: 0.5rem;
-  letter-spacing: 0.35em;
-  color: #8a7060;
-  margin-top: 0.25rem;
+/* ─── Race Clock (top-right) ─────────────────────────────────────────────────── */
+
+.race-clock {
   font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: #1E1E1E;
+  text-align: right;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+}
+
+.race-clock-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: #6B5B3E;
   text-transform: uppercase;
 }
 
-/* ─── Live Badge ───────────────────────────────────────────────────────────── */
-
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #c8001a;
-  border: 2px solid #faf4e8;
-  padding: 0.4rem 1rem;
-}
-
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #faf4e8;
-  animation: pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1;   transform: scale(1);   }
-  50%       { opacity: 0.4; transform: scale(0.8); }
-}
-
-.live-text {
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.25em;
-  color: #faf4e8;
-}
-
-.live-time {
-  font-size: 0.55rem;
-  color: rgba(250, 244, 232, 0.7);
-  font-family: "Courier New", monospace;
-}
-
-/* ─── Navigation ───────────────────────────────────────────────────────────── */
+/* ─── Navigation ─────────────────────────────────────────────────────────────── */
 
 .nav {
   display: flex;
-  border-top: 2px solid #3a2810;
-  background: #251a0a;
+  border-top: 2px solid #000000;
+  background: #F5F1E8;
 }
 
 .nav-btn {
   flex: 1;
   background: transparent;
   border: none;
-  border-right: 1px solid #3a2810;
-  color: #8a7060;
-  font-family: "Bebas Neue", "Courier New", monospace;
-  font-size: 0.85rem;
-  letter-spacing: 0.2em;
+  border-right: 1px solid #C8C0B0;
+  color: #6B5B3E;
+  font-family: "Barlow Condensed", "Impact", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
   padding: 0.65rem 1rem;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s, background 0.15s;
   text-transform: uppercase;
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .nav-btn:last-child {
@@ -147,33 +125,43 @@
 }
 
 .nav-btn:hover {
-  color: #faf4e8;
-  background: rgba(200, 0, 26, 0.15);
+  color: #1E1E1E;
+  background: rgba(232, 0, 45, 0.06);
 }
 
+/* Active: red underline per v4 spec */
 .nav-btn.active {
-  color: #faf4e8;
-  background: #c8001a;
-  border-bottom: none;
+  color: #1E1E1E;
+  background: transparent;
+}
+
+.nav-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #E8002D;
 }
 
 .nav-btn:focus-visible {
-  outline: 2px solid #f0c040;
+  outline: 2px solid #E8002D;
   outline-offset: -2px;
 }
 
-/* ─── Main ─────────────────────────────────────────────────────────────────── */
+/* ─── Main ───────────────────────────────────────────────────────────────────── */
 
 .main {
   flex: 1;
   padding: 1.75rem 2.5rem 1.75rem 3rem;
 }
 
-/* ─── Footer ───────────────────────────────────────────────────────────────── */
+/* ─── Footer ─────────────────────────────────────────────────────────────────── */
 
 .footer {
-  background: #1c1208;
-  border-top: 4px solid #c8001a;
+  background: #1E1E1E;
+  border-top: 4px solid #E8002D;
   padding: 0.75rem 2.5rem 0.75rem 3rem;
 }
 
@@ -182,12 +170,12 @@
   justify-content: space-between;
   font-size: 0.55rem;
   letter-spacing: 0.15em;
-  color: #6a5040;
+  color: #6B5B3E;
   font-family: "Courier New", monospace;
   text-transform: uppercase;
 }
 
-/* ─── Hamburger Button ─────────────────────────────────────────────────────── */
+/* ─── Hamburger ──────────────────────────────────────────────────────────────── */
 
 .hamburger {
   display: none;
@@ -203,45 +191,29 @@
   display: block;
   width: 24px;
   height: 2px;
-  background: #faf4e8;
+  background: #1E1E1E;
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-/* Animate into × */
 .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
 
-/* ─── Mobile  (< 640px) ────────────────────────────────────────────────────── */
+/* ─── Mobile (< 640px) ───────────────────────────────────────────────────────── */
 
 @media (max-width: 639px) {
-
-  .hamburger {
-    display: flex;
-  }
+  .hamburger { display: flex; }
 
   .header-inner {
     flex-wrap: wrap;
     gap: 0.75rem;
-    padding: 1rem 1.25rem 1rem 1.5rem;
+    padding: 0.75rem 1.25rem 0.75rem 1.5rem;
   }
 
-  .logo-title {
-    font-size: 1.4rem;
-    letter-spacing: 0.2em;
-  }
+  .logo-title { font-size: 20px; }
 
-  .logo-sub {
-    font-size: 0.45rem;
-  }
+  .race-clock { margin-left: auto; margin-right: 0.5rem; }
 
-  .live-badge {
-    /* push to the right, but don't stretch full width */
-    margin-left: auto;
-    margin-right: 0.5rem;
-  }
-
-  /* Collapsible nav */
   .nav {
     flex-direction: column;
     max-height: 0;
@@ -249,75 +221,46 @@
     transition: max-height 0.35s ease;
   }
 
-  .nav.open {
-    max-height: 400px; /* enough for 5+ items */
-  }
+  .nav.open { max-height: 400px; }
 
   .nav-btn {
     border-right: none;
-    border-bottom: 1px solid #3a2810;
+    border-bottom: 1px solid #C8C0B0;
     padding: 0.85rem 1.5rem;
     justify-content: flex-start;
   }
 
-  .nav-btn:last-child {
-    border-bottom: none;
-  }
+  .nav-btn:last-child { border-bottom: none; }
 
-  .main {
-    padding: 1.25rem 1.25rem 1.25rem 1.5rem;
-  }
+  .main { padding: 1.25rem 1.25rem 1.25rem 1.5rem; }
 
-  .footer {
-    padding: 1rem 1.25rem;
-  }
+  .footer { padding: 1rem 1.25rem; }
 
-  .footer-inner {
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: center;
-  }
+  .footer-inner { flex-direction: column; gap: 0.4rem; text-align: center; }
 
   .app-root::after {
-    width: 5px;
-  }
+  background: repeating-linear-gradient(
+    180deg,
+    #E8002D 0px,  #E8002D 20px,
+    #1E1E1E 20px, #1E1E1E 40px
+  );
+}
 }
 
-/* ─── Tablet  (640px – 1023px) ─────────────────────────────────────────────── */
+/* ─── Tablet (640px – 1023px) ────────────────────────────────────────────────── */
 
 @media (min-width: 640px) and (max-width: 1023px) {
-
-  .header-inner {
-    padding: 0.85rem 1.75rem 0.85rem 2rem;
-  }
-
-  .logo-title  { font-size: 1.7rem; }
-
-  .nav-btn {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    padding: 0.6rem 0.75rem;
-  }
-
-  .main {
-    padding: 1.5rem 1.75rem 1.5rem 2rem;
-  }
-
-  .footer {
-    padding: 0.75rem 1.75rem 0.75rem 2rem;
-  }
+  .header-inner { padding: 0.75rem 1.75rem 0.75rem 2rem; }
+  .logo-title { font-size: 20px; }
+  .nav-btn { font-size: 13px; letter-spacing: 0.1em; padding: 0.6rem 0.75rem; }
+  .main { padding: 1.5rem 1.75rem 1.5rem 2rem; }
+  .footer { padding: 0.75rem 1.75rem 0.75rem 2rem; }
 }
 
-/* ─── Desktop  (≥ 1024px) ──────────────────────────────────────────────────── */
+/* ─── Desktop (≥ 1024px) ─────────────────────────────────────────────────────── */
 
 @media (min-width: 1024px) {
-
-  .app-root {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .logo-title { font-size: 2.1rem; }
-
-  .nav-btn { font-size: 0.9rem; }
+  .app-root { max-width: 1400px; margin: 0 auto; }
+  .logo-title { font-size: 24px; }
+  .nav-btn { font-size: 14px; }
 }

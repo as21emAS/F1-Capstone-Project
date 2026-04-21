@@ -1,52 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Racing+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Chakra+Petch:wght@700&display=swap');
 
 @import 'tailwindcss';
-
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* custom fonts add more later */
-  --font-inter: 'Inter', sans-serif;
-  --font-racing: 'Racing Sans One', cursive;
+  --font-barlow: 'Barlow Condensed', 'Impact', 'Arial Narrow', sans-serif;
+  --font-mono: 'Courier New', Courier, monospace;
+  --font-data: 'Chakra Petch', 'Orbitron', monospace;
 
-  /* custom colors add more as needed */
-  --color-f1-red: #e10600;
-  --color-f1-black: #15151E;
-  --color-f1-silver: #C0C0C0;
-  --color-mercedes-silver: #c0c0c0;
-  --color-mercedes-teal: #00a19c;
-  --color-aston-green: #00665e;
-  --color-mclaren-papaya: #ff8000;
-  --color-ferrari-red: #ef1a2d;
-  --color-redbull-blue: #0600ef;
-  --color-redbull-yellow: #ffc72c;
+  /* v4 palette */
+  --color-cream-bg:      #F5F1E8;
+  --color-racing-red:    #E8002D;
+  --color-espresso:      #1E1E1E;
+  --color-pure-black:    #000000;
+  --color-cream-text:    #F5F1E8;
 
-  /* colors from commponets */
-  /* base card colors */
-  --color-baseCard-white: #faf4e8;
-  --color-baseCard-black: #1c1208;
-  --color-baseCard-red: #c8001a;
-  /* dark card colors */
-  --color-darkCard-black: #1c1208;
-  --color-darkCard-yellow: #f0c040;
-  --color-DarkCard-espresso: #3a2810;
-  /* ghost card colors */
-  --color-ghostCard-brown: #8a6030;
-
-/* Error message colors */
-  --color-error-yellow: #f0c040;
-  --color-error-yellow2: #c8750a;
-  --color-error-blue: #2a5080;
-  --color-error-green: #2a6030;
-
-
+  /* 2026 team colors */
+  --color-mercedes:      #00D2BE;
+  --color-ferrari:       #E8002D;
+  --color-mclaren:       #FF8000;
+  --color-haas:          #B6BABD;
+  --color-alpine:        #0093CC;
+  --color-red-bull:      #1E41FF;
+  --color-racing-bulls:  #1434CB;
+  --color-audi:          #C0C0C0;
+  --color-williams:      #005AFF;
+  --color-cadillac:      #CC0000;
+  --color-aston-martin:  #006F62;
 }
 
 @layer base {
   html {
-    font-family: var(--font-inter);
+    font-family: 'Courier New', Courier, monospace;
   }
   * {
     @apply border-border outline-ring/50;
@@ -105,70 +92,38 @@ html, body, #root {
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --radius: 0rem; /* sharp corners per v4 */
+  --background: oklch(0.97 0.01 85);   /* ~#F5F1E8 */
+  --foreground: oklch(0.14 0 0);       /* ~#1E1E1E */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.14 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --popover-foreground: oklch(0.14 0 0);
+  --primary: oklch(0.14 0 0);
+  --primary-foreground: oklch(0.97 0.01 85);
+  --secondary: oklch(0.92 0.01 85);
+  --secondary-foreground: oklch(0.14 0 0);
+  --muted: oklch(0.92 0.01 85);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.49 0.23 22);       /* ~#E8002D */
+  --accent-foreground: oklch(0.97 0.01 85);
+  --destructive: oklch(0.49 0.23 22);
+  --border: oklch(0.14 0 0);
+  --input: oklch(0.92 0.01 85);
+  --ring: oklch(0.49 0.23 22);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.97 0.01 85);
+  --sidebar-foreground: oklch(0.14 0 0);
+  --sidebar-primary: oklch(0.49 0.23 22);
+  --sidebar-primary-foreground: oklch(0.97 0.01 85);
+  --sidebar-accent: oklch(0.92 0.01 85);
+  --sidebar-accent-foreground: oklch(0.14 0 0);
+  --sidebar-border: oklch(0.14 0 0);
+  --sidebar-ring: oklch(0.49 0.23 22);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
+/* No .dark override — v4 is light-only aesthetic */

@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Chakra+Petch:wght@700&display=swap');
 
-/* ─── Reset ────────────────────────────────────────────────────────────────── */
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
 
 * {
   box-sizing: border-box;
@@ -9,12 +9,12 @@
 }
 
 body {
-  background: #f0e6d0;
-  color: #1c1208;
+  background: #F5F1E8;
+  color: #1E1E1E;
   font-family: "Courier New", Courier, monospace;
 }
 
-/* ─── Paper Texture Overlay ────────────────────────────────────────────────── */
+/* ─── Paper Texture Overlay ──────────────────────────────────────────────────── */
 
 #root::before {
   content: "";
@@ -27,33 +27,33 @@ body {
   opacity: 0.6;
 }
 
-/* ─── Scrollbar ────────────────────────────────────────────────────────────── */
+/* ─── Scrollbar ──────────────────────────────────────────────────────────────── */
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #e0d4bc; }
-::-webkit-scrollbar-thumb { background: #c8001a; border-radius: 0; }
+::-webkit-scrollbar-track { background: #E8E2D4; }
+::-webkit-scrollbar-thumb { background: #E8002D; border-radius: 0; }
 
-/* ─── Shared Card ──────────────────────────────────────────────────────────── */
+/* ─── Shared Card ────────────────────────────────────────────────────────────── */
 
 .card {
-  background: #faf4e8;
-  border: 2px solid #1c1208;
+  background: #FFFFFF;
+  border: 3px solid #000000;
   border-radius: 0;
   padding: 1.25rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 4px 4px 0 #1c1208;
+  box-shadow: none;
 }
 
 .card::before {
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 4px;
+  height: 8px;
   background: repeating-linear-gradient(
     90deg,
-    #c8001a 0px, #c8001a 16px,
-    #faf4e8 16px, #faf4e8 32px
+    #E8002D 0px, #E8002D 20px,
+    #ffffff 20px, #ffffff 40px
   );
 }
 
@@ -63,34 +63,36 @@ body {
   align-items: center;
   margin-bottom: 1rem;
   padding: 0.5rem 0 0.75rem;
-  border-bottom: 2px solid #1c1208;
+  border-bottom: 2px solid #000000;
 }
 
 .card-label {
-  font-family: "Bebas Neue", "Courier New", monospace;
+  font-family: "Barlow Condensed", "Impact", sans-serif;
   font-size: 1rem;
+  font-weight: 700;
   letter-spacing: 0.2em;
-  color: #c8001a;
+  text-transform: uppercase;
+  color: #E8002D;
 }
 
 .card-badge {
   font-size: 0.55rem;
   letter-spacing: 0.15em;
-  color: #faf4e8;
-  background: #1c1208;
+  color: #F5F1E8;
+  background: #1E1E1E;
   padding: 0.25rem 0.65rem;
   border-radius: 0;
   font-family: "Courier New", monospace;
   text-transform: uppercase;
 }
 
-/* ─── Shared Tag & Source ──────────────────────────────────────────────────── */
+/* ─── Shared Tag & Source ────────────────────────────────────────────────────── */
 
 .news-tag {
   font-size: 0.5rem;
   letter-spacing: 0.2em;
-  background: #c8001a;
-  color: #faf4e8;
+  background: #E8002D;
+  color: #F5F1E8;
   padding: 0.2rem 0.55rem;
   border-radius: 0;
   font-family: "Courier New", monospace;
@@ -99,18 +101,18 @@ body {
 
 .news-source {
   font-size: 0.55rem;
-  color: #8a6030;
+  color: #6B5B3E;
   letter-spacing: 0.1em;
   font-style: italic;
 }
 
-/* ─── Shared Select ────────────────────────────────────────────────────────── */
+/* ─── Shared Select ──────────────────────────────────────────────────────────── */
 
 .f1-select {
-  background: #faf4e8;
-  border: 2px solid #1c1208;
+  background: #FFFFFF;
+  border: 3px solid #000000;
   border-radius: 0;
-  color: #1c1208;
+  color: #1E1E1E;
   padding: 0.5rem 0.75rem;
   font-size: 0.7rem;
   font-family: "Courier New", monospace;
@@ -118,20 +120,20 @@ body {
   cursor: pointer;
   outline: none;
   appearance: auto;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s;
 }
 
 .f1-select:focus {
-  border-color: #c8001a;
-  box-shadow: 2px 2px 0 #c8001a;
+  border-color: #E8002D;
+  box-shadow: 2px 2px 0 #E8002D;
 }
 
-/* ─── Shared Confidence Bar ────────────────────────────────────────────────── */
+/* ─── Shared Confidence Bar ──────────────────────────────────────────────────── */
 
 .conf-bar {
   height: 10px;
-  background: #e0d4bc;
-  border: 1px solid #8a6030;
+  background: #000000;
+  border: 2px solid #000000;
   border-radius: 0;
   overflow: hidden;
   margin-bottom: 0.35rem;
@@ -139,18 +141,12 @@ body {
 
 .conf-fill {
   height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    #c8001a,
-    #c8001a 4px,
-    #e8001a 4px,
-    #e8001a 8px
-  );
+  background: #E8002D;
   border-radius: 0;
   animation: fillBar 1.2s ease forwards;
 }
 
-/* ─── Shared Animations ────────────────────────────────────────────────────── */
+/* ─── Shared Animations ──────────────────────────────────────────────────────── */
 
 @keyframes fillBar {
   from { width: 0 !important; }
@@ -164,4 +160,8 @@ body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+html, body {
+  background: #F5F1E8 !important;
 }

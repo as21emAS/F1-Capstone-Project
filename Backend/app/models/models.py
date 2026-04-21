@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime, Boolean, Numeric, func
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from sqlalchemy.orm import declarative_base, relationship, UniqueConstraint
+from database.database import Base
 
 class Circuit(Base):
     __tablename__ = "circuits"
@@ -30,6 +28,9 @@ class Race(Base):
     circuit_name = Column(String(255))
     country = Column(String(100))
     date = Column(Date)
+    start_datetime = Column(DateTime(timezone=True))  
+    end_datetime = Column(DateTime(timezone=True))    
+    is_sprint = Column(Boolean, default=False) 
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     
@@ -70,6 +71,9 @@ class Team(Base):
 
 class RaceResult(Base):
     __tablename__ = "race_results"
+    __table_args__ = (
+        UniqueConstraint('race_id', 'driver_id', name='uq_race_result'),
+    )
     
     result_id = Column(Integer, primary_key=True, autoincrement=True)
     
