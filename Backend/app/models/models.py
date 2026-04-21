@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime, Boolean, Numeric, func
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import declarative_base, relationship, UniqueConstraint
 from database.database import Base
 
 class Circuit(Base):
@@ -72,6 +71,9 @@ class Team(Base):
 
 class RaceResult(Base):
     __tablename__ = "race_results"
+    __table_args__ = (
+        UniqueConstraint('race_id', 'driver_id', name='uq_race_result'),
+    )
     
     result_id = Column(Integer, primary_key=True, autoincrement=True)
     

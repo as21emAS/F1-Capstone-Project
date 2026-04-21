@@ -18,6 +18,7 @@ from app.api.v1.endpoints.news import router as news_router
 from app.api.v1.endpoints.admin import router as admin_router
 
 from database.database import Base, engine
+from sqlalchemy import text
 import app.models.models
 
 # Configure logging
@@ -32,6 +33,20 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """Handle startup and shutdown events"""
     Base.metadata.create_all(bind=engine)
+
+    with engine.connect() as conn:
+        conn.execute(text("""
+            DO $$
+            BEGIN
+                IF NOT EXISTS (
+                    SELECT 1 FROM pg_constraint WHERE conname = 'uq_race_result'
+                ) THEN
+                    ALTER TABLE race_results 
+                    ADD CONSTRAINT uq_race_result UNIQUE (race_id, driver_id);
+                END IF;
+            END $$;
+        """))
+    conn.commit()
 
     # Startup
     logger.info("Starting F1 Predictor API...")
