@@ -17,7 +17,7 @@ from app.api.v1.endpoints.weather import router as weather_router
 from app.api.v1.endpoints.news import router as news_router
 from app.api.v1.endpoints.admin import router as admin_router
 
-from database import Base, engine
+from database.database import Base, engine
 
 # Configure logging
 logging.basicConfig(
