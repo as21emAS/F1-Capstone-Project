@@ -189,42 +189,13 @@ const F1_NEWS_FEEDS = [
   "https://www.motorsport.com/rss/f1/news/",
 ];
 
-export const fetchNews = async (): Promise<NewsResponse> => {
-  // Create an array of Axios requests for every URL
-  const requests = F1_NEWS_FEEDS.map((feedUrl) => {
-    const rss2jsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-    return axios.get<NewsResponse>(rss2jsonUrl, { timeout: 8_000 });
-  });
-  // Wait for all of them to finish 
-  const responses = await Promise.allSettled(requests);
-  // Combine all the articles into 1 array
-  let combinedItems: any[] = [];
-  responses.forEach((response) => {
-    // If the fetch was successful, add its articles to combined news list
-    if (response.status === "fulfilled" && response.value.data.items) {
-      combinedItems = [...combinedItems, ...response.value.data.items];
-    } else if (response.status === "rejected") {
-      console.error("Failed to fetch one of the F1 news feeds:", response.reason);
-    }
-  });
-  // Sort array based upon publish data and time
-  combinedItems.sort((a, b) => {
-    return new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime();
-  });
 
-  return {
-    status: "ok",
-    items: combinedItems,
-    // Dummy object for errors
-    feed: {
-      url: "",
-      title: "Combined F1 News Feed",
-      link: "",
-      author: "",
-      description: "Aggregated F1 news from multiple sources",
-      image: ""
-    }
-  } as NewsResponse;
+const F1_NEWS_URL =
+  "https://api.rss2json.com/v1/api.json?rss_url=https://www.autosport.com/rss/f1/news/";
+
+export const fetchNews = async (): Promise<NewsResponse> => {
+  const response = await axios.get<NewsResponse>(F1_NEWS_URL, { timeout: 8_000 });
+  return response.data;
 };
 
 // Fetch Latest Videos from the Official F1 YouTube Channel
