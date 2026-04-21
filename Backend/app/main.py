@@ -17,6 +17,7 @@ from app.api.v1.endpoints.weather import router as weather_router
 from app.api.v1.endpoints.news import router as news_router
 from app.api.v1.endpoints.admin import router as admin_router
 
+from app.database import Base, engine
 
 # Configure logging
 logging.basicConfig(
@@ -83,3 +84,15 @@ def health_check():
 @app.get("/")
 def root():
     return {"message": "F1 Predictor API", "docs": "/docs"}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Handle startup and shutdown events"""
+    Base.metadata.create_all(bind=engine)
+    
+    # Startup
+    logger.info("Starting F1 Predictor API...")
+    updater = get_updater()
+    updater.start_scheduler()
+    logger.info("Auto-updater scheduler started")
+    yield
