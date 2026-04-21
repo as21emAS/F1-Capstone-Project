@@ -312,7 +312,87 @@ class F1AutoUpdater:
             logger.error(f"[AUTO-UPDATER] ✗ Error fetching race results: {e}")
             raise
 
+def seed_drivers_and_teams(self, year: int = 2026):
+    """Seed drivers and teams tables from Jolpica."""
+    from database.database import SessionLocal
+    from app.models.models import Driver, Team
 
+    logger.info(f"[AUTO-UPDATER] Seeding drivers and teams for {year}...")
+    session = SessionLocal()
+
+    try:
+        # Teams first (drivers have FK to teams)
+        constructors = self.client.get_all_constructors(year)
+        team_count = 0
+        for c in constructors:
+            existing = session.get(Team, c['constructorId'])
+            if not existing:
+                session.add(Team(
+                    team_id=c['constructorId'],
+                    team_name=c['name'],
+                ))
+                team_count += 1
+
+        session.flush()  # commit teams before drivers
+
+        # Drivers
+        drivers = self.client.get_all_drivers(year)
+        driver_count = 0
+        for d in drivers:
+            existing = session.get(Driver, d['driverId'])
+            if not existing:
+                session.add(Driver(
+                    driver_id=d['driverId'],
+                    driver_code=d.get('code'),
+                    driver_number=int(d['permanentNumber']) if d.get('permanentNumber') else None,
+                    driver_forename=d['givenName'],
+                    driver_surname=d['familyName'],
+                    driver_full_name=f"{d['givenName']} {d['familyName']}",
+                    nationality=d.get('nationality'),
+                ))
+                driver_count += 1
+
+        session.commit()
+        logger.info(f"[AUTO-UPDATER] ✓ Seeded {team_count} teams, {driver_count} drivers")
+
+    except Exception as e:
+        session.rollback()
+        logger.error(f"[AUTO-UPDATER] ✗ seed_drivers_and_teams failed: {e}")
+        raise
+    finally:
+        session.close()
+
+
+def seed_past_results(self, year: int = 2026):
+    """Seed race results for all completed races this season."""
+    from database.database import SessionLocal
+    from app.models.models import Race
+    from datetime import timezone
+
+    logger.info(f"[AUTO-UPDATER] Seeding past results for {year}...")
+    session = SessionLocal()
+
+    try:
+        now = datetime.now(timezone.utc)
+        completed = session.query(Race).filter(
+            Race.year == year,
+            Race.end_datetime.isnot(None),
+            Race.end_datetime < now
+        ).order_by(Race.round).all()
+
+        logger.info(f"[AUTO-UPDATER] Found {len(completed)} completed races")
+        session.close()
+
+        for race in completed:
+            results = self.fetch_race_results(year, race.round)
+            if results:
+                saved = upsert_race_results(results)
+                logger.info(f"[AUTO-UPDATER] ✓ Round {race.round}: {saved} results saved")
+
+    except Exception as e:
+        logger.error(f"[AUTO-UPDATER] ✗ seed_past_results failed: {e}")
+        raise
+    
 # Singleton instance
 _updater = None
 
