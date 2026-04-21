@@ -362,6 +362,89 @@ def seed_drivers_and_teams(self, year: int = 2026):
     finally:
         session.close()
 
+def seed_race_calendar(self, year: int = 2026):
+    from database.database import SessionLocal
+    from app.models.models import Race, Circuit
+    from datetime import timezone
+
+    def _parse_dt(date_str, time_str):
+        try:
+            dt_str = f"{date_str}T{time_str}"
+            return datetime.strptime(dt_str, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)
+        except:
+            return None
+
+    logger.info(f"[AUTO-UPDATER] Seeding race calendar for {year}...")
+    races_data = self.client.get_race_schedule(year)
+
+    if not races_data:
+        logger.warning(f"[AUTO-UPDATER] No race data returned for {year}")
+        return 0
+
+    session = SessionLocal()
+    count = 0
+    try:
+        for r in races_data:
+            circuit_data = r['Circuit']
+
+            # Upsert circuit
+            circuit = session.get(Circuit, circuit_data['circuitId'])
+            if not circuit:
+                circuit = Circuit(
+                    circuit_id=circuit_data['circuitId'],
+                    circuit_name=circuit_data['circuitName'],
+                    location=circuit_data['Location']['locality'],
+                    country=circuit_data['Location']['country'],
+                    latitude=circuit_data['Location']['lat'],
+                    longitude=circuit_data['Location']['long'],
+                )
+                session.add(circuit)
+
+            # Race datetime
+            race_dt = _parse_dt(r['date'], r.get('time', '00:00:00Z'))
+            end_dt = race_dt + timedelta(hours=2) if race_dt else None
+
+            # Earliest session = start_datetime
+            sessions = ['FirstPractice', 'SecondPractice', 'ThirdPractice', 'Sprint', 'Qualifying']
+            session_dts = []
+            for s in sessions:
+                if s in r:
+                    dt = _parse_dt(r[s]['date'], r[s].get('time', '00:00:00Z'))
+                    if dt:
+                        session_dts.append(dt)
+            start_dt = min(session_dts) if session_dts else race_dt
+
+            # Upsert race
+            existing = session.query(Race).filter(
+                Race.year == year,
+                Race.round == int(r['round'])
+            ).first()
+
+            if not existing:
+                race = Race(
+                    year=year,
+                    round=int(r['round']),
+                    race_name=r['raceName'],
+                    circuit_id=circuit_data['circuitId'],
+                    circuit_name=circuit_data['circuitName'],
+                    country=circuit_data['Location']['country'],
+                    date=datetime.strptime(r['date'], '%Y-%m-%d').date(),
+                    start_datetime=start_dt,
+                    end_datetime=end_dt,
+                )
+                session.add(race)
+                count += 1
+
+        session.commit()
+        logger.info(f"[AUTO-UPDATER] ✓ Seeded {count} races for {year}")
+    except Exception as e:
+        session.rollback()
+        logger.error(f"[AUTO-UPDATER] ✗ Seed failed: {e}")
+        raise
+    finally:
+        session.close()
+
+    return count
 
 def seed_past_results(self, year: int = 2026):
     """Seed race results for all completed races this season."""
@@ -392,7 +475,7 @@ def seed_past_results(self, year: int = 2026):
     except Exception as e:
         logger.error(f"[AUTO-UPDATER] ✗ seed_past_results failed: {e}")
         raise
-    
+
 # Singleton instance
 _updater = None
 
