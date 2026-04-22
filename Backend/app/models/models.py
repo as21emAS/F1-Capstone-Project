@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime, Boolean, Numeric, func
-from sqlalchemy.orm import declarative_base, relationship, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey, DateTime, Boolean, Numeric, func, UniqueConstraint
+from sqlalchemy.orm import declarative_base, relationship
 from database.database import Base
 
 class Circuit(Base):
@@ -28,9 +28,9 @@ class Race(Base):
     circuit_name = Column(String(255))
     country = Column(String(100))
     date = Column(Date)
-    start_datetime = Column(DateTime(timezone=True))  
-    end_datetime = Column(DateTime(timezone=True))    
-    is_sprint = Column(Boolean, default=False) 
+    start_datetime = Column(DateTime(timezone=True))
+    end_datetime = Column(DateTime(timezone=True))
+    is_sprint = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     

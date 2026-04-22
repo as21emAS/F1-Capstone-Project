@@ -433,4 +433,5 @@ FodyWeavers.xsd
 # stuff
 *.claude
 
-venv/.DS_Store
+venv/
+.DS_Store
