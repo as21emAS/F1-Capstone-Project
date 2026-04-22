@@ -115,7 +115,7 @@ def run_simulation(request: SimulationRequest):
             weather=request.weather,
             grid_order=request.grid_order,
             excluded_drivers=request.excluded_drivers,
-            drivers=DRIVERS  # Use 2026 roster for future races
+            drivers=DRIVERS  # Use 2026 roster
         )
         return result
     

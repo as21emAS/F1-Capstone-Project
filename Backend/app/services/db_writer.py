@@ -36,6 +36,16 @@ def upsert_driver_standings(data: list[dict[str, Any]]) -> int:
     Each dict: { year, driver_id, position, points, wins, team_id }
     Returns number of rows upserted.
     """
+    sql = """
+    INSERT INTO driver_standings (year, driver_id, position, points, wins, win_chance)
+    VALUES (%(year)s, %(driver_id)s, %(position)s, %(points)s, %(wins)s, 0.0)
+    ON CONFLICT (year, driver_id)
+    DO UPDATE SET
+        position = EXCLUDED.position,
+        points = EXCLUDED.points,
+        wins = EXCLUDED.wins,
+        win_chance = 0.0
+    """
     if not data:
         logger.info("upsert_driver_standings: no data provided")
         return 0

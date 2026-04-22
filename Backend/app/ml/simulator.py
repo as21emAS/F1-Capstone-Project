@@ -18,8 +18,11 @@ from database.crud import (
     get_active_drivers,
     get_driver_by_id,
     get_race_results,
-    get_driver_results
+    get_driver_results,
+    execute_query
 )
+from api_clients.openweather_client import OpenWeatherClient
+from app.core.config import settings
 
 class RaceSimulator:
     """Simulates race outcomes with optional weather and grid changes."""
@@ -30,6 +33,13 @@ class RaceSimulator:
         
         self._race_cache = {}
         self._drivers_cache = {}
+        
+        # Initialize weather client for v3.0 features
+        if settings.OPENWEATHER_API_KEY:
+            self.weather_client = OpenWeatherClient(api_key=settings.OPENWEATHER_API_KEY, cache_hours=1)
+        else:
+            print("Warning: OPENWEATHER_API_KEY not set. Weather features will use defaults.")
+            self.weather_client = None
         
         # factor names
         self.feature_name_mapping = {
@@ -46,6 +56,73 @@ class RaceSimulator:
         }
         
         self.weather_dependent_features = {"wet_race", "driver_wet_weather_skill"}
+    
+    def _get_weather_features(self, circuit_id: str) -> Dict:
+        """
+        Fetch current weather and normalize for model v3.0
+        
+        Args:
+            circuit_id: The circuit ID to fetch weather for
+            
+        Returns:
+            Dict with normalized weather features
+        """
+        # Return defaults if weather client not available
+        if not self.weather_client:
+            return {
+                'temperature_normalized': 0.5,  # ~25°C
+                'humidity_normalized': 0.6,      # ~60%
+                'wind_speed_normalized': 0.3,    # ~6 km/h
+                'rainfall_intensity': 0.0        # no rain
+            }
+        
+        try:
+            # Get circuit coordinates
+            circuit = execute_query(
+                "SELECT latitude, longitude FROM circuits WHERE circuit_id = %s",
+                (circuit_id,),
+                fetchone=True
+            )
+            
+            if not circuit or not circuit['latitude'] or not circuit['longitude']:
+                # Return default values if coordinates not available
+                return {
+                    'temperature_normalized': 0.5,
+                    'humidity_normalized': 0.6,
+                    'wind_speed_normalized': 0.3,
+                    'rainfall_intensity': 0.0
+                }
+            
+            # Fetch current weather
+            weather = self.weather_client.get_current_weather(
+                float(circuit['latitude']),
+                float(circuit['longitude'])
+            )
+            
+            if not weather:
+                return {
+                    'temperature_normalized': 0.5,
+                    'humidity_normalized': 0.6,
+                    'wind_speed_normalized': 0.3,
+                    'rainfall_intensity': 0.0
+                }
+            
+            # Normalize weather features (same as training notebook)
+            return {
+                'temperature_normalized': (weather['temperature'] - 15) / 20,
+                'humidity_normalized': weather['humidity'] / 100,
+                'wind_speed_normalized': weather['wind_speed'] / 20,
+                'rainfall_intensity': weather['rainfall'] / 10
+            }
+            
+        except Exception as e:
+            print(f"Warning: Could not fetch weather for {circuit_id}: {e}")
+            return {
+                'temperature_normalized': 0.5,
+                'humidity_normalized': 0.6,
+                'wind_speed_normalized': 0.3,
+                'rainfall_intensity': 0.0
+            }
     
     def simulate_race(
         self,
@@ -88,6 +165,7 @@ class RaceSimulator:
         X_baseline = self._build_feature_matrix(
             drivers_data,
             race_id,
+            race_data['circuit_id'],
             weather="dry",
             grid_order=None
         )
@@ -102,6 +180,7 @@ class RaceSimulator:
         X_custom = self._build_feature_matrix(
             drivers_data,
             race_id,
+            race_data['circuit_id'],
             weather=weather,
             grid_order=grid_order
         )
@@ -363,10 +442,14 @@ class RaceSimulator:
         self,
         drivers_data: List[Dict],
         race_id: int,
+        circuit_id: str,
         weather: str,
         grid_order: Optional[List[str]]
     ) -> pd.DataFrame:
         """Build model input features."""
+        
+        # Fetch weather features for v3.0 model
+        weather_features = self._get_weather_features(circuit_id)
 
         df = pd.DataFrame(drivers_data)
         
@@ -398,17 +481,29 @@ class RaceSimulator:
         
         # apply weather conditions
         if weather == "wet":
-            df['wet_race'] = 1 # fully wet
+            df['wet_race'] = 1  # fully wet
             df['driver_recent_form'] = df['driver_recent_form'] * (
                 1 - (df['driver_wet_weather_skill'] - 0.5) * 0.4
             )
+            # Override rainfall for wet simulation
+            weather_features['rainfall_intensity'] = 0.8
         elif weather == "mixed":
             df['wet_race'] = 0.5  # partially wet
             df['driver_recent_form'] = df['driver_recent_form'] * (
                 1 - (df['driver_wet_weather_skill'] - 0.5) * 0.2
             )
+            # Override rainfall for mixed simulation
+            weather_features['rainfall_intensity'] = 0.4
         else:  # dry
             df['wet_race'] = 0
+            # Ensure no rainfall in dry simulation
+            weather_features['rainfall_intensity'] = 0.0
+        
+        # Add v3.0 weather features to all rows
+        df['temperature_normalized'] = weather_features['temperature_normalized']
+        df['humidity_normalized'] = weather_features['humidity_normalized']
+        df['wind_speed_normalized'] = weather_features['wind_speed_normalized']
+        df['rainfall_intensity'] = weather_features['rainfall_intensity']
         
         # ensure all expected features are present, filling missing ones with defaults
         if self.features:
@@ -556,7 +651,8 @@ def simulate_race(
     race_id: int,
     weather: str,
     grid_order: Optional[List[str]] = None,
-    excluded_drivers: Optional[List[str]] = None
+    excluded_drivers: Optional[List[str]] = None,
+    drivers: Optional[List[Dict]] = None
 ) -> dict:
     """Wrapper for race simulation."""
-    return simulator.simulate_race(race_id, weather, grid_order, excluded_drivers)
+    return simulator.simulate_race(race_id, weather, grid_order, excluded_drivers, drivers)
