@@ -5,7 +5,7 @@ from pathlib import Path
 _cached_model = None
 _model_version = None
 
-def load_model(model_path="app/ml/models/f1_winner_model_v2.pkl"):
+def load_model(model_path="app/ml/models/f1_winner_model_v3.pkl"):
     global _cached_model, _model_version
     
     if _cached_model is not None:
@@ -23,9 +23,9 @@ def load_model(model_path="app/ml/models/f1_winner_model_v2.pkl"):
     if info_path.exists():
         with open(info_path, 'r') as f:
             info = json.load(f)
-            _model_version = info.get('version', '2.0')
+            _model_version = info.get('version', '3.0')
     else:
-        _model_version = "2.0"
+        _model_version = "3.0"
     
     return _cached_model
 

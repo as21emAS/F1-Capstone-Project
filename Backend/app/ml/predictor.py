@@ -4,24 +4,7 @@ from typing import List, Dict
 from .model_loader import load_model, load_model_features, get_model_version
 import sys
 from pathlib import Path
-
-# =============================================================================
-# DATA CONTRACT — race_results table
-# Agreed by Julissa (ML) and Alex (ingestion) — must be finalized before
-# the auto-updater PR is merged.
-#
-# Column               dtype       Source
-# ----------------------------------------------------------------------------
-# race_id              INTEGER     Jolpica
-# circuit_id           VARCHAR     Jolpica
-# driver_id            VARCHAR     Jolpica
-# team_id              VARCHAR     Jolpica
-# grid_position        FLOAT       Jolpica — GridPosition
-# finish_position      FLOAT       Jolpica — Position (penalty-adjusted)
-# points_scored        FLOAT       Jolpica
-# race_date            DATE        Jolpica
-# weather_condition    VARCHAR     OpenWeather API ("dry", "wet", "mixed")
-# =============================================================================
+import os
 
 # allow imports from project root
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
@@ -31,12 +14,93 @@ from database.crud import (
     get_active_drivers,
     get_driver_results
 )
+from api_clients.openweather_client import OpenWeatherClient
+
+# Load OpenWeather API key from environment
+from app.core.config import settings
 
 class F1Predictor:
     def __init__(self):
         self.model = load_model()
         self.features = load_model_features()
         self.version = get_model_version()
+        
+        # Initialize weather client if API key is available
+        if settings.OPENWEATHER_API_KEY:
+            self.weather_client = OpenWeatherClient(api_key=settings.OPENWEATHER_API_KEY, cache_hours=1)
+        else:
+            print("Warning: OPENWEATHER_API_KEY not set. Weather features will use defaults.")
+            self.weather_client = None
+    
+    def _get_weather_features(self, circuit_id: str) -> Dict:
+        """
+        Fetch current weather and normalize for model v3.0
+        
+        Args:
+            circuit_id: The circuit ID to fetch weather for
+            
+        Returns:
+            Dict with normalized weather features
+        """
+        # Return defaults if weather client not available
+        if not self.weather_client:
+            return {
+                'temperature_normalized': 0.5,  # ~25°C
+                'humidity_normalized': 0.6,      # ~60%
+                'wind_speed_normalized': 0.3,    # ~6 km/h
+                'rainfall_intensity': 0.0        # no rain
+            }
+        
+        try:
+            # Get circuit coordinates
+            from database.crud import execute_query
+            circuit = execute_query(
+                "SELECT latitude, longitude FROM circuits WHERE circuit_id = %s",
+                (circuit_id,),
+                fetchone=True
+            )
+            
+            if not circuit or not circuit['latitude'] or not circuit['longitude']:
+                # Return default values if coordinates not available
+                return {
+                    'temperature_normalized': 0.5,  # ~25°C
+                    'humidity_normalized': 0.6,      # ~60%
+                    'wind_speed_normalized': 0.3,    # ~6 km/h
+                    'rainfall_intensity': 0.0        # no rain
+                }
+            
+            # Fetch current weather
+            weather = self.weather_client.get_current_weather(
+                float(circuit['latitude']),
+                float(circuit['longitude'])
+            )
+            
+            if not weather:
+                # Return defaults if API call fails
+                return {
+                    'temperature_normalized': 0.5,
+                    'humidity_normalized': 0.6,
+                    'wind_speed_normalized': 0.3,
+                    'rainfall_intensity': 0.0
+                }
+            
+            # Normalize weather features (same as training notebook)
+            return {
+                'temperature_normalized': (weather['temperature'] - 15) / 20,
+                'humidity_normalized': weather['humidity'] / 100,
+                'wind_speed_normalized': weather['wind_speed'] / 20,
+                'rainfall_intensity': weather['rainfall'] / 10
+            }
+            
+        except Exception as e:
+            print(f"Warning: Could not fetch weather for {circuit_id}: {e}")
+            # Return safe defaults
+            return {
+                'temperature_normalized': 0.5,
+                'humidity_normalized': 0.6,
+                'wind_speed_normalized': 0.3,
+                'rainfall_intensity': 0.0
+            }
     
     def predict_race_winner(self, race_id: int, params: dict = {}, drivers: List[Dict] = None) -> List[Dict]:
         """
@@ -55,6 +119,9 @@ class F1Predictor:
         race = get_race_by_id(race_id)
         if not race:
             raise ValueError(f"Race with id {race_id} not found")
+        
+        # fetch weather for the circuit (v3.0 feature)
+        weather_features = self._get_weather_features(race['circuit_id'])
         
         # use provided drivers or fetch from database
         if drivers:
@@ -90,7 +157,8 @@ class F1Predictor:
             driver_info = {
                 'driver_id': driver['driver_id'],
                 'driver_name': driver.get('driver_full_name', 'Unknown'),
-                **stats
+                **stats,
+                **weather_features  # Add weather features (same for all drivers)
             }
             drivers_data.append(driver_info)
         
@@ -149,9 +217,7 @@ class F1Predictor:
                     'driver_avg_finish': 12.0,
                     'driver_podium_rate': 0.05,
                     'circuit_driver_performance': 12.0,
-                    'qualifying_position_delta': 0.0,
-                    'wet_race': 0.0,
-                    'driver_wet_weather_skill': 0.5
+                    'qualifying_position_delta': 0.0
                 }
             
             # calculate career statistics
@@ -189,30 +255,6 @@ class F1Predictor:
                     deltas.append(delta)
             qualifying_position_delta = sum(deltas) / len(deltas) if deltas else 0.0
             
-            # wet weather skill
-            wet_results = [r for r in all_results if r.get('weather') in ['wet', 'mixed']]
-            dry_results = [r for r in all_results if r.get('weather') == 'dry']
-            
-            if wet_results and dry_results:
-                wet_positions = [r['finish_position'] for r in wet_results if r.get('finish_position') is not None]
-                dry_positions = [r['finish_position'] for r in dry_results if r.get('finish_position') is not None]
-                
-                if wet_positions and dry_positions:
-                    wet_avg = sum(wet_positions) / len(wet_positions)
-                    dry_avg = sum(dry_positions) / len(dry_positions)
-                    
-                    # better wet performance = lower avg position = higher skill
-                    if dry_avg > 0:
-                        skill_diff = (dry_avg - wet_avg) / dry_avg
-                        driver_wet_weather_skill = 0.5 + (skill_diff * 0.5)
-                        driver_wet_weather_skill = max(0.3, min(0.95, driver_wet_weather_skill))
-                    else:
-                        driver_wet_weather_skill = 0.5
-                else:
-                    driver_wet_weather_skill = 0.5
-            else:
-                driver_wet_weather_skill = 0.5
-            
             # team average finish (from recent results)
             team_results = [r for r in recent_results if r.get('team_id')]
             if team_results:
@@ -228,9 +270,7 @@ class F1Predictor:
                 'driver_avg_finish': float(driver_avg_finish),
                 'driver_podium_rate': float(driver_podium_rate),
                 'circuit_driver_performance': float(circuit_driver_performance),
-                'qualifying_position_delta': float(qualifying_position_delta),
-                'wet_race': 0.0,  # Default to dry conditions
-                'driver_wet_weather_skill': float(driver_wet_weather_skill)
+                'qualifying_position_delta': float(qualifying_position_delta)
             }
             
         except Exception as e:
@@ -242,9 +282,7 @@ class F1Predictor:
                 'driver_avg_finish': 12.0,
                 'driver_podium_rate': 0.05,
                 'circuit_driver_performance': 12.0,
-                'qualifying_position_delta': 0.0,
-                'wet_race': 0.0,
-                'driver_wet_weather_skill': 0.5
+                'qualifying_position_delta': 0.0
             }
     
     def _build_feature_dataframe(self, drivers_data: List[Dict]) -> pd.DataFrame:

@@ -1,0 +1,38 @@
+{
+  "version": "3.0",
+  "created_date": "2026-04-22 13:38:04",
+  "dataset": "Full database with weather (2010-2025)",
+  "num_samples": 6911,
+  "features": [
+    "driver_win_rate",
+    "team_avg_finish",
+    "driver_recent_form",
+    "grid_position",
+    "driver_avg_finish",
+    "driver_podium_rate",
+    "circuit_driver_performance",
+    "qualifying_position_delta",
+    "temperature_normalized",
+    "humidity_normalized",
+    "wind_speed_normalized",
+    "rainfall_intensity"
+  ],
+  "accuracy": "98.99%",
+  "model_type": "RandomForestClassifier",
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 10,
+    "random_state": 42
+  },
+  "improvements_over_v2": {
+    "weather_upgrade": "Proxy weather (wet_race) \u2192 Real weather (temperature, humidity, wind, rainfall)",
+    "feature_increase": "+2 weather features",
+    "accuracy_gain": "-0.07%"
+  },
+  "weather_normalization": {
+    "temperature": "(temp - 15) / 20",
+    "humidity": "humidity / 100",
+    "wind_speed": "wind_speed / 20",
+    "rainfall": "rainfall / 10"
+  }
+}

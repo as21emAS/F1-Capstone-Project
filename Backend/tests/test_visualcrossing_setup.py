@@ -6,7 +6,10 @@ Run this before doing the full backfill to ensure everything works.
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Add parent directory to path and change to Backend directory
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, backend_dir)
+os.chdir(backend_dir)
 
 from api_clients.visualcrossing_client import VisualCrossingClient
 from app.core.config import settings

@@ -175,7 +175,7 @@ class OpenWeatherClient:
             'temperature': data.get('main', {}).get('temp'),
             'humidity': data.get('main', {}).get('humidity'),
             'conditions': data.get('weather', [{}])[0].get('description', 'Unknown'),
-            'wind_speed': data.get('wind', {}).get('speed'),
+            'wind_speed': data.get('wind', {}).get('speed', 0) * 3.6,  # m/s to km/h
             'rainfall': data.get('rain', {}).get('1h', 0.0),  # rain volume last hour
             'forecast_time': datetime.now()
         }
@@ -210,7 +210,7 @@ class OpenWeatherClient:
                 'temperature': item.get('main', {}).get('temp'),
                 'humidity': item.get('main', {}).get('humidity'),
                 'conditions': item.get('weather', [{}])[0].get('description', 'Unknown'),
-                'wind_speed': item.get('wind', {}).get('speed'),
+                'wind_speed': item.get('wind', {}).get('speed', 0) * 3.6,  # m/s to km/h
                 'rainfall': item.get('rain', {}).get('3h', 0.0),  # rain volume last 3 hours
                 'forecast_time': datetime.fromtimestamp(item.get('dt'))
             })
