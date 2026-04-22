@@ -99,6 +99,7 @@ export const fetchNextRace = async (): Promise<LocalRaceData> => {
     date: data.time
       ? `${String(data.date).split("T")[0]}T${data.time}Z`
       : data.date,
+    timezone: data.circuit?.timezone,
   };
 };
 

@@ -11,6 +11,7 @@ class Circuit(Base):
     country = Column(String(100))
     latitude = Column(Numeric(10, 6))
     longitude = Column(Numeric(10, 6))
+    timezone = Column(String(50))
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
     

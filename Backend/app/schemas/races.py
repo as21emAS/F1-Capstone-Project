@@ -6,6 +6,7 @@ class CircuitInfo(BaseModel):
     name: str
     location: str
     country: str
+    timezone: Optional[str] = None
 
 class NextRaceResponse(BaseModel):
     race_name: str

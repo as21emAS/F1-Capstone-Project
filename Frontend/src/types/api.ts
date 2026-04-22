@@ -19,6 +19,7 @@ export interface RaceData {
   country: string;
   location: string;
   date: string;
+  timezone?: string;
 }
 
 export interface UpcomingRace {
