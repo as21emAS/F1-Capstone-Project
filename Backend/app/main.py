@@ -16,6 +16,7 @@ from app.api.v1.endpoints.simulator import router as simulator_router
 from app.api.v1.endpoints.weather import router as weather_router
 from app.api.v1.endpoints.news import router as news_router
 from app.api.v1.endpoints.admin import router as admin_router
+from app.api.v1.endpoints.drivers import router as drivers_router
 
 from database.database import Base, engine
 from sqlalchemy import text
@@ -98,6 +99,7 @@ app.include_router(circuits_router,    prefix="/api/circuits",     tags=["circui
 app.include_router(simulator_router,   prefix="/api/simulator",    tags=["simulator"])
 app.include_router(weather_router,     prefix="/api/weather",      tags=["weather"])
 app.include_router(news_router,        prefix="/api/news",         tags=["news"])
+app.include_router(drivers_router,     prefix="/api/drivers",      tags=["drivers"])
 app.include_router(admin_router,       prefix="/api/admin",        tags=["admin"])
 
 
