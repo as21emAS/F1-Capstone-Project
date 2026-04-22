@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import './DataCenter.css';
-import { getRaces, getCircuits, fetchRaceResults } from '../services/api';
+import { getRaces, getCircuits, fetchRaceResults, fetchCircuitWeather } from '../services/api';
 import { EmptyState, LoadingSkeleton } from '../components/ui/index';
+import { MapPin, Thermometer, Droplets, Wind, Cloud, Menu, X } from 'lucide-react';
 
 type TabType = 'overview' | 'circuit' | 'results';
 type SidebarTabType = 'seasons' | 'races';
@@ -13,7 +14,8 @@ export default function DataCenter() {
   const [selectedRace, setSelectedRace] = useState<string>('');
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [sidebarTab, setSidebarTab] = useState<SidebarTabType>('seasons');
-  
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); // NEW: Mobile sidebar state
+
   // Seasons to select from
   const seasons = [
     2010, 2011, 2012, 2013, 2014,
@@ -21,25 +23,32 @@ export default function DataCenter() {
     2021, 2022, 2023, 2024, 2025, 2026
   ].reverse(); // Most recent first
 
-  // ─── Data Fetching  ──────────────────────────────────────────
-  
+  // ─── Data Fetching ────────────────────────────────────────────────────────
+
+  const MONACO_FALLBACK = {
+  circuit_id: "monaco",
+  name: "Circuit de Monaco",
+  location: "Monte Carlo",
+  country: "Monaco"
+};
+
   const { data: circuits = [] } = useQuery({
     queryKey: ['circuits'],
     queryFn: getCircuits,
-    staleTime: Infinity, 
+    staleTime: Infinity,
   });
 
-  const { 
-    data: races = [], 
+  const {
+    data: races = [],
     isLoading: isLoadingRaces,
-    isError: isRacesError 
+    isError: isRacesError
   } = useQuery({
     queryKey: ['races', selectedSeason],
     queryFn: () => getRaces(selectedSeason),
   });
 
-  const { 
-    data: resultsData = [], 
+  const {
+    data: resultsData = [],
     isLoading: isLoadingResults,
     isError: isResultsError
   } = useQuery({
@@ -51,23 +60,35 @@ export default function DataCenter() {
     }
   });
 
+  // ─── Derived Data & Weather Hook ──────────────────────────────────────────
+  
+  const activeRaceData = races.find(r => r.id === selectedRace);
+  const activeCircuitData = activeRaceData
+    ? circuits.find(c => c.circuit_name === activeRaceData.circuitName)
+    : MONACO_FALLBACK;
+
+  const selectedCircuitId = activeCircuitData?.circuit_id ?? activeCircuitData?.circuit_id ?? null;
+
+  const { data: weatherData, isLoading: weatherLoading } = useQuery({
+    queryKey: ['weather', selectedCircuitId],
+    queryFn: () => fetchCircuitWeather(String(selectedCircuitId)),
+    enabled: !!selectedCircuitId, 
+    staleTime: 60 * 60 * 1_000, 
+  });
+
   // ─── Event Handlers ───────────────────────────────────────────────────────
+  
   const handleSeasonChange = (season: number) => {
     setSelectedSeason(season);
     setSelectedRace('');
-    setSidebarTab('races'); // Auto-switch to races tab to show new season's races
+    setSidebarTab('races'); 
   };
 
   const handleRaceChange = (raceId: string) => {
     setSelectedRace(raceId);
     setActiveTab('overview');
+    setIsSidebarOpen(false); // NEW: Auto-close sidebar on mobile after selecting a race
   };
-
-  // ─── Derived Data ─────────────────────────────────────────────────────────
-  const activeRaceData = races.find(r => r.id === selectedRace);
-  const activeCircuitData = activeRaceData 
-    ? circuits.find(c => c.circuit_name === activeRaceData.circuitName) 
-    : null;
 
   const isTabLoading = isLoadingResults && activeTab === 'results';
 
@@ -75,9 +96,19 @@ export default function DataCenter() {
     <div className="data-center-page">
       {/* ── Header ── */}
       <div className="dc-header">
-        <div>
-          <h1 className="dc-header-title">DATA CENTER</h1>
-          <div className="dc-header-subtitle">CIRCUIT INFORMATION SYSTEM</div>
+        <div className="dc-header-title-container">
+          {/* Mobile Side Bar */}
+          <button 
+            className="dc-mobile-menu-btn" 
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Open Menu"
+          >
+            <Menu size={24} />
+          </button>
+          <div>
+            <h1 className="dc-header-title">DATA CENTER</h1>
+            <div className="dc-header-subtitle">CIRCUIT INFORMATION SYSTEM</div>
+          </div>
         </div>
         <div className="dc-header-accent">
           <div className="dc-header-accent-block" style={{ background: '#E8002D' }} />
@@ -85,18 +116,33 @@ export default function DataCenter() {
           <div className="dc-header-accent-block" style={{ background: '#E8002D' }} />
         </div>
       </div>
+
       <div className="dc-layout-container">
-        
+
+        {/* Mobile Overlay background */}
+        {isSidebarOpen && (
+          <div className="dc-sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+        )}
+
         {/* Sidebar Component */}
-        <aside className="dc-sidebar">
+        <aside className={`dc-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+          
+          {/* Mobile Close Button inside sidebar */}
+          <div className="dc-sidebar-mobile-header">
+            <span>MENU</span>
+            <button className="dc-sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
+              <X size={20} />
+            </button>
+          </div>
+
           <div className="dc-sidebar-tabs">
-            <button 
+            <button
               className={`dc-sidebar-tab ${sidebarTab === 'seasons' ? 'active' : ''}`}
               onClick={() => setSidebarTab('seasons')}
             >
               SEASONS
             </button>
-            <button 
+            <button
               className={`dc-sidebar-tab ${sidebarTab === 'races' ? 'active' : ''}`}
               onClick={() => setSidebarTab('races')}
             >
@@ -108,7 +154,7 @@ export default function DataCenter() {
             {sidebarTab === 'seasons' && (
               <div className="dc-sidebar-list">
                 {seasons.map((season) => (
-                  <div 
+                  <div
                     key={season}
                     className={`dc-sidebar-item ${selectedSeason === season ? 'selected' : ''}`}
                     onClick={() => handleSeasonChange(season)}
@@ -127,7 +173,7 @@ export default function DataCenter() {
                 {isLoadingRaces && <div className="dc-sidebar-message">Loading races...</div>}
                 {isRacesError && <div className="dc-sidebar-message">Error loading races.</div>}
                 {!isLoadingRaces && !isRacesError && races.map((race) => (
-                  <div 
+                  <div
                     key={race.id}
                     className={`dc-sidebar-item ${selectedRace === race.id ? 'selected' : ''}`}
                     onClick={() => handleRaceChange(race.id)}
@@ -135,7 +181,7 @@ export default function DataCenter() {
                     <div className="dc-sidebar-info">
                       <div className="dc-sidebar-title">{race.raceName.toUpperCase()}</div>
                       <div className="dc-sidebar-subtitle">
-                        {race.location || race.country} <br/> 
+                        {race.location || race.country} <br />
                         {new Date(race.date).toLocaleDateString()}
                       </div>
                     </div>
@@ -152,7 +198,61 @@ export default function DataCenter() {
         {/* Main Content Component */}
         <main className="dc-main-content">
           {selectedRace ? (
-            <div className="dc-tabs-container">
+            <>
+              {activeCircuitData && (
+                <div className="dc-circuit-header">
+                  <div className="dc-circuit-header-left">
+                    <h2 className="dc-circuit-title">{activeCircuitData.circuit_name.toUpperCase()}</h2>
+                    <div className="dc-circuit-subtitle">
+                      <MapPin size={14} />
+                      {activeCircuitData.location}, {activeCircuitData.country}
+                      <span className={`dc-circuit-type-badge dc-type-${('circuit').toLowerCase()}`}>
+                        {'CIRCUIT'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Weather Block */}
+                  <div className="dc-weather">
+                    <div className="dc-weather-header">
+                      <Cloud size={14} />
+                      <span>WEATHER</span>
+                    </div>
+                    
+                    {weatherLoading ? (
+                      <div style={{ padding: "1rem", color: "#888", fontSize: "0.85rem" }}>
+                        Loading track weather...
+                      </div>
+                    ) : weatherData && weatherData.weather ? (
+                      <div className="dc-weather-grid">
+                        <div className="dc-weather-item">
+                          <Thermometer size={12} />
+                          <span>{Math.round(weatherData.weather.temperature ?? 0)}&#176;C</span>
+                        </div>
+                        <div className="dc-weather-item">
+                          <span className="dc-weather-cond" style={{ textTransform: "uppercase" }}>
+                            {weatherData.weather.conditions ?? "--"}
+                          </span>
+                        </div>
+                        <div className="dc-weather-item">
+                          <Droplets size={12} />
+                          <span>{weatherData.weather.humidity ?? "--"}%</span>
+                        </div>
+                        <div className="dc-weather-item">
+                          <Wind size={12} />
+                          <span>{weatherData.weather.wind_speed ?? "--"} km/h</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ padding: "1rem", color: "#888", fontSize: "0.85rem" }}>
+                        Weather unavailable.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              {/* TABS HEADER */}
               <div className="dc-tabs-header">
                 <button
                   className={`dc-tab ${activeTab === 'overview' ? 'dc-tab-active' : ''}`}
@@ -164,7 +264,7 @@ export default function DataCenter() {
                   className={`dc-tab ${activeTab === 'circuit' ? 'dc-tab-active' : ''}`}
                   onClick={() => setActiveTab('circuit')}
                 >
-                  <span className="dc-tab-text">CIRCUIT INFO</span>
+                  <span className="dc-tab-text">CIRCUIT RECORDS</span>
                 </button>
                 <button
                   className={`dc-tab ${activeTab === 'results' ? 'dc-tab-active' : ''}`}
@@ -269,10 +369,10 @@ export default function DataCenter() {
                   </>
                 )}
               </div>
-            </div>
+            </>
           ) : (
             <div className="dc-empty-wrapper">
-              <EmptyState title='No Race Selected' message='Select a race from the sidebar to view data' icon="🏁"/>
+              <EmptyState title='No Race Selected' message='Select a race from the sidebar to view data' icon="🏁" />
             </div>
           )}
         </main>
