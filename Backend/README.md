@@ -12,6 +12,32 @@ Backend system for the F1 Race Predictor application, including database managem
 
 ---
 
+## Production Deployment
+
+**Live API:** https://racetrack-backend-2ak8.onrender.com
+
+### Quick Links
+
+- **API Documentation:** https://racetrack-backend-2ak8.onrender.com/docs
+- **Health Check:** https://racetrack-backend-2ak8.onrender.com/health
+- **Driver Standings:** https://racetrack-backend-2ak8.onrender.com/api/standings/drivers/current
+
+### Deployment Info
+
+- **Platform:** Render (Free Tier)
+- **Database:** PostgreSQL (Render Managed)
+- **Auto-Deploy:** Enabled from `increment-3` branch
+
+### Environment Variables
+
+Set in Render dashboard:
+
+- `DATABASE_URL` — PostgreSQL connection string (DONE)
+- `VISUALCROSSING_API_KEY` — Weather API key (DONE)
+- `ALLOWED_ORIGINS` — CORS origins (update with URL when frontend deploys)
+
+---
+
 ## Database Setup
 
 ### Prerequisites
