@@ -53,9 +53,9 @@ async def lifespan(app: FastAPI):
     logger.info("Starting F1 Predictor API...")
     updater = get_updater()
 
-    # updater.seed_race_calendar(2026)
-    # updater.seed_race_calendar(2026)
-    # updater.seed_past_results(2026)
+    updater.seed_race_calendar(2026)
+    updater.seed_drivers_and_teams(2026)
+    updater.seed_past_results(2026)
 
     updater.start_scheduler()
     updater.schedule_upcoming_races(2026)
