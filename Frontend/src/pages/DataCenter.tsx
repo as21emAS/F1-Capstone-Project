@@ -9,7 +9,8 @@ type TabType = 'overview' | 'circuit' | 'results';
 type SidebarTabType = 'seasons' | 'races';
 
 export default function DataCenter() {
-  // ─── UI State ─────────────────────────────────────────────────────────────
+
+  // UI State 
   const [selectedSeason, setSelectedSeason] = useState<number>(2026);
   const [selectedRace, setSelectedRace] = useState<string>('');
   const [activeTab, setActiveTab] = useState<TabType>('overview');
@@ -23,14 +24,14 @@ export default function DataCenter() {
     2021, 2022, 2023, 2024, 2025, 2026
   ].reverse(); // Most recent first
 
-  // ─── Data Fetching ────────────────────────────────────────────────────────
+  // Data Fetching
 
   const MONACO_FALLBACK = {
-  circuit_id: "monaco",
-  name: "Circuit de Monaco",
-  location: "Monte Carlo",
-  country: "Monaco"
-};
+    circuit_id: "monaco",
+    name: "Circuit de Monaco",
+    location: "Monte Carlo",
+    country: "Monaco"
+  };
 
   const { data: circuits = [] } = useQuery({
     queryKey: ['circuits'],
@@ -60,8 +61,8 @@ export default function DataCenter() {
     }
   });
 
-  // ─── Derived Data & Weather Hook ──────────────────────────────────────────
-  
+  // Derived Data and Weather Hook
+
   const activeRaceData = races.find(r => r.id === selectedRace);
   const activeCircuitData = activeRaceData
     ? circuits.find(c => c.circuit_name === activeRaceData.circuitName)
@@ -72,22 +73,57 @@ export default function DataCenter() {
   const { data: weatherData, isLoading: weatherLoading } = useQuery({
     queryKey: ['weather', selectedCircuitId],
     queryFn: () => fetchCircuitWeather(String(selectedCircuitId)),
-    enabled: !!selectedCircuitId, 
-    staleTime: 60 * 60 * 1_000, 
+    enabled: !!selectedCircuitId,
+    staleTime: 60 * 60 * 1_000,
   });
 
-  // ─── Event Handlers ───────────────────────────────────────────────────────
-  
+  // For displaying track images
+  const getCircuitSlug = (name: string): string => {
+    const n = name.toLowerCase();
+    console.log(n);
+    if (n.includes('americas') || n.includes('austin')) return 'austin';
+    if (n.includes('miami')) return 'miami';
+    if (n.includes('monaco')) return 'monaco';
+    if (n.includes('silverstone')) return 'silverstone';
+    if (n.includes('jeddah')) return 'jeddah';
+    if (n.includes('albert')) return 'melbourne';
+    if (n.includes('shanghai')) return 'shanghai';
+    if (n.includes('suzuka')) return 'suzuka';
+    if (n.includes('bahrain')) return 'bahrain';
+    if (n.includes('gilles')) return 'montreal';
+    if (n.includes('baku')) return 'baku';
+    if (n.includes('barcelona-catalunya')) return 'catalunya';
+    if (n.includes('red bull ring')) return 'spielberg';
+    if (n.includes('spa-francorchamps')) return 'spa-francorchamps';
+    if (n.includes('hungaroring')) return 'hungaroring';
+    if (n.includes('zandvoort')) return 'zandvoort';
+    if (n.includes('monza')) return 'monza';
+    if (n.includes('marina')) return 'marina-bay';
+    if (n.includes('hermanos')) return 'mexico-city';
+    if (n.includes('enzo')) return 'imola';
+    if (n.includes('interlagos') || n.includes('são paulo')) return 'interlagos';
+    if (n.includes('vegas')) return 'las-vegas';
+    if (n.includes('losail')) return 'lusail';
+    if (n.includes('carlos pace')) return 'brazil';
+    if (n.includes('paul')) return 'paul_ricard';
+    if (n.includes('sochi')) return 'sochi';
+    if (n.includes('istanbul')) return 'Istanbul';
+    if (n.includes('madring')) return 'madring';
+    return '';
+  };
+
+  // Event Handlers 
+
   const handleSeasonChange = (season: number) => {
     setSelectedSeason(season);
     setSelectedRace('');
-    setSidebarTab('races'); 
+    setSidebarTab('races');
   };
 
   const handleRaceChange = (raceId: string) => {
     setSelectedRace(raceId);
     setActiveTab('overview');
-    setIsSidebarOpen(false); // NEW: Auto-close sidebar on mobile after selecting a race
+    setIsSidebarOpen(false); // Auto-close sidebar on mobile after selecting a race
   };
 
   const isTabLoading = isLoadingResults && activeTab === 'results';
@@ -98,8 +134,8 @@ export default function DataCenter() {
       <div className="dc-header">
         <div className="dc-header-title-container">
           {/* Mobile Side Bar */}
-          <button 
-            className="dc-mobile-menu-btn" 
+          <button
+            className="dc-mobile-menu-btn"
             onClick={() => setIsSidebarOpen(true)}
             aria-label="Open Menu"
           >
@@ -126,7 +162,7 @@ export default function DataCenter() {
 
         {/* Sidebar Component */}
         <aside className={`dc-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          
+
           {/* Mobile Close Button inside sidebar */}
           <div className="dc-sidebar-mobile-header">
             <span>MENU</span>
@@ -200,9 +236,11 @@ export default function DataCenter() {
           {selectedRace ? (
             <>
               {activeCircuitData && (
-                <div className="dc-circuit-header">
+                <div className="dc-circuit-header" key={selectedRace}>
                   <div className="dc-circuit-header-left">
-                    <h2 className="dc-circuit-title">{activeCircuitData.circuit_name.toUpperCase()}</h2>
+                    <h2 className="dc-circuit-title">
+                      {activeCircuitData.circuit_name.toUpperCase()}
+                    </h2>
                     <div className="dc-circuit-subtitle">
                       <MapPin size={14} />
                       {activeCircuitData.location}, {activeCircuitData.country}
@@ -213,12 +251,12 @@ export default function DataCenter() {
                   </div>
 
                   {/* Weather Block */}
-                  <div className="dc-weather">
+                  <div className="dc-weather" key={selectedRace}>
                     <div className="dc-weather-header">
                       <Cloud size={14} />
                       <span>WEATHER</span>
                     </div>
-                    
+
                     {weatherLoading ? (
                       <div style={{ padding: "1rem", color: "#888", fontSize: "0.85rem" }}>
                         Loading track weather...
@@ -240,7 +278,7 @@ export default function DataCenter() {
                         </div>
                         <div className="dc-weather-item">
                           <Wind size={12} />
-                          <span>{weatherData.weather.wind_speed ?? "--"} km/h</span>
+                          <span>{(weatherData.weather.wind_speed).toFixed(2) ?? "--"} km/h</span>
                         </div>
                       </div>
                     ) : (
@@ -251,7 +289,7 @@ export default function DataCenter() {
                   </div>
                 </div>
               )}
-              
+
               {/* TABS HEADER */}
               <div className="dc-tabs-header">
                 <button
@@ -264,7 +302,7 @@ export default function DataCenter() {
                   className={`dc-tab ${activeTab === 'circuit' ? 'dc-tab-active' : ''}`}
                   onClick={() => setActiveTab('circuit')}
                 >
-                  <span className="dc-tab-text">CIRCUIT RECORDS</span>
+                  <span className="dc-tab-text">CIRCUIT MAP</span>
                 </button>
                 <button
                   className={`dc-tab ${activeTab === 'results' ? 'dc-tab-active' : ''}`}
@@ -286,51 +324,63 @@ export default function DataCenter() {
                       <div className="dc-content-grid">
                         <div className="dc-data-row">
                           <div className="dc-data-label">RACE NAME</div>
-                          <div className="dc-data-value">{activeRaceData.raceName}</div>
+                          <div className="dc-data-value" key={selectedRace}>
+                            {activeRaceData.raceName}
+                          </div>
                         </div>
                         <div className="dc-data-row">
                           <div className="dc-data-label">DATE</div>
-                          <div className="dc-data-value">{new Date(activeRaceData.date).toLocaleDateString()}</div>
+                          <div className="dc-data-value" key={selectedRace}>
+                            {new Date(activeRaceData.date).toLocaleDateString()}
+                          </div>
                         </div>
                         <div className="dc-data-row">
                           <div className="dc-data-label">CIRCUIT</div>
-                          <div className="dc-data-value">{activeRaceData.circuitName}</div>
+                          <div className="dc-data-value" key={selectedRace}>
+                            {activeRaceData.circuitName}
+                          </div>
                         </div>
                         <div className="dc-data-row">
                           <div className="dc-data-label">LOCATION</div>
-                          <div className="dc-data-value">{activeRaceData.location || activeRaceData.country}</div>
+                          <div className="dc-data-value" key={selectedRace}>
+                            {activeRaceData.location || activeRaceData.country}
+                          </div>
                         </div>
                         <div className="dc-data-row">
                           <div className="dc-data-label">ROUND</div>
-                          <div className="dc-data-value">{activeRaceData.roundNumber}</div>
+                          <div className="dc-data-value" key={selectedRace}>
+                            {activeRaceData.roundNumber}
+                          </div>
                         </div>
                       </div>
                     )}
 
                     {/* Circuit Info */}
-                    {activeTab === 'circuit' && (
-                      <div className="dc-content-grid">
-                        {activeCircuitData ? (
-                          <>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">CIRCUIT NAME</div>
-                              <div className="dc-data-value">{activeCircuitData.circuit_name}</div>
+                    {activeTab === 'circuit' && activeCircuitData && (
+                      <div className="dc-circuit-tab-container">
+                        {/* The Hero Image Card */}
+                        {(() => {
+                          const slug = getCircuitSlug(activeCircuitData.circuit_name);
+                          const imageUrl = slug
+                            ? new URL(`../assets/circuits/${slug}.svg`, import.meta.url).href
+                            : null;
+
+                          return (
+                            <div className="dc-circuit-card">
+                              {imageUrl ? (
+                                <img
+                                  src={imageUrl}
+                                  alt={activeCircuitData.circuit_name}
+                                  className="dc-circuit-svg-display"
+                                />
+                              ) : (
+                                <div className="dc-image-placeholder">CIRCUIT MAP UNAVAILABLE</div>
+                              )}
                             </div>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">LOCATION</div>
-                              <div className="dc-data-value">{activeCircuitData.location}</div>
-                            </div>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">COUNTRY</div>
-                              <div className="dc-data-value">{activeCircuitData.country}</div>
-                            </div>
-                          </>
-                        ) : (
-                          <EmptyState title="No Data" message="Detailed circuit data not available." icon="📍" />
-                        )}
+                          );
+                        })()}
                       </div>
                     )}
-
                     {/* Race Data and Results */}
                     {activeTab === 'results' && (
                       <div className="dc-results-table-container">
