@@ -5,7 +5,7 @@ import { getRaces, getCircuits, fetchRaceResults, fetchCircuitWeather } from '..
 import { EmptyState, LoadingSkeleton } from '../components/ui/index';
 import { MapPin, Thermometer, Droplets, Wind, Cloud, Menu, X } from 'lucide-react';
 
-type TabType = 'overview' | 'circuit' | 'results';
+type TabType = 'overview' | 'circuit' | 'results' | 'circuit_map';
 type SidebarTabType = 'seasons' | 'races';
 
 export default function DataCenter() {
@@ -302,13 +302,19 @@ export default function DataCenter() {
                   className={`dc-tab ${activeTab === 'circuit' ? 'dc-tab-active' : ''}`}
                   onClick={() => setActiveTab('circuit')}
                 >
-                  <span className="dc-tab-text">CIRCUIT MAP</span>
+                  <span className="dc-tab-text">CIRCUIT INFO</span>
                 </button>
                 <button
                   className={`dc-tab ${activeTab === 'results' ? 'dc-tab-active' : ''}`}
                   onClick={() => setActiveTab('results')}
                 >
                   <span className="dc-tab-text">RACE DATA</span>
+                </button>
+                <button
+                  className={`dc-tab ${activeTab === 'circuit_map' ? 'dc-tab-active' : ''}`}
+                  onClick={() => setActiveTab('circuit_map')}
+                >
+                  <span className="dc-tab-text">CIRCUIT MAP</span>
                 </button>
               </div>
 
@@ -356,7 +362,30 @@ export default function DataCenter() {
                     )}
 
                     {/* Circuit Info */}
-                    {activeTab === 'circuit' && activeCircuitData && (
+                    {activeTab === 'circuit' && (
+                      <div className="dc-content-grid">
+                        {activeCircuitData ? (
+                          <>
+                            <div className="dc-data-row">
+                              <div className="dc-data-label">CIRCUIT NAME</div>
+                              <div className="dc-data-value">{activeCircuitData.circuit_name}</div>
+                            </div>
+                            <div className="dc-data-row">
+                              <div className="dc-data-label">LOCATION</div>
+                              <div className="dc-data-value">{activeCircuitData.location}</div>
+                            </div>
+                            <div className="dc-data-row">
+                              <div className="dc-data-label">COUNTRY</div>
+                              <div className="dc-data-value">{activeCircuitData.country}</div>
+                            </div>
+                          </>
+                        ) : (
+                          <EmptyState title="No Data" message="Detailed circuit data not available." icon="📍" />
+                        )}
+                      </div>
+                    )}
+                    {/* Circuit Map */}
+                    {activeTab === 'circuit_map' && activeCircuitData && (
                       <div className="dc-circuit-tab-container">
                         {/* The Hero Image Card */}
                         {(() => {
