@@ -8,6 +8,241 @@ import { MapPin, Thermometer, Droplets, Wind, Cloud, Menu, X } from 'lucide-reac
 type TabType = 'overview' | 'circuit' | 'results' | 'circuit_map';
 type SidebarTabType = 'seasons' | 'races';
 
+// ═══════════════════════════════════════════════════════════════════════════
+// CIRCUIT DATA — Hardcoded for 2026 Calendar
+// ═══════════════════════════════════════════════════════════════════════════
+const CIRCUIT_DATA: Record<string, {
+  trackLength: string;
+  laps: number;
+  raceDistance: string;
+  corners: number;
+  drsZones: number;
+  lapRecord: { time: string; driver: string; year: number };
+  firstGP: number;
+  circuitType: string;
+}> = {
+  albert_park: {
+    trackLength: "5.278 km",
+    laps: 58,
+    raceDistance: "306.124 km",
+    corners: 14,
+    drsZones: 4,
+    lapRecord: { time: "1:19.735", driver: "Charles Leclerc", year: 2024 },
+    firstGP: 1996,
+    circuitType: "Street Circuit (Semi-Permanent)"
+  },
+  shanghai: {
+    trackLength: "5.451 km",
+    laps: 56,
+    raceDistance: "305.066 km",
+    corners: 16,
+    drsZones: 2,
+    lapRecord: { time: "1:32.238", driver: "Michael Schumacher", year: 2004 },
+    firstGP: 2004,
+    circuitType: "Permanent Racing Facility"
+  },
+  suzuka: {
+    trackLength: "5.807 km",
+    laps: 53,
+    raceDistance: "307.471 km",
+    corners: 18,
+    drsZones: 2,
+    lapRecord: { time: "1:30.983", driver: "Lewis Hamilton", year: 2019 },
+    firstGP: 1987,
+    circuitType: "Permanent Racing Facility"
+  },
+  miami: {
+    trackLength: "5.412 km",
+    laps: 57,
+    raceDistance: "308.326 km",
+    corners: 19,
+    drsZones: 3,
+    lapRecord: { time: "1:29.708", driver: "Max Verstappen", year: 2023 },
+    firstGP: 2022,
+    circuitType: "Street Circuit"
+  },
+  villeneuve: {
+    trackLength: "4.361 km",
+    laps: 70,
+    raceDistance: "305.270 km",
+    corners: 14,
+    drsZones: 2,
+    lapRecord: { time: "1:13.078", driver: "Valtteri Bottas", year: 2019 },
+    firstGP: 1978,
+    circuitType: "Semi-Permanent Circuit"
+  },
+  monaco: {
+    trackLength: "3.337 km",
+    laps: 78,
+    raceDistance: "260.286 km",
+    corners: 19,
+    drsZones: 1,
+    lapRecord: { time: "1:12.909", driver: "Lewis Hamilton", year: 2021 },
+    firstGP: 1950,
+    circuitType: "Street Circuit"
+  },
+  catalunya: {
+    trackLength: "4.657 km",
+    laps: 66,
+    raceDistance: "307.236 km",
+    corners: 16,
+    drsZones: 2,
+    lapRecord: { time: "1:18.149", driver: "Max Verstappen", year: 2023 },
+    firstGP: 1991,
+    circuitType: "Permanent Racing Facility"
+  },
+  red_bull_ring: {
+    trackLength: "4.318 km",
+    laps: 71,
+    raceDistance: "306.452 km",
+    corners: 10,
+    drsZones: 3,
+    lapRecord: { time: "1:05.619", driver: "Carlos Sainz", year: 2020 },
+    firstGP: 1970,
+    circuitType: "Permanent Racing Facility"
+  },
+  silverstone: {
+    trackLength: "5.891 km",
+    laps: 52,
+    raceDistance: "306.198 km",
+    corners: 18,
+    drsZones: 2,
+    lapRecord: { time: "1:27.097", driver: "Max Verstappen", year: 2020 },
+    firstGP: 1950,
+    circuitType: "Permanent Racing Facility"
+  },
+  spa: {
+    trackLength: "7.004 km",
+    laps: 44,
+    raceDistance: "308.052 km",
+    corners: 19,
+    drsZones: 2,
+    lapRecord: { time: "1:46.286", driver: "Valtteri Bottas", year: 2018 },
+    firstGP: 1950,
+    circuitType: "Permanent Racing Facility"
+  },
+  hungaroring: {
+    trackLength: "4.381 km",
+    laps: 70,
+    raceDistance: "306.630 km",
+    corners: 14,
+    drsZones: 2,
+    lapRecord: { time: "1:16.627", driver: "Lewis Hamilton", year: 2020 },
+    firstGP: 1986,
+    circuitType: "Permanent Racing Facility"
+  },
+  zandvoort: {
+    trackLength: "4.259 km",
+    laps: 72,
+    raceDistance: "306.587 km",
+    corners: 14,
+    drsZones: 2,
+    lapRecord: { time: "1:11.097", driver: "Lewis Hamilton", year: 2021 },
+    firstGP: 1952,
+    circuitType: "Permanent Racing Facility"
+  },
+  monza: {
+    trackLength: "5.793 km",
+    laps: 53,
+    raceDistance: "306.720 km",
+    corners: 11,
+    drsZones: 2,
+    lapRecord: { time: "1:21.046", driver: "Rubens Barrichello", year: 2004 },
+    firstGP: 1950,
+    circuitType: "Permanent Racing Facility"
+  },
+  madrid: {
+    trackLength: "5.470 km",
+    laps: 57,
+    raceDistance: "311.790 km",
+    corners: 20,
+    drsZones: 2,
+    lapRecord: { time: "N/A", driver: "N/A (New Circuit)", year: 2026 },
+    firstGP: 2026,
+    circuitType: "Street Circuit"
+  },
+  baku: {
+    trackLength: "6.003 km",
+    laps: 51,
+    raceDistance: "306.049 km",
+    corners: 20,
+    drsZones: 2,
+    lapRecord: { time: "1:43.009", driver: "Charles Leclerc", year: 2019 },
+    firstGP: 2016,
+    circuitType: "Street Circuit"
+  },
+  marina_bay: {
+    trackLength: "4.940 km",
+    laps: 62,
+    raceDistance: "306.143 km",
+    corners: 19,
+    drsZones: 4,
+    lapRecord: { time: "1:35.867", driver: "Lewis Hamilton", year: 2023 },
+    firstGP: 2008,
+    circuitType: "Street Circuit"
+  },
+  americas: {
+    trackLength: "5.513 km",
+    laps: 56,
+    raceDistance: "308.405 km",
+    corners: 20,
+    drsZones: 2,
+    lapRecord: { time: "1:36.169", driver: "Charles Leclerc", year: 2019 },
+    firstGP: 2012,
+    circuitType: "Permanent Racing Facility"
+  },
+  rodriguez: {
+    trackLength: "4.304 km",
+    laps: 71,
+    raceDistance: "305.354 km",
+    corners: 17,
+    drsZones: 3,
+    lapRecord: { time: "1:17.774", driver: "Valtteri Bottas", year: 2021 },
+    firstGP: 1963,
+    circuitType: "Permanent Racing Facility"
+  },
+  interlagos: {
+    trackLength: "4.309 km",
+    laps: 71,
+    raceDistance: "305.879 km",
+    corners: 15,
+    drsZones: 2,
+    lapRecord: { time: "1:10.540", driver: "Valtteri Bottas", year: 2018 },
+    firstGP: 1973,
+    circuitType: "Permanent Racing Facility"
+  },
+  vegas: {
+    trackLength: "6.120 km",
+    laps: 50,
+    raceDistance: "305.775 km",
+    corners: 17,
+    drsZones: 2,
+    lapRecord: { time: "1:35.490", driver: "Oscar Piastri", year: 2023 },
+    firstGP: 2023,
+    circuitType: "Street Circuit"
+  },
+  losail: {
+    trackLength: "5.380 km",
+    laps: 57,
+    raceDistance: "306.660 km",
+    corners: 16,
+    drsZones: 2,
+    lapRecord: { time: "1:24.319", driver: "Max Verstappen", year: 2023 },
+    firstGP: 2021,
+    circuitType: "Permanent Racing Facility"
+  },
+  yas_marina: {
+    trackLength: "5.281 km",
+    laps: 58,
+    raceDistance: "306.183 km",
+    corners: 16,
+    drsZones: 2,
+    lapRecord: { time: "1:26.103", driver: "Max Verstappen", year: 2021 },
+    firstGP: 2009,
+    circuitType: "Permanent Racing Facility"
+  }
+};
+
 export default function DataCenter() {
 
   // UI State 
@@ -25,13 +260,6 @@ export default function DataCenter() {
   ].reverse(); // Most recent first
 
   // Data Fetching
-
-  const MONACO_FALLBACK = {
-    circuit_id: "monaco",
-    name: "Circuit de Monaco",
-    location: "Monte Carlo",
-    country: "Monaco"
-  };
 
   const { data: circuits = [] } = useQuery({
     queryKey: ['circuits'],
@@ -56,8 +284,12 @@ export default function DataCenter() {
     queryKey: ['raceResults', selectedRace],
     queryFn: () => fetchRaceResults(selectedRace),
     enabled: !!selectedRace,
-    select: (data: any) => {
-      return data?.results ? data.results : (Array.isArray(data) ? data : []);
+    select: (data: unknown): unknown[] => {
+      if (data && typeof data === 'object' && 'results' in data) {
+        const results = (data as { results: unknown }).results;
+        return Array.isArray(results) ? results : [];
+      }
+      return Array.isArray(data) ? data : [];
     }
   });
 
@@ -66,9 +298,9 @@ export default function DataCenter() {
   const activeRaceData = races.find(r => r.id === selectedRace);
   const activeCircuitData = activeRaceData
     ? circuits.find(c => c.circuit_name === activeRaceData.circuitName)
-    : MONACO_FALLBACK;
+    : undefined;
 
-  const selectedCircuitId = activeCircuitData?.circuit_id ?? activeCircuitData?.circuit_id ?? null;
+  const selectedCircuitId = activeCircuitData?.circuit_id ?? null;
 
   const { data: weatherData, isLoading: weatherLoading } = useQuery({
     queryKey: ['weather', selectedCircuitId],
@@ -366,18 +598,48 @@ export default function DataCenter() {
                       <div className="dc-content-grid">
                         {activeCircuitData ? (
                           <>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">CIRCUIT NAME</div>
-                              <div className="dc-data-value">{activeCircuitData.circuit_name}</div>
-                            </div>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">LOCATION</div>
-                              <div className="dc-data-value">{activeCircuitData.location}</div>
-                            </div>
-                            <div className="dc-data-row">
-                              <div className="dc-data-label">COUNTRY</div>
-                              <div className="dc-data-value">{activeCircuitData.country}</div>
-                            </div>
+                            {/* Circuit Data */}
+                            {selectedCircuitId && CIRCUIT_DATA[selectedCircuitId] && (() => {
+                              const circuitData = CIRCUIT_DATA[selectedCircuitId];
+                              return (
+                                <>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">CIRCUIT TYPE</div>
+                                    <div className="dc-data-value">{circuitData.circuitType}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">TRACK LENGTH</div>
+                                    <div className="dc-data-value">{circuitData.trackLength}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">NUMBER OF LAPS</div>
+                                    <div className="dc-data-value">{circuitData.laps}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">RACE DISTANCE</div>
+                                    <div className="dc-data-value">{circuitData.raceDistance}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">NUMBER OF CORNERS</div>
+                                    <div className="dc-data-value">{circuitData.corners}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">DRS ZONES</div>
+                                    <div className="dc-data-value">{circuitData.drsZones}</div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">LAP RECORD</div>
+                                    <div className="dc-data-value">
+                                      {circuitData.lapRecord.time} - {circuitData.lapRecord.driver} ({circuitData.lapRecord.year})
+                                    </div>
+                                  </div>
+                                  <div className="dc-data-row">
+                                    <div className="dc-data-label">FIRST GRAND PRIX</div>
+                                    <div className="dc-data-value">{circuitData.firstGP}</div>
+                                  </div>
+                                </>
+                              );
+                            })()}
                           </>
                         ) : (
                           <EmptyState title="No Data" message="Detailed circuit data not available." icon="📍" />
@@ -428,16 +690,19 @@ export default function DataCenter() {
                               </tr>
                             </thead>
                             <tbody>
-                              {resultsData.map((result: any, idx: number) => (
-                                <tr key={result.id || idx}>
-                                  <td className="dc-results-position">{result.position ?? idx + 1}</td>
-                                  <td>{result.driver_name ?? result.driver ?? 'Unknown'}</td>
-                                  <td>{result.team_name ?? result.team ?? 'Unknown'}</td>
-                                  <td className="dc-results-points">{result.points ?? 0}</td>
-                                  <td>{result.grid ?? '-'}</td>
-                                  <td>{result.status ?? 'Finished'}</td>
-                                </tr>
-                              ))}
+                              {resultsData.map((result: unknown, idx: number) => {
+                                const res = result as Record<string, unknown>;
+                                return (
+                                  <tr key={(res.id as string) || idx}>
+                                    <td className="dc-results-position">{(res.position as number) ?? idx + 1}</td>
+                                    <td>{(res.driver_name as string) ?? (res.driver as string) ?? 'Unknown'}</td>
+                                    <td>{(res.team_name as string) ?? (res.team as string) ?? 'Unknown'}</td>
+                                    <td className="dc-results-points">{(res.points as number) ?? 0}</td>
+                                    <td>{(res.grid as number | string) ?? '-'}</td>
+                                    <td>{(res.status as string) ?? 'Finished'}</td>
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         ) : (
