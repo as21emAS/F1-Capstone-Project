@@ -3,8 +3,8 @@
 // Spec: FRONTEND_REDESIGN_v4.md § "Dashboard Page / Above Fold — Hero Section"
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { fetchNextRace, fetchUpcomingRaces } from "../services/api";
-import type { RaceData, UpcomingRace } from "../types/api";
+import { fetchNextRace } from "../services/api";
+import type { RaceData } from "../types/api";
 import "./NextRaceCard.css";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -19,16 +19,6 @@ const FALLBACK_NEXT: RaceData = {
   location: "Shanghai",
   date: "2026-03-16",
   timezone: "Asia/Shanghai",
-};
-
-const FALLBACK_UPCOMING: UpcomingRace = {
-  race_id: 6,
-  round_number: 6,
-  race_name: "Japanese Grand Prix",
-  circuit_name: "Suzuka International Racing Course",
-  country: "Japan",
-  date: "2026-03-23",
-  season: 2026,
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -109,78 +99,52 @@ function ScrollChevron({ targetId }: { targetId: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // Main component
 // ─────────────────────────────────────────────────────────────────────────────
-export default function NextRaceCard() {
-  const [nextRace, setNextRace]         = useState<RaceData | null>(null);
-  const [upcomingRace, setUpcomingRace] = useState<UpcomingRace | null>(null);
-  const [loading, setLoading]           = useState(true);
+export default function NextRaceCard({ 
+  upcomingRace 
+}: { 
+  upcomingRace?: { name: string; circuitName: string; date: string; country: string } 
+} = {}) {
+  const [nextRace, setNextRace] = useState<RaceData | null>(null);
+  const [loading, setLoading]   = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Fetch both endpoints concurrently; fall back silently per spec
   const loadRaces = useCallback(async () => {
-    const [nextResult, upcomingResult] = await Promise.allSettled([
-      fetchNextRace(),
-      fetchUpcomingRaces(),
-    ]);
-
-    if (nextResult.status === "fulfilled") {
-      setNextRace(nextResult.value);
-    } else {
+    try {
+      const nextResult = await fetchNextRace();
+      setNextRace(nextResult);
+    } catch (error) {
       console.warn("[NextRaceCard] /api/races/next failed — using fallback");
       setNextRace(FALLBACK_NEXT);
+    } finally {
+      setLoading(false);
     }
-
-    if (upcomingResult.status === "fulfilled") {
-      // fetchUpcomingRaces may return array or single object
-      const raw = upcomingResult.value;
-      const first = Array.isArray(raw) ? raw[0] : raw;
-      setUpcomingRace(first ?? FALLBACK_UPCOMING);
-    } else {
-      console.warn("[NextRaceCard] /api/races/upcoming failed — using fallback");
-      setUpcomingRace(FALLBACK_UPCOMING);
-    }
-
-    setLoading(false);
   }, []);
 
   useEffect(() => {
     loadRaces();
   }, [loadRaces]);
 
-  // Resolved values (loading → show fallback so layout never collapses)
-  const next     = nextRace     ?? FALLBACK_NEXT;
-  const upcoming = upcomingRace ?? FALLBACK_UPCOMING;
-
-  const nextFlag     = flagFor(next.country);
-  const upcomingFlag = flagFor(upcoming.country);
-  const nextShort    = shortRaceName(next.raceName);
-  const upcomingShort = shortRaceName(upcoming.race_name);
-  const nextRange    = formatDateRange(next.date);
-  const upcomingRange = formatDateRange(upcoming.date);
+  const next = nextRace ?? FALLBACK_NEXT;
+  const nextFlag  = flagFor(next.country);
+  const nextShort = shortRaceName(next.raceName);
+  const nextRange = formatDateRange(next.date);
 
   return (
     <section className="hero" aria-label="Next race information">
-      {/* ── Video background ── */}
       <video
         ref={videoRef}
         className="hero__video"
-        src=""           /* ← wire real MP4 URL here when available */
+        src=""
         autoPlay
         muted
         loop
         playsInline
         aria-hidden="true"
       />
-
-      {/* ── Gradient overlay ── */}
       <div className="hero__overlay" aria-hidden="true" />
-
-      {/* ── Red vertical separator (desktop) ── */}
       <div className="hero__separator" aria-hidden="true" />
 
-      {/* ── Content layer ── */}
       <div className="hero__content">
-
-        {/* LEFT: race info (dominant 60%) */}
         <div className="hero__left">
 
           {/* Next Race */}
@@ -193,21 +157,23 @@ export default function NextRaceCard() {
             {next.circuitName.toUpperCase()} · {nextRange}
           </p>
 
-          {/* Red divider */}
-          <div className="hero__divider" aria-hidden="true" />
-
-          {/* Upcoming Race */}
-          <p className="hero__race-label">UPCOMING RACE:</p>
-          <h2 className={`hero__race-name hero__race-name--secondary${loading ? " hero__race-name--loading" : ""}`}>
-            {upcomingShort}
-          </h2>
-          <p className="hero__race-details">
-            <span className="hero__flag" aria-hidden="true">{upcomingFlag}</span>
-            {upcoming.circuit_name.toUpperCase()} · {upcomingRange}
-          </p>
+          {/* Upcoming Race (Conditionally rendered via props) */}
+          {upcomingRace && (
+            <>
+              <div className="hero__divider" aria-hidden="true" />
+              <p className="hero__race-label">UPCOMING RACE:</p>
+              <h2 className="hero__race-name hero__race-name--secondary">
+                {shortRaceName(upcomingRace.name)}
+              </h2>
+              <p className="hero__race-details">
+                <span className="hero__flag" aria-hidden="true">{flagFor(upcomingRace.country)}</span>
+                {(upcomingRace.circuitName || "").toUpperCase()} · {formatDateRange(upcomingRace.date)}
+              </p>
+            </>
+          )}
+          
         </div>
 
-        {/* RIGHT: tagline (de-emphasized 40%) */}
         <div className="hero__right" aria-hidden="true">
           <p className="hero__tagline">
             YOUR F1 DATA<br />COMPANION TOOL
@@ -215,7 +181,6 @@ export default function NextRaceCard() {
         </div>
       </div>
 
-      {/* ── Scroll chevron ── */}
       <ScrollChevron targetId="below-fold" />
     </section>
   );
