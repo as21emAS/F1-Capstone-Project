@@ -9,8 +9,8 @@
 }
 
 body {
-  background: #F5F1E8;
-  color: #1E1E1E;
+  background: #0C0C12;
+  color: #F5F1E8;
   font-family: "Courier New", Courier, monospace;
 }
 
@@ -162,6 +162,10 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-html, body {
-  background: #F5F1E8 !important;
+html {
+  background: #0C0C12;
+}
+
+body {
+  background: #0C0C12;
 }

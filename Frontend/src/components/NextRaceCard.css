@@ -1,0 +1,340 @@
+/* ─── NextRaceCard.css ───────────────────────────────────────────────────────
+   Dashboard hero — full-screen video background + race info overlay
+   Spec: FRONTEND_REDESIGN_v4.md § "Above Fold — Hero Section"
+   Tokens: cream #F5F1E8 | espresso #1E1E1E | red #E8002D
+   Fonts:  'Barlow Condensed' (race names) | 'Courier New' (details)
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BREAKOUT from .main padding
+   .main has padding: 1.75rem 2.5rem 1.75rem 3rem  (Layout.css)
+   We bleed the hero to the full viewport edge.
+   Also compensate for the 8px left racing stripe (app-root::after).
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero {
+  /* Negative margin breakout */
+  margin-top:    -1.75rem;
+  margin-left:   -3rem;
+  margin-right:  -2.5rem;
+
+  position: relative;
+  width: calc(100% + 3rem + 2.5rem);
+
+  /* Full-viewport height minus sticky header (header ≈ 90px) */
+  height: calc(100vh - 90px);
+  min-height: 520px;
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* content anchors to bottom */
+
+  /* Checkered top border — v4 section transition motif */
+  border-top: 8px solid;
+  border-image: repeating-linear-gradient(
+    90deg,
+    #E8002D 0px, #E8002D 20px,
+    #000000 20px, #000000 40px
+  ) 8;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   VIDEO BACKGROUND
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Subtle desaturate so content stays legible over any footage */
+  filter: saturate(0.7) brightness(0.6);
+  z-index: 0;
+}
+
+/* Solid fallback when video src is empty / fails to load */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #0A0A0F;      /* near-black pit lane — shows through when video absent */
+  z-index: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   GRADIENT OVERLAY
+   Spec: transparent top → rgba(30,30,30,0.85) bottom
+   Extra left-side darkening keeps text pop on any video content.
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  /* Primary: top transparent → near-black bottom (spec) */
+  background:
+    /* Left-side vignette — keeps text legible on busy footage */
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 15, 0.82) 0%,
+      rgba(10, 10, 15, 0.40) 55%,
+      rgba(10, 10, 15, 0.10) 100%
+    ),
+    /* Top-to-bottom gradient (spec requirement) */
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(21, 21, 30, 0.60) 55%,
+      rgba(21, 21, 30, 0.95) 100%
+    );
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RED VERTICAL SEPARATOR (left/right content division)
+   Spec: "Thick red vertical stripe (4px) between left and right content"
+   No skew per v4 spec (skew was v3 — v4 explicitly says NO skew transforms).
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero__separator {
+  position: absolute;
+  top: 15%;
+  bottom: 14%;           /* matches content vertical extent */
+  left: 60%;
+  width: 4px;
+  background: #E8002D;
+  z-index: 3;
+  /* Subtle glow to read over video */
+  box-shadow: 0 0 12px rgba(232, 0, 45, 0.6);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   CONTENT LAYER
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero__content {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 0 64px 64px 72px;   /* 72px = 3rem main-left-padding + left stripe buffer */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── LEFT panel (60%) ───────────────────────────────────────────────────────── */
+
+.hero__left {
+  flex: 0 0 60%;
+  padding-right: 48px;
+}
+
+/* "NEXT RACE:" / "UPCOMING RACE:" labels */
+.hero__race-label {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #F5F1E8;
+  opacity: 0.65;
+  margin: 0 0 8px;
+  line-height: 1;
+}
+
+/* Primary race name (h1) */
+.hero__race-name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: clamp(40px, 6vw, 72px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #F5F1E8;
+  margin: 0 0 12px;
+  line-height: 1;
+  /* Subtle text shadow for legibility on any video */
+  text-shadow: 2px 3px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Secondary race name (h2, upcoming) */
+.hero__race-name--secondary {
+  font-size: clamp(24px, 3.5vw, 40px);
+  margin-bottom: 8px;
+}
+
+/* Shimmer while loading */
+.hero__race-name--loading {
+  color: transparent;
+  background: linear-gradient(90deg, #2A2A3A 25%, #3A3A4A 50%, #2A2A3A 75%);
+  background-size: 400px 100%;
+  animation: hero-shimmer 1.4s ease infinite;
+  border-radius: 2px;
+  user-select: none;
+}
+
+@keyframes hero-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+/* Circuit name + date line */
+.hero__race-details {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: clamp(12px, 1.4vw, 16px);
+  color: #F5F1E8;
+  opacity: 0.80;
+  margin: 0;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hero__flag {
+  font-size: 1.1em;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* Red horizontal divider between next/upcoming */
+.hero__divider {
+  height: 4px;
+  background: #E8002D;
+  width: 200px;
+  margin: 28px 0;
+  /* No animation — instant render */
+}
+
+/* ── RIGHT panel (40%) ──────────────────────────────────────────────────────── */
+
+.hero__right {
+  flex: 0 0 40%;
+  padding-left: 52px;
+  padding-bottom: 8px;       /* optical alignment with left bottom line */
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* Tagline — intentionally NOT a headline.
+   "Reads as background texture, not a competing headline." (spec)
+   Weight 400, very dim color, right-aligned, no letter-spacing boost. */
+.hero__tagline {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: clamp(20px, 2.8vw, 32px);
+  font-weight: 400;           /* normal weight — non-bold so it recedes */
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  /* Very dim cream — spec: rgba(245,241,232, 0.30) */
+  color: rgba(245, 241, 232, 0.28);
+  line-height: 1.15;
+  text-align: right;
+  margin: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ANIMATED SCROLL CHEVRON
+   Anchors to bottom-center; bounces to signal scrollability.
+══════════════════════════════════════════════════════════════════════════════ */
+
+.hero-chevron {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  outline: none;
+
+  animation: hero-chevron-bounce 2s ease-in-out infinite;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.hero-chevron:hover         { opacity: 1; }
+.hero-chevron:focus-visible { outline: 2px solid #E8002D; outline-offset: 4px; }
+
+@keyframes hero-chevron-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — tablet (640–1023px)
+══════════════════════════════════════════════════════════════════════════════ */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .hero {
+    margin-left:  -1.75rem;
+    margin-right: -1.75rem;
+    width: calc(100% + 1.75rem + 1.75rem);
+    height: calc(100vh - 82px);
+  }
+
+  .hero__content {
+    padding: 0 40px 48px 48px;
+  }
+
+  .hero__left  { flex: 0 0 65%; padding-right: 32px; }
+  .hero__right { flex: 0 0 35%; padding-left: 32px; }
+
+  .hero__separator { left: 65%; }
+
+  .hero__tagline { font-size: clamp(16px, 2.4vw, 26px); }
+
+  .hero__divider { width: 140px; margin: 20px 0; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — mobile (< 640px)
+══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 639px) {
+  .hero {
+    margin-left:  -1.5rem;
+    margin-right: -1.25rem;
+    width: calc(100% + 1.5rem + 1.25rem);
+    height: calc(100svh - 100px);
+    min-height: 460px;
+    /* Mobile: content at bottom, single column */
+  }
+
+  .hero__content {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 20px 56px 20px;
+    gap: 0;
+  }
+
+  .hero__left  { flex: none; width: 100%; padding-right: 0; }
+  .hero__right { display: none; }   /* hide tagline on mobile — no room */
+
+  .hero__separator { display: none; }
+
+  .hero__race-name        { font-size: clamp(32px, 10vw, 52px); }
+  .hero__race-name--secondary { font-size: clamp(22px, 6vw, 32px); }
+
+  .hero__divider { width: 100px; margin: 20px 0; }
+
+  .hero-chevron { bottom: 16px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BELOW-FOLD ANCHOR TARGET (smooth scroll destination)
+   This class is placed on the db-below-fold div in Dashboardhome.tsx.
+══════════════════════════════════════════════════════════════════════════════ */
+
+#below-fold {
+  scroll-margin-top: 0;
+}

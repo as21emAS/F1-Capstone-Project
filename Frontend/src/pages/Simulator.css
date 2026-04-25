@@ -1,345 +1,606 @@
-/* ─── Page Wrapper ─────────────────────────────────────────────────────────── */
+/* ─── Simulator.css ──────────────────────────────────────────────────────────
+   Retro Pit Crew aesthetic — VISUAL_STYLE_GUIDE.md + FRONTEND_REDESIGN_v4.md
+   Tokens: cream #F5F1E8 | espresso #1E1E1E | red #E8002D | white #FFFFFF
+   Fonts:  'Barlow Condensed' headlines | 'Courier New' data | 'Chakra Petch' nums
+   ──────────────────────────────────────────────────────────────────────────── */
 
-.predictor-wrap {
-  max-width: 960px;
+/* ══════════════════════════════════════════════════════════════════════════════
+   PAGE SHELL
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-page {
+  background: #141418;
+  min-height: 100vh;
+  padding: 32px 40px 80px;
+  font-family: 'Courier New', Courier, monospace;
+  box-sizing: border-box;
 }
 
-/* ─── Parameter Grid ───────────────────────────────────────────────────────── */
-
-.predictor-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.1rem;
+.sim-page__header {
+  margin-bottom: 32px;
 }
 
-.predictor-param {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.param-label {
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.22em;
-  color: #6a4820;
-}
-
-/* ─── Run Button ───────────────────────────────────────────────────────────── */
-
-.run-btn {
-  background: #c8001a;
-  border: 2px solid #1c1208;
-  color: #faf4e8;
-  padding: 0.65rem 1.5rem;
-  font-family: "Bebas Neue", "Courier New", monospace;
-  font-size: 0.95rem;
-  letter-spacing: 0.25em;
-  cursor: pointer;
+.sim-page__title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 42px;
+  font-weight: 700;
   text-transform: uppercase;
-  transition: all 0.15s;
-  box-shadow: 3px 3px 0 #1c1208;
-  align-self: flex-end;
-}
-
-.run-btn:hover {
-  background: #1c1208;
-  color: #f0c040;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 #c8001a;
-}
-
-.run-btn:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0 #1c1208;
-}
-
-/* ─── Results ──────────────────────────────────────────────────────────────── */
-
-.results-card {
-  margin-top: 1.5rem;
-  animation: fadeIn 0.35s ease forwards;
-}
-
-.result-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 0;
-  border-bottom: 1px solid #e0d4bc;
-  animation: slideIn 0.4s ease forwards;
-}
-
-.result-row:last-child { border-bottom: none; }
-
-.result-pos {
-  font-family: "Bebas Neue", monospace;
-  font-size: 1.6rem;
-  color: #c8001a;
-  width: 40px;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.result-info {
-  width: 185px;
-  flex-shrink: 0;
-}
-
-.result-driver {
-  font-size: 0.88rem;
-  font-weight: bold;
-  color: #1c1208;
-  letter-spacing: 0.04em;
-}
-
-.result-team {
-  font-size: 0.6rem;
-  color: #8a6030;
-  letter-spacing: 0.1em;
-  margin-top: 2px;
-  font-style: italic;
-}
-
-.result-factors {
-  flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.factor-tag {
-  font-size: 0.55rem;
-  letter-spacing: 0.1em;
-  background: #e8ddc8;
-  border: 1px solid #8a6030;
-  padding: 0.2rem 0.65rem;
-  color: #5a3820;
-  font-family: "Courier New", monospace;
-  text-transform: uppercase;
-}
-
-.result-conf {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-  width: 120px;
-  flex-shrink: 0;
-}
-
-.result-conf-num {
-  font-family: "Bebas Neue", monospace;
-  font-size: 1.1rem;
-  color: #c8001a;
   letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0 0 12px;
 }
 
-/* ─── Mobile ───────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   SHARED UTILITIES
+══════════════════════════════════════════════════════════════════════════════ */
 
-@media (max-width: 639px) {
-
-  /* Wrapper */
-  .predictor-wrap {
-    max-width: 100%;
-  }
-
-  /* Parameter grid becomes single column */
-  .predictor-grid {
-    grid-template-columns: 1fr;
-    gap: 0.9rem;
-  }
-
-  .param-label {
-    font-size: 0.7rem;
-  }
-
-  /* Run button full width */
-  .run-btn {
-    width: 100%;
-    align-self: stretch;
-    text-align: center;
-    padding: 0.75rem;
-    font-size: 0.9rem;
-  }
-
-  /* Results stack vertically */
-  .result-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.6rem;
-    padding: 0.85rem 0;
-  }
-
-  .result-pos {
-    font-size: 1.4rem;
-    width: auto;
-  }
-
-  .result-info {
-    width: 100%;
-  }
-
-  .result-driver {
-    font-size: 0.85rem;
-  }
-
-  .result-team {
-    font-size: 0.62rem;
-  }
-
-  /* Factor tags wrap naturally */
-  .result-factors {
-    width: 100%;
-  }
-
-  .factor-tag {
-    font-size: 0.6rem;
-  }
-
-  /* Confidence section moves below */
-  .result-conf {
-    width: 100%;
-    align-items: flex-start;
-  }
-
-  .result-conf-num {
-    font-size: 1rem;
-  }
+.sim-red-divider {
+  height: 4px;
+  background: #E8002D;
+  width: 120px;
+  margin-bottom: 24px;
 }
 
-/* ─── Tablet ───────────────────────────────────────────────────────────── */
+.sim-red-divider--wide  { width: 220px; }
+.sim-red-divider--sm-top { margin-top: 16px; }
 
-@media (min-width: 640px) and (max-width: 1023px) {
-
-  .predictor-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .result-info {
-    width: 150px;
-  }
-
-  .result-conf {
-    width: 100px;
-  }
-}
-/* ─── Append these rules to your existing Simulator.css ──────────────────── */
-
-/* ── Winner row highlight ──────────────────────────────────────────────────── */
-.result-row--winner {
-  background: #fdf6e3;
-  border-left: 3px solid #c8001a;
-  padding-left: 0.75rem;
-  margin-left: -0.75rem;
-  border-radius: 1px;
-}
-
-.result-row--winner .result-pos {
-  color: #c8001a;
-}
-
-/* ── Confidence bar ────────────────────────────────────────────────────────── */
-.conf-bar-wrap {
-  width: 100%;
-  height: 6px;
-  background: #e0d4bc;
-  border: 1px solid #c4b49a;
-  margin-bottom: 0.2rem;
-}
-
-.conf-bar-fill {
-  height: 100%;
-  background: #1c1208;
-  transition: width 0.6s ease;
-}
-
-.conf-bar-fill--winner {
-  background: #c8001a;
-}
-
-/* ── Button group ──────────────────────────────────────────────────────────── */
-.sim-btn-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-/* ── Loading state ─────────────────────────────────────────────────────────── */
 .sim-loading {
   display: flex;
   justify-content: center;
-  padding: 3rem 0;
+  padding: 60px 0;
 }
 
-/* ── Key factors section ───────────────────────────────────────────────────── */
-.sim-factors-card {
-  margin-top: 1rem;
+.sim-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #D0CAB8;
+  border-top-color: #E8002D;
+  border-radius: 50%;
+  animation: sim-spin 0.8s linear infinite;
 }
 
-.sim-factors-list {
+@keyframes sim-spin { to { transform: rotate(360deg); } }
+
+.sim-notice {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #E8002D;
+  border: 2px solid #E8002D;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   STEPPER
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-stepper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+  max-width: 520px;
+}
+
+.sim-stepper__track {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.sim-stepper__step {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-}
-
-.sim-factor-row {
-  display: grid;
-  grid-template-columns: 200px 1fr 48px;
   align-items: center;
-  gap: 1rem;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.sim-factor-label {
-  font-size: 0.72rem;
-  font-family: "Courier New", monospace;
-  letter-spacing: 0.08em;
-  color: #5a3820;
+.sim-stepper__circle {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #000000;
+  background: #FFFFFF;
+  color: #1E1E1E;
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.sim-stepper__step--active .sim-stepper__circle {
+  background: #E8002D;
+  color: #F5F1E8;
+  border-color: #E8002D;
+}
+
+.sim-stepper__step--completed .sim-stepper__circle {
+  background: #1E1E1E;
+  color: #F5F1E8;
+  border-color: #1E1E1E;
+}
+
+.sim-stepper__label {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #F5F1E8;
 }
 
-.sim-factor-bar-wrap {
-  height: 8px;
-  background: #e0d4bc;
-  border: 1px solid #c4b49a;
+.sim-stepper__step--active    .sim-stepper__label { color: #E8002D; }
+.sim-stepper__step--completed .sim-stepper__label { opacity: 0.5; }
+
+.sim-stepper__connector {
+  height: 3px;
+  background: #2A2A2A;
+  flex: 1;
+  margin: 0 8px 20px;
 }
 
-.sim-factor-bar-fill {
-  height: 100%;
-  background: #c8001a;
-  transition: width 0.7s ease;
+.sim-stepper__connector--done { background: #1E1E1E; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   TWO-COLUMN LAYOUT
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-body {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 24px;
+  align-items: start;
 }
 
-.sim-factor-pct {
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.95rem;
-  color: #c8001a;
-  text-align: right;
+/* ══════════════════════════════════════════════════════════════════════════════
+   LEFT PANEL
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-left-panel {
+  background: #1E1E1E;
+  border: 3px solid #000000;
+  border-top: 6px solid #E8002D;
+  padding: 24px;
+  color: #F5F1E8;
+  position: sticky;
+  top: 24px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* ── Mobile additions ──────────────────────────────────────────────────────── */
-@media (max-width: 639px) {
-  .sim-btn-group {
-    flex-direction: row;
-  }
+/* — Placeholder — */
+.sim-left-panel__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 0;
+}
 
-  .sim-factor-row {
-    grid-template-columns: 1fr 48px;
-    grid-template-rows: auto auto;
-    gap: 0.4rem 0.75rem;
-  }
+.sim-left-panel__placeholder-svg {
+  width: 100%;
+  max-width: 180px;
+  opacity: 0.4;
+}
 
-  .sim-factor-label {
-    grid-column: 1 / -1;
-  }
+.sim-left-panel__placeholder-text {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #F5F1E8;
+  opacity: 0.5;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
 
-  .sim-factor-bar-wrap {
-    grid-column: 1;
-  }
+/* — Circuit selected — */
+.sim-left-panel__selected {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-  .sim-factor-pct {
-    grid-column: 2;
-    grid-row: 2;
-  }
+.sim-left-panel__flag     { font-size: 36px; line-height: 1; margin-bottom: 2px; }
+
+.sim-left-panel__name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.sim-left-panel__location {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #F5F1E8;
+  opacity: 0.65;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Divider inside dark panel */
+.sim-left-panel .sim-red-divider { margin: 10px 0; }
+
+.sim-left-panel__map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.sim-left-panel__map-svg {
+  width: 100%;
+  max-width: 220px;
+  max-height: 170px;
+  object-fit: contain;
+  /* Invert dark SVG strokes to appear light on dark background */
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   3-DAY WEATHER WIDGET (left panel, Step 2+)
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-weather-widget {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.sim-weather-widget__day {
+  flex: 1;
+  background: #1E1E22;
+  border: 2px solid #3A3A3A;
+  padding: 10px 6px;
+  text-align: center;
+  color: #F5F1E8;
+}
+
+.sim-weather-widget__day-label {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #E8002D;
+  margin-bottom: 6px;
+}
+
+.sim-weather-widget__icon {
+  font-size: 24px;
+  margin: 4px 0;
+}
+
+.sim-weather-widget__temp {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #F5F1E8;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RIGHT PANEL SHARED
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-right-panel { background: #141418; padding: 0; }
+
+.sim-section-title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0 0 12px;
+}
+
+.sim-subsection-title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0 0 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   STEP 1 — CIRCUIT GRID
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-circuit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+/* Circuit card */
+.sim-circuit-card {
+  position: relative;
+  background: #1E1E22;
+  border: 3px solid #3A3A3A;
+  padding: 16px 12px 12px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  appearance: none;
+  font: inherit;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+.sim-circuit-card:hover               { border-color: #E8002D; }
+.sim-circuit-card:focus-visible       { outline: 3px solid #E8002D; outline-offset: 2px; }
+.sim-circuit-card--selected           { border: 4px solid #E8002D; }
+
+.sim-circuit-card__check {
+  position: absolute;
+  top: 6px; right: 8px;
+  background: #E8002D;
+  color: #F5F1E8;
+  font-size: 12px;
+  font-weight: 700;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #000000;
+}
+
+.sim-circuit-card__thumb {
+  width: 100%; height: 100px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+
+.sim-circuit-card__svg {
+  max-width: 100%; max-height: 90px;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
+.sim-circuit-card__name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 13px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em;
+  color: #F5F1E8; line-height: 1.2;
+}
+
+.sim-circuit-card__country { font-size: 16px; line-height: 1; }
+
+/* Circuit SVG — invert so dark strokes show on dark card */
+.sim-circuit-card__svg {
+  max-width: 100%; max-height: 90px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   STEP 2 — WEATHER TOGGLE
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-weather-toggle {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.sim-weather-btn {
+  flex: 1;
+  background: #1E1E22;
+  border: 3px solid #3A3A3A;
+  padding: 20px 16px;
+  cursor: pointer;
+  text-align: center;
+  appearance: none;
+  font: inherit;
+  transition: border-color 0.15s ease;
+  outline: none;
+}
+
+.sim-weather-btn:hover                { border-color: #E8002D; }
+.sim-weather-btn:focus-visible        { outline: 3px solid #E8002D; outline-offset: 2px; }
+
+.sim-weather-btn--selected {
+  border: 4px solid #E8002D;
+  background: #2A1010;
+}
+
+.sim-weather-btn__icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  line-height: 1;
+}
+
+.sim-weather-btn__label {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 16px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  color: #F5F1E8;
+}
+
+.sim-weather-btn--selected .sim-weather-btn__label { color: #E8002D; }
+
+/* Extra top margin for second divider in Step 2 */
+.sim-step2-divider { margin-top: 8px; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   STEP 2 — STARTING GRID
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-grid-hint {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: rgba(245, 241, 232, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 20px;
+}
+
+.sim-grid-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.sim-grid-column { display: flex; flex-direction: column; gap: 10px; }
+
+.sim-grid-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sim-grid-pos {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 15px; font-weight: 700;
+  color: #F5F1E8;
+  width: 46px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.sim-driver-dropdown {
+  flex: 1;
+  background: #1E1E22;
+  border: 2px solid #3A3A3A;
+  padding: 8px 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #F5F1E8;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23F5F1E8' stroke-width='2' fill='none' stroke-linecap='square'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.sim-driver-dropdown option { background: #1E1E22; color: #F5F1E8; }
+.sim-driver-dropdown:hover  { border-color: #E8002D; }
+.sim-driver-dropdown:focus  { border-color: #E8002D; outline: none; }
+.sim-driver-dropdown:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   NAVIGATION ROW
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-nav {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.sim-nav--spread {
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* NEXT button (Step 1) */
+.sim-btn-next {
+  background: #E8002D;
+  color: #F5F1E8;
+  border: 3px solid #000000;
+  padding: 12px 32px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  cursor: pointer; outline: none;
+  transition: background 0.15s ease;
+}
+
+.sim-btn-next:hover:not(:disabled)  { background: #1E1E1E; }
+.sim-btn-next:focus-visible         { outline: 3px solid #E8002D; outline-offset: 2px; }
+
+.sim-btn-next:disabled,
+.sim-btn-next[aria-disabled='true'] {
+  background: #2A2A2A; border-color: #3A3A3A; color: #555555; cursor: not-allowed;
+}
+
+/* BACK button (Step 2) */
+.sim-btn-back {
+  background: transparent;
+  color: #F5F1E8;
+  border: 3px solid #F5F1E8;
+  padding: 10px 24px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 18px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; outline: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sim-btn-back:hover        { background: #F5F1E8; color: #1E1E1E; }
+.sim-btn-back:focus-visible { outline: 3px solid #E8002D; outline-offset: 2px; }
+
+/* PREDICT button (Step 2 — prominent center-bottom) */
+.sim-btn-predict {
+  background: #E8002D;
+  color: #F5F1E8;
+  border: 3px solid #000000;
+  padding: 14px 48px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; outline: none;
+  transition: background 0.15s ease;
+}
+
+.sim-btn-predict:hover:not(:disabled)   { background: #1E1E1E; }
+.sim-btn-predict:focus-visible          { outline: 3px solid #E8002D; outline-offset: 2px; }
+
+.sim-btn-predict:disabled,
+.sim-btn-predict[aria-disabled='true']  {
+  background: #2A2A2A; border-color: #3A3A3A; color: #555555; cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .sim-body              { grid-template-columns: 35% 65%; }
+  .sim-circuit-grid      { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Narrow tablet */
+@media (max-width: 860px) {
+  .sim-body              { grid-template-columns: 1fr; }
+  .sim-left-panel        { position: static; }
+  .sim-circuit-grid      { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .sim-page              { padding: 24px 20px 56px; }
+}
+
+/* Mobile */
+@media (max-width: 580px) {
+  .sim-circuit-grid      { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sim-grid-columns      { grid-template-columns: 1fr; gap: 8px; }
+  .sim-weather-toggle    { flex-direction: column; }
+  .sim-page__title       { font-size: 30px; }
+  .sim-section-title     { font-size: 24px; }
+  .sim-stepper           { max-width: 100%; }
+  .sim-circuit-card__thumb { height: 72px; }
+  .sim-circuit-card__name  { font-size: 11px; }
+  .sim-weather-btn__icon   { font-size: 36px; }
 }

@@ -5,7 +5,6 @@ import Simulator from "@pages/Simulator";
 import DataCenter from "@pages/DataCenter";
 import Newsroom from "@pages/Newsroom";
 import NotFound from "@pages/NotFound";
-import ComponentDemo from "@pages/ComponentDemo";
 
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
           <Route path="simulator" element={<Simulator />} />
           <Route path="data-center" element={<DataCenter />} />
           <Route path="newsroom" element={<Newsroom />} />
-          <Route path="components" element={<ComponentDemo />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

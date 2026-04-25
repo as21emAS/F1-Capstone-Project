@@ -1,663 +1,507 @@
-/* ─── Grid Layout ──────────────────────────────────────────────────────────── */
+/* ─── Dashboardhome.css ──────────────────────────────────────────────────────
+   Retro Pit Crew aesthetic — VISUAL_STYLE_GUIDE.md + FRONTEND_REDESIGN_v4.md
+   Tokens: cream #F5F1E8 | espresso #1E1E1E | red #E8002D | white #FFFFFF
+   Fonts:  'Barlow Condensed' headlines | 'Courier New' data | 'Chakra Petch' nums
+   ──────────────────────────────────────────────────────────────────────────── */
 
-.dash-grid {
+/* ══════════════════════════════════════════════════════════════════════════════
+   BELOW-FOLD SHELL (dark background, two-column)
+══════════════════════════════════════════════════════════════════════════════ */
+
+.db-below-fold {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 30% 70%;
+  background: #1E1E1E;
+  min-height: 100vh;
+  align-items: start;
+
+  /* Bleed to full width — same negative margins as the hero above */
+  margin-left:  -3rem;
+  margin-right: -2.5rem;
+  width: calc(100% + 3rem + 2.5rem);
 }
 
-.card-badge{
-  font-size: medium;
-}
-/* ─── Hero Card ────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   LEFT COLUMN — Race cards
+══════════════════════════════════════════════════════════════════════════════ */
 
-.hero-card {
-  grid-column: 1 / -1;
-  background: #1c1208 !important;
-  color: #faf4e8;
-}
-
-.hero-card .card-header {
-  border-bottom-color: #c8001a;
-}
-
-.hero-card .card-label {
-  color: #f0c040;
-}
-
-.hero-body {
+.db-left-col {
+  padding: 32px 24px;
   display: flex;
-  gap: 2rem;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
-.hero-left { flex: 1; }
-
-.hero-right {
-  flex-shrink: 0;
-  width: 250px;
+/* Race info card */
+.db-race-card {
+  background: #141414;
+  border: 3px solid #000000;
+  border-top: 6px solid #E8002D;
+  padding: 20px;
+  color: #F5F1E8;
 }
 
-.hero-flag {
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+.db-race-card--skeleton {
+  min-height: 140px;
 }
 
-.hero-race-name {
-  font-family: "Bebas Neue", "Courier New", monospace;
-  font-size: 2.2rem;
-  font-weight: normal;
-  color: #faf4e8;
-  margin: 0 0 0.2rem;
-  letter-spacing: 0.08em;
+.db-race-card__label {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  text-shadow: 2px 2px 0 #c8001a;
+  letter-spacing: 0.12em;
+  color: #E8002D;
+  margin-bottom: 8px;
+}
+
+.db-race-card__divider {
+  height: 2px;
+  background: #E8002D;
+  width: 40px;
+  margin-bottom: 14px;
+}
+
+.db-race-card__flag {
+  font-size: 28px;
   line-height: 1;
+  margin-bottom: 8px;
 }
 
-.hero-circuit {
-  font-size: 0.7rem;
-  color: #a09070;
-  letter-spacing: 0.2em;
-  margin-bottom: 0.85rem;
-  font-style: italic;
-}
-
-.hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.meta-pill {
-  font-size: 1rem;
-  letter-spacing: 0.1em;
-  background: transparent;
-  border: 1px solid #5a4030;
-  padding: 0.3rem 0.75rem;
-  color: #c8b8a0;
-  font-family: "Courier New", monospace;
+.db-race-card__name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0 0 8px;
+  line-height: 1.2;
 }
 
-/* ─── Prediction Card ──────────────────────────────────────────────────────── */
+.db-race-card__loc {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #F5F1E8;
+  opacity: 0.6;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
 
-.pred-card {
-  background: #c8001a;
-  border: 2px solid #faf4e8;
-  padding: 1.1rem;
+.db-race-card__date {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #E8002D;
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RIGHT COLUMN — Championship
+══════════════════════════════════════════════════════════════════════════════ */
+
+.db-right-col {
+  padding: 32px 40px 48px;
+  border-left: 3px solid #000000;
+}
+
+/* Inner checkered divider between driver/team sections */
+.db-checkered-inner {
+  height: 8px;
+  margin: 40px 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #E8002D 0px,   #E8002D 16px,
+    #000000 16px,  #000000 32px
+  );
+}
+
+/* ── Section headings ────────────────────────────────────────────────────── */
+
+.db-section-title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #F5F1E8;
+  margin: 0 0 12px;
+}
+
+.db-subsection-title {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #E8002D;
+  margin: 32px 0 12px;
+}
+
+.db-red-stripe {
+  height: 4px;
+  background: #E8002D;
+  width: 120px;
+  margin-bottom: 24px;
+}
+
+.db-standings-section { }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BAR CHART
+══════════════════════════════════════════════════════════════════════════════ */
+
+.db-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.db-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: #252528;
+  border: 2px solid #3A3A3A;
+  cursor: default;
+  transition: border-color 0.15s ease;
   position: relative;
 }
 
-.pred-card::after {
-  content: "";
-  position: absolute;
-  bottom: -6px; right: -6px;
-  width: 100%; height: 100%;
-  border: 2px solid rgba(250,244,232,0.3);
-  pointer-events: none;
+.db-bar-row:hover { border-color: #E8002D; background: #2E2E32; }
+
+.db-bar-row--first {
+  border-color: #E8002D;
+  border-width: 2px;
 }
 
-.pred-label {
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  color: rgba(250,244,232,0.7);
-  margin-bottom: 0.4rem;
+.db-bar-row--skeleton { pointer-events: none; min-height: 38px; }
+
+.db-bar-pos {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: #F5F1E8;
+  width: 32px;
+  flex-shrink: 0;
+  text-align: right;
 }
 
-.pred-driver {
-  font-family: "Bebas Neue", "Courier New", monospace;
-  font-size: 1.6rem;
-  color: #faf4e8;
-  letter-spacing: 0.05em;
-  line-height: 1;
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.4);
-}
+.db-bar-row--first .db-bar-pos { color: #E8002D; }
 
-.pred-team {
-  font-size: 0.6rem;
-  color: rgba(250,244,232,0.7);
-  margin-bottom: 0.85rem;
-  letter-spacing: 0.12em;
-  font-style: italic;
-}
-
-.conf-meter { margin-top: 0.5rem; }
-
-.conf-label {
-  font-size: 0.5rem;
-  letter-spacing: 0.2em;
-  color: rgba(250,244,232,0.6);
-  margin-bottom: 0.35rem;
-}
-
-.conf-bar {
-  height: 10px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(250,244,232,0.3);
+.db-bar-name {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  color: #F5F1E8;
+  width: 190px;
+  flex-shrink: 0;
+  white-space: nowrap;
   overflow: hidden;
-  margin-bottom: 0.4rem;
+  text-overflow: ellipsis;
+  letter-spacing: 0.02em;
 }
 
-.conf-fill {
+.db-bar-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.15);
+  flex-shrink: 0;
+}
+
+.db-bar-track {
+  flex: 1;
+  height: 20px;
+  background: #141416;
+  border: 2px solid #3A3A3A;
+  overflow: hidden;
+  position: relative;
+}
+
+.db-bar-fill {
   height: 100%;
-  background: repeating-linear-gradient(
-    45deg,
-    #faf4e8,
-    #faf4e8 4px,
-    rgba(250,244,232,0.6) 4px,
-    rgba(250,244,232,0.6) 8px
-  );
-  animation: fillBar 1.2s ease forwards;
+  border-right: 2px solid rgba(0,0,0,0.4);
+  animation: db-bar-grow 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.conf-pct {
-  font-family: "Bebas Neue", monospace;
-  font-size: 1.4rem;
-  color: #faf4e8;
-  letter-spacing: 0.05em;
+@keyframes db-bar-grow {
+  from { width: 0 !important; }
 }
 
-/* ─── Standings Table ──────────────────────────────────────────────────────── */
+.db-bar-pts {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #F5F1E8;
+  width: 52px;
+  flex-shrink: 0;
+  text-align: right;
+  letter-spacing: 0.02em;
+}
 
-.standings-card { grid-column: 1 / 2; }
+/* ══════════════════════════════════════════════════════════════════════════════
+   STANDINGS TABLE
+══════════════════════════════════════════════════════════════════════════════ */
 
-.f1-table {
+.db-table-wrap {
+  overflow-x: auto;
+}
+
+.db-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.7rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
 }
 
-.f1-table thead {
-  background: #1c1208;
+.db-table thead tr {
+  background: #000000;
 }
 
-.f1-table th {
+.db-table th {
   text-align: left;
-  padding: 0.55rem 0.6rem;
-  color: #f0c040;
-  letter-spacing: 0.2em;
-  font-size: 0.55rem;
-  font-family: "Bebas Neue", monospace;
-  border-bottom: 2px solid #c8001a;
+  padding: 10px 12px;
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #E8002D;
+  border-bottom: 3px solid #E8002D;
+  white-space: nowrap;
 }
 
-.f1-table tr {
-  border-bottom: 1px solid #e0d4bc;
-  cursor: pointer;
-  transition: background 0.12s;
+.db-table-row {
+  border-bottom: 2px solid #2A2A2A;
+  background: #1E1E1E;
+  transition: background 0.12s ease;
 }
 
-.f1-table tr:hover {
-  background: rgba(200, 0, 26, 0.06);
-}
+.db-table-row:hover { background: #2A2020; }
 
-.f1-table td {
-  padding: 0.6rem 0.6rem;
-  color: #3a2810;
-  letter-spacing: 0.03em;
+.db-table td {
+  padding: 9px 12px;
+  color: #F5F1E8;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
-.pos-num {
+/* Position badge */
+.db-pos-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: #e0d4bc;
-  border: 2px solid #1c1208;
-  font-size: 0.65rem;
-  font-weight: bold;
-  font-family: "Courier New", monospace;
+  width: 28px;
+  height: 28px;
+  background: #2A2A2A;
+  border: 2px solid #444444;
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #F5F1E8;
 }
 
-.pos-num.first {
-  background: #c8001a;
-  border-color: #c8001a;
-  color: #faf4e8;
+.db-pos-badge--first {
+  background: #E8002D;
+  border-color: #E8002D;
+  color: #F5F1E8;
 }
 
-.driver-flag { margin-right: 5px; }
-
-.driver-name {
-  color: #1c1208;
-  font-weight: bold;
+/* Driver cell */
+.db-td-driver {
+  font-weight: 700;
   letter-spacing: 0.03em;
 }
 
-.team-dot {
+.db-driver-flag { margin-right: 6px; }
+
+/* Team dot */
+.db-team-dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  margin-right: 6px;
+  border: 2px solid rgba(255,255,255,0.2);
+  margin-right: 8px;
   vertical-align: middle;
-  border: 1px solid rgba(0,0,0,0.2);
-}
-
-.td-pts {
-  color: #c8001a;
-  font-weight: bold;
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-}
-
-.mini-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  width: 100px;
-}
-
-.mini-bar-fill {
-  flex: 1;
-  height: 6px;
-  background: #c8001a;
-  border: 1px solid #8a0010;
-  animation: fillBar 1.5s ease forwards;
-}
-
-.mini-bar-label {
-  font-size: 0.62rem;
-  color: #c8001a;
-  font-weight: bold;
-  min-width: 28px;
-  font-family: "Courier New", monospace;
-}
-
-/* ─── Teams Card ───────────────────────────────────────────────────────────── */
-
-.teams-card { grid-column: 2 / 3; }
-
-.team-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.65rem 0;
-  border-bottom: 1px solid #e0d4bc;
-  cursor: pointer;
-  transition: background 0.12s;
-}
-
-.team-row:last-child { border-bottom: none; }
-
-.team-row:hover { background: rgba(200, 0, 26, 0.05); }
-
-.team-pos {
-  width: 20px;
-  font-size: 0.65rem;
-  color: #8a6030;
   flex-shrink: 0;
-  font-family: "Bebas Neue", monospace;
-  font-size: 0.85rem;
 }
 
-.team-color-bar {
-  width: 5px;
-  height: 32px;
-  flex-shrink: 0;
-  border: 1px solid rgba(0,0,0,0.15);
-}
-
-.team-info { flex: 1; }
-
-.team-name {
-  display: block;
-  font-size: 0.72rem;
-  color: #1c1208;
+/* Points */
+.db-td-pts {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: #E8002D;
   letter-spacing: 0.04em;
-  margin-bottom: 2px;
-  font-weight: bold;
 }
 
-.team-pts {
-  font-size: 0.55rem;
-  color: #8a6030;
-  letter-spacing: 0.1em;
-  font-style: italic;
+/* Wins */
+.db-td-wins {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #F5F1E8;
 }
 
-.champ-meter {
+/* Mini win-chance bar */
+.db-mini-bar {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  width: 120px;
+  gap: 8px;
+  min-width: 100px;
 }
 
-.champ-bar {
+.db-mini-bar__track {
   flex: 1;
-  height: 7px;
-  background: #e0d4bc;
-  border: 1px solid #8a6030;
+  height: 8px;
+  background: #2A2A2A;
+  border: 2px solid #000000;
   overflow: hidden;
 }
 
-.champ-fill {
+.db-mini-bar__fill {
   height: 100%;
-  opacity: 0.85;
-  animation: fillBar 1.5s ease forwards;
+  border-right: 1px solid #000000;
+  animation: db-bar-grow 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.champ-pct {
-  font-size: 0.62rem;
-  color: #3a2810;
-  min-width: 28px;
-  font-weight: bold;
-  font-family: "Courier New", monospace;
+.db-mini-bar__label {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #F5F1E8;
+  opacity: 0.7;
+  min-width: 32px;
+  text-align: right;
 }
 
-/* ─── News Ticker Strip ────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   TOOLTIP
+══════════════════════════════════════════════════════════════════════════════ */
 
-.news-card { grid-column: 1 / -1; }
-
-.news-row {
-  border-bottom: 1px solid #e0d4bc;
-  padding: 0.8rem 0;
-  cursor: pointer;
-  transition: background 0.12s;
+.db-tooltip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  background: #000000;
+  border: 2px solid #E8002D;
+  padding: 10px 14px;
+  min-width: 140px;
+  box-shadow: 4px 4px 0 #E8002D;
 }
 
-.news-row:last-child { border-bottom: none; }
+.db-tooltip__name {
+  font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #F5F1E8;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
 
-.news-row:hover { background: rgba(200, 0, 26, 0.04); }
+.db-tooltip__team {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #E8002D;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #2A2A2A;
+  padding-bottom: 6px;
+}
 
-.news-tag-wrap {
+.db-tooltip__row {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.35rem;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 4px;
 }
 
-.news-headline {
-  font-size: 0.82rem;
-  color: #1c1208;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-  transition: color 0.12s;
+.db-tooltip__key {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #F5F1E8;
+  opacity: 0.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.news-row:hover .news-headline {
-  color: #c8001a;
+.db-tooltip__val {
+  font-family: 'Chakra Petch', 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #F5F1E8;
 }
 
-/* ─────────────────────────────────────────────
-   MOBILE (< 640px)
-   ───────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   SKELETON LOADING
+══════════════════════════════════════════════════════════════════════════════ */
 
-@media (max-width: 639px) {
-
-  /* Grid becomes single column */
-  .dash-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .standings-card,
-  .teams-card,
-  .news-card {
-    grid-column: 1 / -1;
-  }
-
-  /* Hero stacks */
-  .hero-body {
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .hero-right {
-    width: 100%;
-  }
-
-  .hero-race-name {
-    font-size: 1.6rem;
-  }
-
-  .hero-flag {
-    font-size: 2rem;
-  }
-
-  /* Prediction card scales down */
-  .pred-driver {
-    font-size: 1.3rem;
-  }
-
-  .conf-pct {
-    font-size: 1.1rem;
-  }
-
-  /* Tables scroll instead of breaking layout */
-  .standings-card {
-    overflow-x: auto;
-  }
-
-  .f1-table {
-    min-width: 520px;
-  }
-
-  /* Mini bars shrink */
-  .mini-bar {
-    width: 80px;
-  }
-
-  /* Teams section stacks nicely */
-  .team-row {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-
-  .champ-meter {
-    width: 100%;
-    margin-top: 0.4rem;
-  }
-
-  /* News text slightly smaller */
-  .news-headline {
-    font-size: 0.75rem;
-  }
-}
-
-/* ─────────────────────────────────────────────
-   TABLET (640px - 1024px)
-   ───────────────────────────────────────────── */
-
-@media (min-width: 640px) and (max-width: 1023px) {
-
-  .dash-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .hero-right {
-    width: 200px;
-  }
-
-  .hero-race-name {
-    font-size: 1.9rem;
-  }
-
-  .mini-bar {
-    width: 90px;
-  }
-
-  .champ-meter {
-    width: 100px;
-  }
-}
-/* ─────────────────────────────────────────────
-   SKELETON LOADING STATES
-   ───────────────────────────────────────────── */
-
-@keyframes shimmer {
+@keyframes db-shimmer {
   0%   { background-position: -400px 0; }
   100% { background-position:  400px 0; }
 }
 
 .skeleton-block {
   display: inline-block;
-  height: 12px;
-  width: 80px;
+  height: 14px;
   border-radius: 2px;
-  background: linear-gradient(
-    90deg,
-    #e0d4bc 25%,
-    #f0e8d0 50%,
-    #e0d4bc 75%
-  );
+  background: linear-gradient(90deg, #2A2A2A 25%, #3A3A3A 50%, #2A2A2A 75%);
   background-size: 400px 100%;
-  animation: shimmer 1.4s ease infinite;
+  animation: db-shimmer 1.4s ease infinite;
 }
 
-.skeleton-pulse {
-  background: linear-gradient(
-    90deg,
-    #e0d4bc 25%,
-    #f0e8d0 50%,
-    #e0d4bc 75%
-  );
-  background-size: 400px 100%;
-  animation: shimmer 1.4s ease infinite;
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — tablet
+══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1100px) {
+  .db-below-fold { grid-template-columns: 35% 65%; }
+  .db-bar-name   { width: 150px; }
+  .db-right-col  { padding: 24px 24px 40px; }
 }
 
-.skeleton-row td {
-  padding: 0.65rem 0.6rem;
-}
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — mobile (single column)
+══════════════════════════════════════════════════════════════════════════════ */
 
-.skeleton-row td .skeleton-block {
-  width: 100%;
-  max-width: 90px;
-}
-
-.skeleton-team-row {
-  pointer-events: none;
-}
-
-.skeleton-pred-row {
-  pointer-events: none;
-}
-
-/* ─────────────────────────────────────────────
-   TOP-5 PREDICTIONS SECTION
-   ───────────────────────────────────────────── */
-
-.predictions-card { grid-column: 1 / -1; }
-
-.pred-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.pred-row {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.7rem 0;
-  border-bottom: 1px solid #e0d4bc;
-  transition: background 0.12s;
-  cursor: default;
-}
-
-.pred-row:last-child { border-bottom: none; }
-
-.pred-row:hover { background: rgba(200, 0, 26, 0.04); }
-
-.pred-pos-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  flex-shrink: 0;
-  background: #e0d4bc;
-  border: 2px solid #1c1208;
-  font-size: 0.65rem;
-  font-weight: bold;
-  font-family: "Courier New", monospace;
-}
-
-.pred-pos-num.first {
-  background: #c8001a;
-  border-color: #c8001a;
-  color: #faf4e8;
-}
-
-.pred-row-info {
-  width: 210px;
-  flex-shrink: 0;
-}
-
-.pred-row-driver {
-  display: block;
-  font-size: 0.75rem;
-  font-weight: bold;
-  color: #1c1208;
-  letter-spacing: 0.03em;
-}
-
-.pred-row-team {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  font-style: italic;
-  margin-top: 2px;
-}
-
-.pred-row-bar-wrap {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.pred-row-bar {
-  flex: 1;
-  height: 8px;
-  background: #e0d4bc;
-  border: 1px solid #c8b8a0;
-  overflow: hidden;
-}
-
-.pred-row-fill {
-  height: 100%;
-  opacity: 0.85;
-  animation: fillBar 1.4s ease forwards;
-}
-
-.pred-row-pct {
-  width: 34px;
-  font-size: 0.64rem;
-  font-weight: bold;
-  font-family: "Courier New", monospace;
-  color: #3a2810;
-  text-align: right;
-}
-
-.empty-state {
-  font-size: 0.72rem;
-  color: #8a6030;
-  letter-spacing: 0.08em;
-  font-style: italic;
-  padding: 1rem 0;
-}
-
-/* ─────────────────────────────────────────────
-   MOBILE — predictions collapse gracefully
-   ───────────────────────────────────────────── */
-
-@media (max-width: 639px) {
-  .predictions-card { grid-column: 1 / -1; }
-
-  .pred-row {
-    flex-wrap: wrap;
-    gap: 0.5rem;
+@media (max-width: 768px) {
+  .db-below-fold {
+    grid-template-columns: 1fr;
   }
 
-  .pred-row-info { width: 100%; }
+  .db-left-col {
+    position: static;
+    max-height: none;
+    padding: 24px 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 
-  .pred-row-bar-wrap { width: 100%; }
+  .db-race-card { flex: 1 1 240px; }
+
+  .db-right-col {
+    border-left: none;
+    border-top: 3px solid #000000;
+    padding: 24px 16px 40px;
+  }
+
+  .db-section-title { font-size: 24px; }
+  .db-bar-name      { width: 110px; }
+
+  .db-mini-bar { min-width: 80px; }
+}
+
+@media (max-width: 480px) {
+  .db-bar-name   { display: none; }
+  .db-bar-pos    { width: 24px; font-size: 13px; }
+  .db-bar-pts    { width: 40px; font-size: 12px; }
 }

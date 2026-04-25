@@ -143,15 +143,6 @@ export default function Layout() {
             NEWSROOM
           </NavLink>
 
-          <NavLink
-            to="/components"
-            className={({ isActive }) =>
-              `nav-btn nav-btn--dev${isActive ? " active" : ""}`
-            }
-            onClick={() => setMenuOpen(false)}
-          >
-            UI COMPONENTS
-          </NavLink>
         </nav>
       </header>
 
