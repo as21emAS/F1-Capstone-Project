@@ -2,8 +2,9 @@ import { useState, useRef } from 'react';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNews, getRaces, fetchVideos } from '../services/api'; 
-import './NewsRoom.css';
+import './Newsroom.css'  // match exact filename casing
 import { EmptyState} from '../components/ui/index';
+
 
 const PAGE_SIZE = 6; 
 const CURRENT_SEASON = 2026; 
