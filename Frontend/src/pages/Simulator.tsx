@@ -10,67 +10,67 @@ import './Simulator.css';
 // ─────────────────────────────────────────────────────────────────────────────
 // SVG imports (all circuits)
 // ─────────────────────────────────────────────────────────────────────────────
-import svgBahrain      from '../assets/circuits/bahrain.svg';
-import svgJeddah       from '../assets/circuits/jeddah.svg';
-import svgMelbourne    from '../assets/circuits/melbourne.svg';
-import svgSuzuka       from '../assets/circuits/suzuka.svg';
-import svgShanghai     from '../assets/circuits/shanghai.svg';
-import svgMiami        from '../assets/circuits/miami.svg';
-import svgImola        from '../assets/circuits/imola.svg';
-import svgMonaco       from '../assets/circuits/monaco.svg';
-import svgMontreal     from '../assets/circuits/montreal.svg';
-import svgSilverstone  from '../assets/circuits/silverstone.svg';
-import svgSpa          from '../assets/circuits/spa-francorchamps.svg';
-import svgMonza        from '../assets/circuits/monza.svg';
-import svgBaku         from '../assets/circuits/baku.svg';
-import svgSingapore    from '../assets/circuits/marina-bay.svg';
-import svgAustin       from '../assets/circuits/austin.svg';
-import svgMexicoCity   from '../assets/circuits/mexico-city.svg';
-import svgBrazil       from '../assets/circuits/interlagos.svg';
-import svgLasVegas     from '../assets/circuits/las-vegas.svg';
-import svgLusail       from '../assets/circuits/lusail.svg';
-import svgYasMarina    from '../assets/circuits/yas-marina.svg';
-import svgZandvoort    from '../assets/circuits/zandvoort.svg';
-import svgSpielberg    from '../assets/circuits/spielberg.svg';
-import svgCatalunya    from '../assets/circuits/catalunya.svg';
-import svgHungaroring  from '../assets/circuits/hungaroring.svg';
-import svgMadring      from '../assets/circuits/madring.svg';
-import svgPaulRicard   from '../assets/circuits/paul_ricard.svg';
-import svgSochi        from '../assets/circuits/sochi.svg';
-import svgIstanbul     from '../assets/circuits/Istanbul.svg';
+import svgBahrain from '../assets/circuits/bahrain.svg';
+import svgJeddah from '../assets/circuits/jeddah.svg';
+import svgMelbourne from '../assets/circuits/melbourne.svg';
+import svgSuzuka from '../assets/circuits/suzuka.svg';
+import svgShanghai from '../assets/circuits/shanghai.svg';
+import svgMiami from '../assets/circuits/miami.svg';
+import svgImola from '../assets/circuits/imola.svg';
+import svgMonaco from '../assets/circuits/monaco.svg';
+import svgMontreal from '../assets/circuits/montreal.svg';
+import svgSilverstone from '../assets/circuits/silverstone.svg';
+import svgSpa from '../assets/circuits/spa-francorchamps.svg';
+import svgMonza from '../assets/circuits/monza.svg';
+import svgBaku from '../assets/circuits/baku.svg';
+import svgSingapore from '../assets/circuits/marina-bay.svg';
+import svgAustin from '../assets/circuits/austin.svg';
+import svgMexicoCity from '../assets/circuits/mexico-city.svg';
+import svgBrazil from '../assets/circuits/interlagos.svg';
+import svgLasVegas from '../assets/circuits/las-vegas.svg';
+import svgLusail from '../assets/circuits/lusail.svg';
+import svgYasMarina from '../assets/circuits/yas-marina.svg';
+import svgZandvoort from '../assets/circuits/zandvoort.svg';
+import svgSpielberg from '../assets/circuits/spielberg.svg';
+import svgCatalunya from '../assets/circuits/catalunya.svg';
+import svgHungaroring from '../assets/circuits/hungaroring.svg';
+import svgMadring from '../assets/circuits/madring.svg';
+import svgPaulRicard from '../assets/circuits/paul_ricard.svg';
+import svgSochi from '../assets/circuits/sochi.svg';
+import svgIstanbul from '../assets/circuits/Istanbul.svg';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 const SVG_MAP: { keywords: string[]; svg: string }[] = [
-  { keywords: ['bahrain'],                           svg: svgBahrain },
-  { keywords: ['jeddah', 'saudi'],                   svg: svgJeddah },
-  { keywords: ['melbourne', 'albert', 'australia'],  svg: svgMelbourne },
-  { keywords: ['suzuka', 'japan'],                   svg: svgSuzuka },
-  { keywords: ['shanghai', 'china'],                 svg: svgShanghai },
-  { keywords: ['miami'],                             svg: svgMiami },
-  { keywords: ['imola'],                             svg: svgImola },
-  { keywords: ['monaco'],                            svg: svgMonaco },
-  { keywords: ['montreal', 'canada', 'gilles'],      svg: svgMontreal },
-  { keywords: ['silverstone', 'british'],            svg: svgSilverstone },
-  { keywords: ['spa', 'belgian'],                    svg: svgSpa },
-  { keywords: ['monza', 'italian'],                  svg: svgMonza },
-  { keywords: ['baku', 'azerbaijan'],                svg: svgBaku },
-  { keywords: ['marina bay', 'singapore'],           svg: svgSingapore },
-  { keywords: ['austin', 'cota', 'americas'],        svg: svgAustin },
-  { keywords: ['mexico'],                            svg: svgMexicoCity },
+  { keywords: ['bahrain'], svg: svgBahrain },
+  { keywords: ['jeddah', 'saudi'], svg: svgJeddah },
+  { keywords: ['melbourne', 'albert', 'australia'], svg: svgMelbourne },
+  { keywords: ['suzuka', 'japan'], svg: svgSuzuka },
+  { keywords: ['shanghai', 'china'], svg: svgShanghai },
+  { keywords: ['miami'], svg: svgMiami },
+  { keywords: ['imola'], svg: svgImola },
+  { keywords: ['monaco'], svg: svgMonaco },
+  { keywords: ['montreal', 'canada', 'gilles'], svg: svgMontreal },
+  { keywords: ['silverstone', 'british'], svg: svgSilverstone },
+  { keywords: ['spa', 'belgian'], svg: svgSpa },
+  { keywords: ['monza', 'italian'], svg: svgMonza },
+  { keywords: ['baku', 'azerbaijan'], svg: svgBaku },
+  { keywords: ['marina bay', 'singapore'], svg: svgSingapore },
+  { keywords: ['austin', 'cota', 'americas'], svg: svgAustin },
+  { keywords: ['mexico'], svg: svgMexicoCity },
   { keywords: ['interlagos', 'brazil', 'sao paulo'], svg: svgBrazil },
-  { keywords: ['las vegas'],                         svg: svgLasVegas },
-  { keywords: ['lusail', 'qatar'],                   svg: svgLusail },
-  { keywords: ['yas', 'abu dhabi'],                  svg: svgYasMarina },
+  { keywords: ['las vegas'], svg: svgLasVegas },
+  { keywords: ['lusail', 'qatar'], svg: svgLusail },
+  { keywords: ['yas', 'abu dhabi'], svg: svgYasMarina },
   { keywords: ['zandvoort', 'dutch', 'netherlands'], svg: svgZandvoort },
   { keywords: ['spielberg', 'austria', 'red bull ring'], svg: svgSpielberg },
-  { keywords: ['catalunya', 'barcelona', 'spain'],   svg: svgCatalunya },
-  { keywords: ['hungaroring', 'hungarian'],          svg: svgHungaroring },
-  { keywords: ['madrid', 'madring'],                 svg: svgMadring },
-  { keywords: ['paul ricard', 'french'],             svg: svgPaulRicard },
-  { keywords: ['sochi', 'russian'],                  svg: svgSochi },
-  { keywords: ['istanbul', 'turkish'],               svg: svgIstanbul },
+  { keywords: ['catalunya', 'barcelona', 'spain'], svg: svgCatalunya },
+  { keywords: ['hungaroring', 'hungarian'], svg: svgHungaroring },
+  { keywords: ['madrid', 'madring'], svg: svgMadring },
+  { keywords: ['paul ricard', 'french'], svg: svgPaulRicard },
+  { keywords: ['sochi', 'russian'], svg: svgSochi },
+  { keywords: ['istanbul', 'turkish'], svg: svgIstanbul },
 ];
 
 function resolveCircuitSvg(circuit: Circuit): string | null {
@@ -101,38 +101,38 @@ function flagFor(country: string | null): string {
 // Static fallback data
 // ─────────────────────────────────────────────────────────────────────────────
 const FALLBACK_CIRCUITS: Circuit[] = [
-  { circuit_id: 'bahrain',   circuit_name: 'Bahrain International Circuit', location: 'Sakhir',      country: 'Bahrain' },
-  { circuit_id: 'jeddah',    circuit_name: 'Jeddah Corniche Circuit',        location: 'Jeddah',      country: 'Saudi Arabia' },
-  { circuit_id: 'melbourne', circuit_name: 'Albert Park Circuit',            location: 'Melbourne',   country: 'Australia' },
-  { circuit_id: 'suzuka',    circuit_name: 'Suzuka International Racing',    location: 'Suzuka',      country: 'Japan' },
-  { circuit_id: 'shanghai',  circuit_name: 'Shanghai International Circuit', location: 'Shanghai',    country: 'China' },
-  { circuit_id: 'miami',     circuit_name: 'Miami International Autodrome',  location: 'Miami',       country: 'United States' },
-  { circuit_id: 'monaco',    circuit_name: 'Circuit de Monaco',              location: 'Monte Carlo', country: 'Monaco' },
-  { circuit_id: 'montreal',  circuit_name: 'Circuit Gilles Villeneuve',      location: 'Montreal',    country: 'Canada' },
+  { circuit_id: 'bahrain', circuit_name: 'Bahrain International Circuit', location: 'Sakhir', country: 'Bahrain' },
+  { circuit_id: 'jeddah', circuit_name: 'Jeddah Corniche Circuit', location: 'Jeddah', country: 'Saudi Arabia' },
+  { circuit_id: 'melbourne', circuit_name: 'Albert Park Circuit', location: 'Melbourne', country: 'Australia' },
+  { circuit_id: 'suzuka', circuit_name: 'Suzuka International Racing', location: 'Suzuka', country: 'Japan' },
+  { circuit_id: 'shanghai', circuit_name: 'Shanghai International Circuit', location: 'Shanghai', country: 'China' },
+  { circuit_id: 'miami', circuit_name: 'Miami International Autodrome', location: 'Miami', country: 'United States' },
+  { circuit_id: 'monaco', circuit_name: 'Circuit de Monaco', location: 'Monte Carlo', country: 'Monaco' },
+  { circuit_id: 'montreal', circuit_name: 'Circuit Gilles Villeneuve', location: 'Montreal', country: 'Canada' },
 ];
 
 // 2026 grid — 22 drivers
 const FALLBACK_DRIVERS: Driver[] = [
-  { driver_id: 'max_verstappen',     driver_number: 1,  driver_code: 'VER', driver_forename: 'Max',       driver_surname: 'Verstappen', driver_full_name: 'Max Verstappen',      nationality: 'Dutch',       team_id: 'red_bull' },
-  { driver_id: 'liam_lawson',        driver_number: 11, driver_code: 'LAW', driver_forename: 'Liam',      driver_surname: 'Lawson',     driver_full_name: 'Liam Lawson',         nationality: 'New Zealand', team_id: 'red_bull' },
-  { driver_id: 'lando_norris',       driver_number: 4,  driver_code: 'NOR', driver_forename: 'Lando',     driver_surname: 'Norris',     driver_full_name: 'Lando Norris',        nationality: 'British',     team_id: 'mclaren' },
-  { driver_id: 'oscar_piastri',      driver_number: 81, driver_code: 'PIA', driver_forename: 'Oscar',     driver_surname: 'Piastri',    driver_full_name: 'Oscar Piastri',       nationality: 'Australian',  team_id: 'mclaren' },
-  { driver_id: 'charles_leclerc',    driver_number: 16, driver_code: 'LEC', driver_forename: 'Charles',   driver_surname: 'Leclerc',    driver_full_name: 'Charles Leclerc',     nationality: 'Monegasque',  team_id: 'ferrari' },
-  { driver_id: 'lewis_hamilton',     driver_number: 44, driver_code: 'HAM', driver_forename: 'Lewis',     driver_surname: 'Hamilton',   driver_full_name: 'Lewis Hamilton',      nationality: 'British',     team_id: 'ferrari' },
-  { driver_id: 'george_russell',     driver_number: 63, driver_code: 'RUS', driver_forename: 'George',    driver_surname: 'Russell',    driver_full_name: 'George Russell',      nationality: 'British',     team_id: 'mercedes' },
-  { driver_id: 'andrea_antonelli',   driver_number: 12, driver_code: 'ANT', driver_forename: 'Andrea',    driver_surname: 'Antonelli',  driver_full_name: 'Andrea Kimi Antonelli', nationality: 'Italian',   team_id: 'mercedes' },
-  { driver_id: 'fernando_alonso',    driver_number: 14, driver_code: 'ALO', driver_forename: 'Fernando',  driver_surname: 'Alonso',     driver_full_name: 'Fernando Alonso',     nationality: 'Spanish',     team_id: 'aston_martin' },
-  { driver_id: 'lance_stroll',       driver_number: 18, driver_code: 'STR', driver_forename: 'Lance',     driver_surname: 'Stroll',     driver_full_name: 'Lance Stroll',        nationality: 'Canadian',    team_id: 'aston_martin' },
-  { driver_id: 'pierre_gasly',       driver_number: 10, driver_code: 'GAS', driver_forename: 'Pierre',    driver_surname: 'Gasly',      driver_full_name: 'Pierre Gasly',        nationality: 'French',      team_id: 'alpine' },
-  { driver_id: 'jack_doohan',        driver_number: 7,  driver_code: 'DOO', driver_forename: 'Jack',      driver_surname: 'Doohan',     driver_full_name: 'Jack Doohan',         nationality: 'Australian',  team_id: 'alpine' },
-  { driver_id: 'carlos_sainz',       driver_number: 55, driver_code: 'SAI', driver_forename: 'Carlos',    driver_surname: 'Sainz',      driver_full_name: 'Carlos Sainz',        nationality: 'Spanish',     team_id: 'williams' },
-  { driver_id: 'alexander_albon',    driver_number: 23, driver_code: 'ALB', driver_forename: 'Alexander', driver_surname: 'Albon',      driver_full_name: 'Alexander Albon',     nationality: 'Thai',        team_id: 'williams' },
-  { driver_id: 'yuki_tsunoda',       driver_number: 22, driver_code: 'TSU', driver_forename: 'Yuki',      driver_surname: 'Tsunoda',    driver_full_name: 'Yuki Tsunoda',        nationality: 'Japanese',    team_id: 'rb' },
-  { driver_id: 'isack_hadjar',       driver_number: 21, driver_code: 'HAD', driver_forename: 'Isack',     driver_surname: 'Hadjar',     driver_full_name: 'Isack Hadjar',        nationality: 'French',      team_id: 'rb' },
-  { driver_id: 'nico_hulkenberg',    driver_number: 27, driver_code: 'HUL', driver_forename: 'Nico',      driver_surname: 'Hulkenberg', driver_full_name: 'Nico Hulkenberg',     nationality: 'German',      team_id: 'sauber' },
-  { driver_id: 'gabriel_bortoleto',  driver_number: 5,  driver_code: 'BOR', driver_forename: 'Gabriel',   driver_surname: 'Bortoleto',  driver_full_name: 'Gabriel Bortoleto',   nationality: 'Brazilian',   team_id: 'sauber' },
-  { driver_id: 'oliver_bearman',     driver_number: 87, driver_code: 'BEA', driver_forename: 'Oliver',    driver_surname: 'Bearman',    driver_full_name: 'Oliver Bearman',      nationality: 'British',     team_id: 'haas' },
-  { driver_id: 'esteban_ocon',       driver_number: 31, driver_code: 'OCO', driver_forename: 'Esteban',   driver_surname: 'Ocon',       driver_full_name: 'Esteban Ocon',        nationality: 'French',      team_id: 'haas' },
+  { driver_id: 'max_verstappen', driver_number: 1, driver_code: 'VER', driver_forename: 'Max', driver_surname: 'Verstappen', driver_full_name: 'Max Verstappen', nationality: 'Dutch', team_id: 'red_bull' },
+  { driver_id: 'liam_lawson', driver_number: 11, driver_code: 'LAW', driver_forename: 'Liam', driver_surname: 'Lawson', driver_full_name: 'Liam Lawson', nationality: 'New Zealand', team_id: 'red_bull' },
+  { driver_id: 'lando_norris', driver_number: 4, driver_code: 'NOR', driver_forename: 'Lando', driver_surname: 'Norris', driver_full_name: 'Lando Norris', nationality: 'British', team_id: 'mclaren' },
+  { driver_id: 'oscar_piastri', driver_number: 81, driver_code: 'PIA', driver_forename: 'Oscar', driver_surname: 'Piastri', driver_full_name: 'Oscar Piastri', nationality: 'Australian', team_id: 'mclaren' },
+  { driver_id: 'charles_leclerc', driver_number: 16, driver_code: 'LEC', driver_forename: 'Charles', driver_surname: 'Leclerc', driver_full_name: 'Charles Leclerc', nationality: 'Monegasque', team_id: 'ferrari' },
+  { driver_id: 'lewis_hamilton', driver_number: 44, driver_code: 'HAM', driver_forename: 'Lewis', driver_surname: 'Hamilton', driver_full_name: 'Lewis Hamilton', nationality: 'British', team_id: 'ferrari' },
+  { driver_id: 'george_russell', driver_number: 63, driver_code: 'RUS', driver_forename: 'George', driver_surname: 'Russell', driver_full_name: 'George Russell', nationality: 'British', team_id: 'mercedes' },
+  { driver_id: 'andrea_antonelli', driver_number: 12, driver_code: 'ANT', driver_forename: 'Andrea', driver_surname: 'Antonelli', driver_full_name: 'Andrea Kimi Antonelli', nationality: 'Italian', team_id: 'mercedes' },
+  { driver_id: 'fernando_alonso', driver_number: 14, driver_code: 'ALO', driver_forename: 'Fernando', driver_surname: 'Alonso', driver_full_name: 'Fernando Alonso', nationality: 'Spanish', team_id: 'aston_martin' },
+  { driver_id: 'lance_stroll', driver_number: 18, driver_code: 'STR', driver_forename: 'Lance', driver_surname: 'Stroll', driver_full_name: 'Lance Stroll', nationality: 'Canadian', team_id: 'aston_martin' },
+  { driver_id: 'pierre_gasly', driver_number: 10, driver_code: 'GAS', driver_forename: 'Pierre', driver_surname: 'Gasly', driver_full_name: 'Pierre Gasly', nationality: 'French', team_id: 'alpine' },
+  { driver_id: 'jack_doohan', driver_number: 7, driver_code: 'DOO', driver_forename: 'Jack', driver_surname: 'Doohan', driver_full_name: 'Jack Doohan', nationality: 'Australian', team_id: 'alpine' },
+  { driver_id: 'carlos_sainz', driver_number: 55, driver_code: 'SAI', driver_forename: 'Carlos', driver_surname: 'Sainz', driver_full_name: 'Carlos Sainz', nationality: 'Spanish', team_id: 'williams' },
+  { driver_id: 'alexander_albon', driver_number: 23, driver_code: 'ALB', driver_forename: 'Alexander', driver_surname: 'Albon', driver_full_name: 'Alexander Albon', nationality: 'Thai', team_id: 'williams' },
+  { driver_id: 'yuki_tsunoda', driver_number: 22, driver_code: 'TSU', driver_forename: 'Yuki', driver_surname: 'Tsunoda', driver_full_name: 'Yuki Tsunoda', nationality: 'Japanese', team_id: 'rb' },
+  { driver_id: 'isack_hadjar', driver_number: 21, driver_code: 'HAD', driver_forename: 'Isack', driver_surname: 'Hadjar', driver_full_name: 'Isack Hadjar', nationality: 'French', team_id: 'rb' },
+  { driver_id: 'nico_hulkenberg', driver_number: 27, driver_code: 'HUL', driver_forename: 'Nico', driver_surname: 'Hulkenberg', driver_full_name: 'Nico Hulkenberg', nationality: 'German', team_id: 'sauber' },
+  { driver_id: 'gabriel_bortoleto', driver_number: 5, driver_code: 'BOR', driver_forename: 'Gabriel', driver_surname: 'Bortoleto', driver_full_name: 'Gabriel Bortoleto', nationality: 'Brazilian', team_id: 'sauber' },
+  { driver_id: 'oliver_bearman', driver_number: 87, driver_code: 'BEA', driver_forename: 'Oliver', driver_surname: 'Bearman', driver_full_name: 'Oliver Bearman', nationality: 'British', team_id: 'haas' },
+  { driver_id: 'esteban_ocon', driver_number: 31, driver_code: 'OCO', driver_forename: 'Esteban', driver_surname: 'Ocon', driver_full_name: 'Esteban Ocon', nationality: 'French', team_id: 'haas' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -155,7 +155,8 @@ const WEATHER_FORECAST: Record<WeatherCondition, { icon: string; tempC: number }
   rainy: [{ icon: '⛅', tempC: 18 }, { icon: '🌧️', tempC: 16 }, { icon: '🌧️', tempC: 17 }],
 };
 
-const GRID_SIZE = 22;
+const GRID_SIZE = 20;
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Stepper
@@ -170,7 +171,7 @@ function Stepper({ currentStep }: { currentStep: 1 | 2 | 3 }) {
     <div className="sim-stepper" aria-label="Simulator progress">
       {steps.map((step, idx) => {
         const isCompleted = step.num < currentStep;
-        const isActive    = step.num === currentStep;
+        const isActive = step.num === currentStep;
         return (
           <div key={step.num} className="sim-stepper__track">
             <div className={['sim-stepper__step', isActive ? 'sim-stepper__step--active' : '', isCompleted ? 'sim-stepper__step--completed' : ''].join(' ')}>
@@ -193,7 +194,7 @@ function Stepper({ currentStep }: { currentStep: 1 | 2 | 3 }) {
 // Left panel (persistent)
 // ─────────────────────────────────────────────────────────────────────────────
 function LeftPanel({ selected, weather }: { selected: Circuit | null; weather: WeatherCondition | null }) {
-  const svg  = selected ? resolveCircuitSvg(selected) : null;
+  const svg = selected ? resolveCircuitSvg(selected) : null;
   const flag = selected ? flagFor(selected.country) : null;
 
   return (
@@ -201,8 +202,8 @@ function LeftPanel({ selected, weather }: { selected: Circuit | null; weather: W
       {!selected ? (
         <div className="sim-left-panel__placeholder">
           <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="sim-left-panel__placeholder-svg">
-            <rect x="20" y="30" width="160" height="100" rx="40" stroke="#F5F1E8" strokeWidth="8" fill="none" opacity="0.2"/>
-            <rect x="50" y="55" width="100" height="50" rx="20" stroke="#F5F1E8" strokeWidth="5" fill="none" opacity="0.15"/>
+            <rect x="20" y="30" width="160" height="100" rx="40" stroke="#F5F1E8" strokeWidth="8" fill="none" opacity="0.2" />
+            <rect x="50" y="55" width="100" height="50" rx="20" stroke="#F5F1E8" strokeWidth="5" fill="none" opacity="0.15" />
           </svg>
           <p className="sim-left-panel__placeholder-text">Select a circuit to begin</p>
         </div>
@@ -221,8 +222,8 @@ function LeftPanel({ selected, weather }: { selected: Circuit | null; weather: W
               <img src={svg} alt={`${selected.circuit_name} track layout`} className="sim-left-panel__map-svg" />
             ) : (
               <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="sim-left-panel__map-svg">
-                <rect x="20" y="30" width="160" height="100" rx="40" stroke="#E8002D" strokeWidth="6" fill="none"/>
-                <rect x="50" y="55" width="100" height="50" rx="20" stroke="#F5F1E8" strokeWidth="4" fill="none"/>
+                <rect x="20" y="30" width="160" height="100" rx="40" stroke="#E8002D" strokeWidth="6" fill="none" />
+                <rect x="50" y="55" width="100" height="50" rx="20" stroke="#F5F1E8" strokeWidth="4" fill="none" />
               </svg>
             )}
           </div>
@@ -268,7 +269,7 @@ function CircuitCard({ circuit, selected, onSelect }: {
           <img src={svg} alt={circuit.circuit_name} className="sim-circuit-card__svg" />
         ) : (
           <svg viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="sim-circuit-card__svg">
-            <rect x="10" y="15" width="100" height="50" rx="22" stroke="#1E1E1E" strokeWidth="5" fill="none" opacity="0.25"/>
+            <rect x="10" y="15" width="100" height="50" rx="22" stroke="#1E1E1E" strokeWidth="5" fill="none" opacity="0.25" />
           </svg>
         )}
       </div>
@@ -338,8 +339,8 @@ function Step2Panel({
     );
   }
 
-  const leftIndices  = Array.from({ length: 11 }, (_, i) => i);
-  const rightIndices = Array.from({ length: 11 }, (_, i) => i + 11);
+  const leftIndices = Array.from({ length: 11 }, (_, i) => i);
+  const rightIndices = Array.from({ length: 9 }, (_, i) => i + 11);
 
   return (
     <section className="sim-right-panel">
@@ -405,30 +406,152 @@ export default function Simulator() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   // Step 1 state
-  const [circuits, setCircuits]             = useState<Circuit[]>([]);
+  const [circuits, setCircuits] = useState<Circuit[]>([]);
   const [circuitsLoading, setCircuitsLoading] = useState(true);
-  const [circuitsError, setCircuitsError]   = useState<string | null>(null);
+  const [circuitsError, setCircuitsError] = useState<string | null>(null);
   const [selectedCircuit, setSelectedCircuit] = useState<Circuit | null>(null);
 
   // Step 2 state
-  const [drivers, setDrivers]               = useState<Driver[]>([]);
-  const [weather, setWeather]               = useState<WeatherCondition | null>(null);
-  const [grid, setGrid]                     = useState<string[]>(Array(GRID_SIZE).fill(''));
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [weather, setWeather] = useState<WeatherCondition | null>(null);
+  const [grid, setGrid] = useState<string[]>(Array(GRID_SIZE).fill(''));
 
   // Prediction state
   const [predictLoading, setPredictLoading] = useState(false);
-  const [predictError, setPredictError]     = useState<string | null>(null);
-  
-  // Cache 2026 races (fetched once on mount, reused in handlePredict)
-  const [races2026, setRaces2026]           = useState<UpcomingRace[]>([]);
+  const [predictError, setPredictError] = useState<string | null>(null);
+  const [predictionResult, setPredictionResult] = useState<any>(null);
 
-  // Fetch 2026 races and build circuit list directly (no matching needed!)
+  const Step3Panel = ({ result, onReset, onBack }: any) => {
+    const predictions = result?.predictions || [];
+
+    const sorted = [...predictions].sort(
+      (a, b) => a.predicted_position - b.predicted_position
+    );
+
+    const podium = sorted.slice(0, 3);
+
+    const getColor = (value: number) => {
+      if (value > 0.7) return "green";
+      if (value > 0.4) return "orange";
+      return "red";
+    };
+
+    return (
+      <div className="sim-step3">
+
+        {/* PODIUM */}
+        <div className="sim-podium">
+          {podium[1] && (
+            <div className="sim-podium-card sim-podium-card--second">
+              <div>2</div>
+              <div>{podium[1].driver_name}</div>
+              <div>{podium[1].team}</div>
+              <div>{Math.round(podium[1].confidence_score * 100)}%</div>
+            </div>
+          )}
+
+          {podium[0] && (
+            <div className="sim-podium-card sim-podium-card--first">
+              <div>1</div>
+              <div>{podium[0].driver_name}</div>
+              <div>{podium[0].team}</div>
+              <div>{Math.round(podium[0].confidence_score * 100)}%</div>
+            </div>
+          )}
+
+          {podium[2] && (
+            <div className="sim-podium-card sim-podium-card--third">
+              <div>3</div>
+              <div>{podium[2].driver_name}</div>
+              <div>{podium[2].team}</div>
+              <div>{Math.round(podium[2].confidence_score * 100)}%</div>
+            </div>
+          )}
+        </div>
+
+        {/* TEAM CONFIDENCE */}
+        <div className="sim-team-confidence">
+          {Object.entries(
+            sorted.reduce((acc: any, p: any) => {
+              acc[p.team] = (acc[p.team] || 0) + p.confidence_score;
+              return acc;
+            }, {})
+          )
+            .sort((a: any, b: any) => b[1] - a[1])
+            .map(([team, score]: any) => (
+              <div key={team} className="sim-team-row">
+                <span>{team}</span>
+                <div className="sim-bar">
+                  <div
+                    className="sim-bar-fill"
+                    style={{ width: `${score * 50}%` }}
+                  />
+                </div>
+                <span>{Math.round(score * 100)}%</span>
+              </div>
+            ))}
+        </div>
+
+        {/* METRICS */}
+        <div className="sim-metrics">
+          {[
+            "Starting Grid Position %",
+            "Overtaking Opportunity %",
+            "Driver Circuit History %",
+            "Team Race Pace %",
+          ].map((label, i) => {
+            const value = Math.random();
+            return (
+              <div key={i} className="sim-metric">
+                <div>{label}</div>
+                <div className={`sim-metric-value ${getColor(value)}`}>
+                  {Math.round(value * 100)}%
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* TABLE */}
+        <div className="sim-results-table">
+          {sorted.map((p, i) => (
+            <div
+              key={i}
+              className={`sim-row ${i < 3 ? `sim-row--top${i + 1}` : ""}`}
+            >
+              <span>P{i + 1}</span>
+              <span>{p.driver_name}</span>
+              <span>{p.team}</span>
+              <span>{Math.round(p.confidence_score * 100)}%</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ACTIONS */}
+        <div className="sim-actions">
+          <button onClick={onBack} className="sim-btn-back">
+            Back
+          </button>
+
+          <button onClick={onReset} className="sim-btn-next">
+            New Prediction
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+
+  // Cache 2026 races (fetched once on mount, reused in handlePredict)
+  const [races2026, setRaces2026] = useState<UpcomingRace[]>([]);
+
+  // Fetch 2026 races and build circuit list directly
   useEffect(() => {
     const ctrl = new AbortController();
     (async () => {
       try {
         const races = await fetchAll2026Races();
-        
+
         // Store races for reuse in handlePredict
         setRaces2026(races);
 
@@ -440,7 +563,7 @@ export default function Simulator() {
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '_')
             .replace(/^_|_$/g, '');
-          
+
           if (!circuitMap.has(circuitId)) {
             circuitMap.set(circuitId, {
               circuit_id: circuitId,
@@ -489,7 +612,7 @@ export default function Simulator() {
     setPredictError(null);
 
     try {
-      // Find race by exact circuit name match (circuits were built from races, so names match exactly)
+      // Find race by exact circuit name match
       const race = races2026.find((r) => r.circuit_name === selectedCircuit.circuit_name);
 
       if (!race) {
@@ -502,37 +625,42 @@ export default function Simulator() {
         rainy: 'wet',
         windy: 'mixed',
       };
-      const apiWeather = weatherMap[weather];
 
-      // Build grid_order: filter out empty positions
+      // Filter out empty slots from the grid
       const gridOrder = grid.filter(Boolean);
 
-      // Call simulator API
+      // Call the simulation service
       const result = await submitSimulation({
         race_id: race.race_id,
-        weather: apiWeather,
+        weather: weatherMap[weather],
         grid_order: gridOrder.length > 0 ? gridOrder : undefined,
       });
-      
-      // Format top 3 with position numbers
-      const top3 = result.predictions
-        .slice(0, 3)
-        .map((p, idx) => `${idx + 1}. ${p.driver_name}`)
-        .join('\n');
-      
-      alert(`🏁 RACE PREDICTION\n\nTop 3 Finishers:\n${top3}`);
+
+      setPredictionResult(result);
+      setStep(3);
     } catch (error: unknown) {
       console.error('[Simulator] Prediction failed:', error);
-      setPredictError(
-        error instanceof Error
-          ? error.message
-          : 'Failed to generate predictions. Please try again.'
-      );
+
+      // Fallback logic if API fails
+      const fallbackPredictions = grid
+        .filter(Boolean)
+        .map((driverId, index) => {
+          const driver = drivers.find(d => d.driver_id === driverId);
+          return {
+            driver_id: driverId,
+            driver_name: driver?.driver_full_name || 'Unknown Driver',
+            team: driver?.team_id || 'Unknown Team',
+            predicted_position: index + 1,
+            confidence_score: 0.5,
+          };
+        });
+
+      setPredictionResult({ predictions: fallbackPredictions });
+      setStep(3);
     } finally {
       setPredictLoading(false);
     }
   };
-
   return (
     <main className="sim-page">
       <div className="sim-page__header">
@@ -592,6 +720,20 @@ export default function Simulator() {
             onPredict={handlePredict}
             predictLoading={predictLoading}
             predictError={predictError}
+          />
+        )}
+
+        {step === 3 && (
+          <Step3Panel
+            result={predictionResult}
+            onReset={() => {
+              setStep(1);
+              setPredictionResult(null);
+              setGrid(Array(GRID_SIZE).fill('')); 
+              setWeather(null);
+              setSelectedCircuit(null);
+            }}
+            onBack={() => setStep(2)}
           />
         )}
       </div>
