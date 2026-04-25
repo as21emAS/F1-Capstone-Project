@@ -212,13 +212,8 @@ Retro 1970s–80s F1 pit crew aesthetic. Canonical spec: `FRONTEND_REDESIGN_v4.m
 
 ---
 
-## ⚠️ Known Issues
-
-| # | Issue | Status |
-|---|---|---|
-| #93 | Simulator sends wrong `race_id` to ML model (fallback → 2010 race) | Open |
-| #94 | Weather 503 — `OPENWEATHER_API_KEY` missing from Render env | Open |
-| #90 | Cross-browser / responsive testing not complete | Open |
+## ⚠️ Known Limitations
+- Track time clock — header displays local user time correctly; track-local time is currently hardcoded and does not dynamically update per circuit timezone.
 
 ---
 
