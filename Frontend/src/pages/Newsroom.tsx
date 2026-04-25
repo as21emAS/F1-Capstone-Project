@@ -2,13 +2,14 @@ import { useState, useRef } from 'react';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchNews, getRaces, fetchVideos } from '../services/api'; 
-import './NewsRoom.css';
-import { EmptyState, LoadingSkeleton } from '../components/ui/index';
+import './Newsroom.css'  // match exact filename casing
+import { EmptyState} from '../components/ui/index';
+
 
 const PAGE_SIZE = 6; 
 const CURRENT_SEASON = 2026; 
 
-export type ArticleCategory = 'FEATURED' | 'BREAKING' | 'ANALYSIS';
+export type ArticleCategory = 'FEATURED' | 'BREAKING' | 'ANALYSIS' | 'NEWS';
 
 interface Article {
   article_id: string;
@@ -119,10 +120,10 @@ export default function Newsroom() {
     retry: 1,
   });
 
-  // Map API news data to article format
+  // Map API news data to article format.
   //const articles: Article[] = (newsData?.items ?? []).map((item: any, index: number) => {
   // First check if news loaded if not use fall back article data
-  const rawItems = newsData?.items?.length > 0 ? newsData.items : FALLBACK_ARTICLES
+  const rawItems = (newsData?.items?.length ?? 0) > 0 ? newsData!.items! : FALLBACK_ARTICLES
   const articles: Article[] = rawItems.map((item: any, index: number) => {
   // Check if we are already dealing with a mapped fallback article
   if (item.article_id && item.blurb) {
