@@ -597,6 +597,168 @@
   cursor: not-allowed;
 }
 
+/* STEP 3 */
+
+.sim-podium {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 3rem 0 4rem;
+  padding: 0 1rem;
+}
+
+.sim-podium-card {
+  flex: 1;
+  max-width: 260px;
+  background: #1a1a1e;
+  border: 1px solid #333;
+  padding: 24px 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.sim-podium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #E8002D; /* F1 Red */
+}
+
+/* 1ST PLACE */
+.sim-podium-card--first {
+  height: 280px;
+  z-index: 2;
+  border: 1px solid #444;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+}
+
+.sim-podium-card--first::before {
+  height: 8px;
+}
+
+/* 2ND & 3RD PLACE */
+.sim-podium-card--second { height: 230px; }
+.sim-podium-card--third { height: 200px; }
+
+/* Rank Typography */
+.sim-podium-rank {
+  font-family: 'Chakra Petch', sans-serif; /* Matches the "2026" technical font */
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: #E8002D;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.sim-podium-rank span {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin-left: -5px;
+}
+
+/* Driver & Team Info */
+.sim-podium-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.sim-podium-team {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+/* Confidence Badge (The Red Box in your image) */
+.sim-podium-confidence {
+  margin-top: auto;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  background: #E8002D;
+  color: #FFFFFF;
+  display: inline-block;
+  align-self: center;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%); /* Slight slant for F1 speed feel */
+}
+
+/* Hover Effect */
+.sim-podium-card:hover {
+  border-color: #E8002D;
+  transform: scale(1.02);
+}
+
+.sim-team-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sim-bar {
+  flex: 1;
+  height: 6px;
+  background: #333;
+}
+
+.sim-bar-fill {
+  height: 100%;
+  background: #E8002D;
+}
+
+.sim-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.sim-metric {
+  background: #1E1E22;
+  padding: 12px;
+}
+
+.sim-metric-value.green { color: #00ff88; }
+.sim-metric-value.orange { color: orange; }
+.sim-metric-value.red { color: #ff4d4d; }
+
+.sim-results-table {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.sim-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 80px;
+  padding: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.sim-row--top1 { background: rgba(232,0,45,0.2); }
+.sim-row--top2 { background: rgba(200,200,200,0.1); }
+.sim-row--top3 { background: rgba(255,140,0,0.1); }
+
+.sim-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
 /* ══════════════════════════════════════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════════════════════════════════════ */
