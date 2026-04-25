@@ -43,7 +43,7 @@ import type {
 // ─── Axios Client ─────────────────────────────────────────────────────────────
 
 const apiClient = axios.create({
-  baseURL: '', // Set your backend URL here if needed
+  baseURL: 'https://racetrack-backend-2ak8.onrender.com', 
   timeout: 10_000,
 });
 
