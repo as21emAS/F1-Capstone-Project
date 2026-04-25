@@ -575,6 +575,29 @@
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
+   ERROR MESSAGE (Step 2)
+══════════════════════════════════════════════════════════════════════════════ */
+
+.sim-error {
+  background: rgba(232, 0, 45, 0.1);
+  border: 2px solid #E8002D;
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  color: #F5F1E8;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sim-error strong {
+  color: #E8002D;
+  font-weight: 700;
+  margin-right: 8px;
+  cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════════════════════════════════════════════ */
 

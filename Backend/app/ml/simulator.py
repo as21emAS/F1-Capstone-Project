@@ -176,9 +176,15 @@ class RaceSimulator:
             drivers_data
         )
         
+        # Filter drivers_data if grid_order is provided (only predict for selected drivers)
+        if grid_order:
+            custom_drivers_data = [d for d in drivers_data if d['driver_id'] in grid_order]
+        else:
+            custom_drivers_data = drivers_data
+        
         # build custom feature matrix with simulation parameters
         X_custom = self._build_feature_matrix(
-            drivers_data,
+            custom_drivers_data,
             race_id,
             race_data['circuit_id'],
             weather=weather,
@@ -188,7 +194,7 @@ class RaceSimulator:
         # generate custom predictions
         predictions = self._generate_predictions(
             X_custom, 
-            drivers_data
+            custom_drivers_data
         )
         
         # extract key factors with criticality based on feature importance and context
@@ -451,31 +457,20 @@ class RaceSimulator:
         # Fetch weather features for v3.0 model
         weather_features = self._get_weather_features(circuit_id)
 
-        df = pd.DataFrame(drivers_data)
-        
-        # apply custom grid order if provided
+        # FILTER: If grid_order is provided, only include drivers in the grid_order
         if grid_order:
-            # reorder drivers based on grid_order, placing unspecified drivers at the end in default order
-            specified = []
-            unspecified = []
+            # Only keep drivers that are in the grid_order
+            drivers_data = [d for d in drivers_data if d['driver_id'] in grid_order]
             
-            for driver in drivers_data:
-                if driver['driver_id'] in grid_order:
-                    specified.append(driver)
-                else:
-                    unspecified.append(driver)
+            # Sort by grid_order position
+            drivers_data.sort(key=lambda d: grid_order.index(d['driver_id']))
             
-            # sort specified drivers by their position in grid_order
-            specified.sort(key=lambda d: grid_order.index(d['driver_id']))
-            
-            # combine: specified drivers first, then unspecified
-            sorted_drivers = specified + unspecified
-            df = pd.DataFrame(sorted_drivers)
-            
-            # assign grid positions based on this order
+            df = pd.DataFrame(drivers_data)
+            # Assign grid positions based on order in grid_order list
             df['grid_position'] = range(1, len(df) + 1)
         else:
-            # default grid order based on driver_win_rate
+            # Default grid order based on driver_win_rate
+            df = pd.DataFrame(drivers_data)
             df = df.sort_values('driver_win_rate', ascending=False)
             df['grid_position'] = range(1, len(df) + 1)
         

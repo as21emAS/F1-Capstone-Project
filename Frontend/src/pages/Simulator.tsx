@@ -3,7 +3,8 @@
 // Spec: FRONTEND_REDESIGN_v4.md § "Simulator Page (/simulator)"
 
 import { useState, useEffect } from 'react';
-import type { Circuit, Driver } from '../types/api';
+import type { Circuit, Driver, UpcomingRace } from '../types/api';
+import { fetchAll2026Races, submitSimulation } from '../services/api';
 import './Simulator.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -112,28 +113,26 @@ const FALLBACK_CIRCUITS: Circuit[] = [
 
 // 2026 grid — 22 drivers
 const FALLBACK_DRIVERS: Driver[] = [
-  { driver_id: 'verstappen', driver_number: 1,  driver_code: 'VER', driver_forename: 'Max',       driver_surname: 'Verstappen', driver_full_name: 'Max Verstappen',    nationality: 'Dutch',         team_id: 'red_bull' },
-  { driver_id: 'norris',     driver_number: 4,  driver_code: 'NOR', driver_forename: 'Lando',     driver_surname: 'Norris',     driver_full_name: 'Lando Norris',      nationality: 'British',       team_id: 'mclaren' },
-  { driver_id: 'leclerc',    driver_number: 16, driver_code: 'LEC', driver_forename: 'Charles',   driver_surname: 'Leclerc',    driver_full_name: 'Charles Leclerc',   nationality: 'Monegasque',    team_id: 'ferrari' },
-  { driver_id: 'piastri',    driver_number: 81, driver_code: 'PIA', driver_forename: 'Oscar',     driver_surname: 'Piastri',    driver_full_name: 'Oscar Piastri',     nationality: 'Australian',    team_id: 'mclaren' },
-  { driver_id: 'hamilton',   driver_number: 44, driver_code: 'HAM', driver_forename: 'Lewis',     driver_surname: 'Hamilton',   driver_full_name: 'Lewis Hamilton',    nationality: 'British',       team_id: 'ferrari' },
-  { driver_id: 'russell',    driver_number: 63, driver_code: 'RUS', driver_forename: 'George',    driver_surname: 'Russell',    driver_full_name: 'George Russell',    nationality: 'British',       team_id: 'mercedes' },
-  { driver_id: 'antonelli',  driver_number: 12, driver_code: 'ANT', driver_forename: 'Kimi',      driver_surname: 'Antonelli',  driver_full_name: 'Kimi Antonelli',    nationality: 'Italian',       team_id: 'mercedes' },
-  { driver_id: 'sainz',      driver_number: 55, driver_code: 'SAI', driver_forename: 'Carlos',    driver_surname: 'Sainz',      driver_full_name: 'Carlos Sainz',      nationality: 'Spanish',       team_id: 'williams' },
-  { driver_id: 'alonso',     driver_number: 14, driver_code: 'ALO', driver_forename: 'Fernando',  driver_surname: 'Alonso',     driver_full_name: 'Fernando Alonso',   nationality: 'Spanish',       team_id: 'aston_martin' },
-  { driver_id: 'stroll',     driver_number: 18, driver_code: 'STR', driver_forename: 'Lance',     driver_surname: 'Stroll',     driver_full_name: 'Lance Stroll',      nationality: 'Canadian',      team_id: 'aston_martin' },
-  { driver_id: 'gasly',      driver_number: 10, driver_code: 'GAS', driver_forename: 'Pierre',    driver_surname: 'Gasly',      driver_full_name: 'Pierre Gasly',      nationality: 'French',        team_id: 'alpine' },
-  { driver_id: 'doohan',     driver_number: 7,  driver_code: 'DOO', driver_forename: 'Jack',      driver_surname: 'Doohan',     driver_full_name: 'Jack Doohan',       nationality: 'Australian',    team_id: 'alpine' },
-  { driver_id: 'hulkenberg',  driver_number: 27, driver_code: 'HUL', driver_forename: 'Nico',     driver_surname: 'Hulkenberg', driver_full_name: 'Nico Hulkenberg',   nationality: 'German',        team_id: 'sauber' },
-  { driver_id: 'bortoleto',  driver_number: 5,  driver_code: 'BOR', driver_forename: 'Gabriel',   driver_surname: 'Bortoleto',  driver_full_name: 'Gabriel Bortoleto', nationality: 'Brazilian',     team_id: 'sauber' },
-  { driver_id: 'tsunoda',    driver_number: 22, driver_code: 'TSU', driver_forename: 'Yuki',      driver_surname: 'Tsunoda',    driver_full_name: 'Yuki Tsunoda',      nationality: 'Japanese',      team_id: 'rb' },
-  { driver_id: 'lawson',     driver_number: 30, driver_code: 'LAW', driver_forename: 'Liam',      driver_surname: 'Lawson',     driver_full_name: 'Liam Lawson',       nationality: 'New Zealander', team_id: 'red_bull' },
-  { driver_id: 'albon',      driver_number: 23, driver_code: 'ALB', driver_forename: 'Alexander', driver_surname: 'Albon',      driver_full_name: 'Alexander Albon',   nationality: 'Thai',          team_id: 'williams' },
-  { driver_id: 'colapinto',  driver_number: 43, driver_code: 'COL', driver_forename: 'Franco',    driver_surname: 'Colapinto',  driver_full_name: 'Franco Colapinto',  nationality: 'Argentinian',   team_id: 'alpine' },
-  { driver_id: 'hadjar',     driver_number: 6,  driver_code: 'HAD', driver_forename: 'Isack',     driver_surname: 'Hadjar',     driver_full_name: 'Isack Hadjar',      nationality: 'French',        team_id: 'rb' },
-  { driver_id: 'bearman',    driver_number: 87, driver_code: 'BEA', driver_forename: 'Oliver',    driver_surname: 'Bearman',    driver_full_name: 'Oliver Bearman',    nationality: 'British',       team_id: 'haas' },
-  { driver_id: 'ocon',       driver_number: 31, driver_code: 'OCO', driver_forename: 'Esteban',   driver_surname: 'Ocon',       driver_full_name: 'Esteban Ocon',      nationality: 'French',        team_id: 'haas' },
-  { driver_id: 'magnussen',  driver_number: 20, driver_code: 'MAG', driver_forename: 'Kevin',     driver_surname: 'Magnussen',  driver_full_name: 'Kevin Magnussen',   nationality: 'Danish',        team_id: 'haas' },
+  { driver_id: 'max_verstappen',     driver_number: 1,  driver_code: 'VER', driver_forename: 'Max',       driver_surname: 'Verstappen', driver_full_name: 'Max Verstappen',      nationality: 'Dutch',       team_id: 'red_bull' },
+  { driver_id: 'liam_lawson',        driver_number: 11, driver_code: 'LAW', driver_forename: 'Liam',      driver_surname: 'Lawson',     driver_full_name: 'Liam Lawson',         nationality: 'New Zealand', team_id: 'red_bull' },
+  { driver_id: 'lando_norris',       driver_number: 4,  driver_code: 'NOR', driver_forename: 'Lando',     driver_surname: 'Norris',     driver_full_name: 'Lando Norris',        nationality: 'British',     team_id: 'mclaren' },
+  { driver_id: 'oscar_piastri',      driver_number: 81, driver_code: 'PIA', driver_forename: 'Oscar',     driver_surname: 'Piastri',    driver_full_name: 'Oscar Piastri',       nationality: 'Australian',  team_id: 'mclaren' },
+  { driver_id: 'charles_leclerc',    driver_number: 16, driver_code: 'LEC', driver_forename: 'Charles',   driver_surname: 'Leclerc',    driver_full_name: 'Charles Leclerc',     nationality: 'Monegasque',  team_id: 'ferrari' },
+  { driver_id: 'lewis_hamilton',     driver_number: 44, driver_code: 'HAM', driver_forename: 'Lewis',     driver_surname: 'Hamilton',   driver_full_name: 'Lewis Hamilton',      nationality: 'British',     team_id: 'ferrari' },
+  { driver_id: 'george_russell',     driver_number: 63, driver_code: 'RUS', driver_forename: 'George',    driver_surname: 'Russell',    driver_full_name: 'George Russell',      nationality: 'British',     team_id: 'mercedes' },
+  { driver_id: 'andrea_antonelli',   driver_number: 12, driver_code: 'ANT', driver_forename: 'Andrea',    driver_surname: 'Antonelli',  driver_full_name: 'Andrea Kimi Antonelli', nationality: 'Italian',   team_id: 'mercedes' },
+  { driver_id: 'fernando_alonso',    driver_number: 14, driver_code: 'ALO', driver_forename: 'Fernando',  driver_surname: 'Alonso',     driver_full_name: 'Fernando Alonso',     nationality: 'Spanish',     team_id: 'aston_martin' },
+  { driver_id: 'lance_stroll',       driver_number: 18, driver_code: 'STR', driver_forename: 'Lance',     driver_surname: 'Stroll',     driver_full_name: 'Lance Stroll',        nationality: 'Canadian',    team_id: 'aston_martin' },
+  { driver_id: 'pierre_gasly',       driver_number: 10, driver_code: 'GAS', driver_forename: 'Pierre',    driver_surname: 'Gasly',      driver_full_name: 'Pierre Gasly',        nationality: 'French',      team_id: 'alpine' },
+  { driver_id: 'jack_doohan',        driver_number: 7,  driver_code: 'DOO', driver_forename: 'Jack',      driver_surname: 'Doohan',     driver_full_name: 'Jack Doohan',         nationality: 'Australian',  team_id: 'alpine' },
+  { driver_id: 'carlos_sainz',       driver_number: 55, driver_code: 'SAI', driver_forename: 'Carlos',    driver_surname: 'Sainz',      driver_full_name: 'Carlos Sainz',        nationality: 'Spanish',     team_id: 'williams' },
+  { driver_id: 'alexander_albon',    driver_number: 23, driver_code: 'ALB', driver_forename: 'Alexander', driver_surname: 'Albon',      driver_full_name: 'Alexander Albon',     nationality: 'Thai',        team_id: 'williams' },
+  { driver_id: 'yuki_tsunoda',       driver_number: 22, driver_code: 'TSU', driver_forename: 'Yuki',      driver_surname: 'Tsunoda',    driver_full_name: 'Yuki Tsunoda',        nationality: 'Japanese',    team_id: 'rb' },
+  { driver_id: 'isack_hadjar',       driver_number: 21, driver_code: 'HAD', driver_forename: 'Isack',     driver_surname: 'Hadjar',     driver_full_name: 'Isack Hadjar',        nationality: 'French',      team_id: 'rb' },
+  { driver_id: 'nico_hulkenberg',    driver_number: 27, driver_code: 'HUL', driver_forename: 'Nico',      driver_surname: 'Hulkenberg', driver_full_name: 'Nico Hulkenberg',     nationality: 'German',      team_id: 'sauber' },
+  { driver_id: 'gabriel_bortoleto',  driver_number: 5,  driver_code: 'BOR', driver_forename: 'Gabriel',   driver_surname: 'Bortoleto',  driver_full_name: 'Gabriel Bortoleto',   nationality: 'Brazilian',   team_id: 'sauber' },
+  { driver_id: 'oliver_bearman',     driver_number: 87, driver_code: 'BEA', driver_forename: 'Oliver',    driver_surname: 'Bearman',    driver_full_name: 'Oliver Bearman',      nationality: 'British',     team_id: 'haas' },
+  { driver_id: 'esteban_ocon',       driver_number: 31, driver_code: 'OCO', driver_forename: 'Esteban',   driver_surname: 'Ocon',       driver_full_name: 'Esteban Ocon',        nationality: 'French',      team_id: 'haas' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -286,20 +285,22 @@ function CircuitCard({ circuit, selected, onSelect }: {
 // ─────────────────────────────────────────────────────────────────────────────
 function Step2Panel({
   weather, onWeatherChange,
-  drivers, driversLoading,
+  drivers,
   grid, onGridChange,
   onBack, onPredict,
+  predictLoading, predictError,
 }: {
   weather: WeatherCondition | null;
   onWeatherChange: (w: WeatherCondition) => void;
   drivers: Driver[];
-  driversLoading: boolean;
   grid: string[];
   onGridChange: (posIndex: number, driverId: string) => void;
   onBack: () => void;
   onPredict: () => void;
+  predictLoading: boolean;
+  predictError: string | null;
 }) {
-  const canPredict = weather !== null && grid[0] !== '';
+  const canPredict = weather !== null && grid[0] !== '' && !predictLoading;
 
   // Deduplicated: build set of all currently chosen IDs
   const chosenIds = new Set(grid.filter(Boolean));
@@ -323,7 +324,6 @@ function Step2Panel({
               value={grid[idx]}
               onChange={(e) => onGridChange(idx, e.target.value)}
               aria-label={`Driver for grid position ${idx + 1}`}
-              disabled={driversLoading}
             >
               <option value="">— Driver —</option>
               {availableFor(idx).map((d) => (
@@ -368,14 +368,16 @@ function Step2Panel({
       <h3 className="sim-subsection-title">SELECT STARTING GRID</h3>
       <p className="sim-grid-hint">P1 is required · selecting a driver removes them from other slots</p>
 
-      {driversLoading ? (
-        <div className="sim-loading"><div className="sim-spinner" /></div>
-      ) : (
-        <div className="sim-grid-columns">
-          {renderColumn(leftIndices)}
-          {renderColumn(rightIndices)}
+      {predictError && (
+        <div className="sim-error" role="alert">
+          <strong>Error:</strong> {predictError}
         </div>
       )}
+
+      <div className="sim-grid-columns">
+        {renderColumn(leftIndices)}
+        {renderColumn(rightIndices)}
+      </div>
 
       {/* Navigation */}
       <div className="sim-nav sim-nav--spread">
@@ -410,22 +412,50 @@ export default function Simulator() {
 
   // Step 2 state
   const [drivers, setDrivers]               = useState<Driver[]>([]);
-  const [driversLoading, setDriversLoading] = useState(false);
   const [weather, setWeather]               = useState<WeatherCondition | null>(null);
   const [grid, setGrid]                     = useState<string[]>(Array(GRID_SIZE).fill(''));
 
-  // Fetch circuits on mount
+  // Prediction state
+  const [predictLoading, setPredictLoading] = useState(false);
+  const [predictError, setPredictError]     = useState<string | null>(null);
+  
+  // Cache 2026 races (fetched once on mount, reused in handlePredict)
+  const [races2026, setRaces2026]           = useState<UpcomingRace[]>([]);
+
+  // Fetch 2026 races and build circuit list directly (no matching needed!)
   useEffect(() => {
     const ctrl = new AbortController();
     (async () => {
       try {
-        const res = await fetch('/api/circuits', { signal: ctrl.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data: Circuit[] = await res.json();
-        setCircuits(data.length > 0 ? data : FALLBACK_CIRCUITS);
+        const races = await fetchAll2026Races();
+        
+        // Store races for reuse in handlePredict
+        setRaces2026(races);
+
+        // Build unique circuits directly from race data (no /api/circuits call or matching logic needed)
+        const circuitMap = new Map<string, Circuit>();
+        races.forEach((race) => {
+          // Generate circuit_id from circuit name (lowercase, underscores)
+          const circuitId = race.circuit_name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '_')
+            .replace(/^_|_$/g, '');
+          
+          if (!circuitMap.has(circuitId)) {
+            circuitMap.set(circuitId, {
+              circuit_id: circuitId,
+              circuit_name: race.circuit_name,
+              location: null, // Race data doesn't include location
+              country: race.country,
+            });
+          }
+        });
+
+        const circuits2026 = Array.from(circuitMap.values());
+        setCircuits(circuits2026.length > 0 ? circuits2026 : FALLBACK_CIRCUITS);
       } catch (e: unknown) {
         if (e instanceof Error && e.name === 'AbortError') return;
-        console.warn('[Simulator] /api/circuits failed:', e);
+        console.warn('[Simulator] Failed to load circuits:', e);
         setCircuitsError('Could not reach server — showing default circuit list.');
         setCircuits(FALLBACK_CIRCUITS);
       } finally {
@@ -435,38 +465,72 @@ export default function Simulator() {
     return () => ctrl.abort();
   }, []);
 
-  // Fetch drivers when Step 2 becomes active
+  // Use FALLBACK_DRIVERS directly
   useEffect(() => {
     if (step !== 2) return;
-    const ctrl = new AbortController();
-    setDriversLoading(true);
-    (async () => {
-      try {
-        const res = await fetch('/api/drivers', { signal: ctrl.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data: Driver[] = await res.json();
-        setDrivers(data.length > 0 ? data : FALLBACK_DRIVERS);
-      } catch (e: unknown) {
-        if (e instanceof Error && e.name === 'AbortError') return;
-        console.warn('[Simulator] /api/drivers failed:', e);
-        setDrivers(FALLBACK_DRIVERS);
-      } finally {
-        setDriversLoading(false);
-      }
-    })();
-    return () => ctrl.abort();
+    setDrivers(FALLBACK_DRIVERS);
   }, [step]);
 
   const handleCircuitSelect = (c: Circuit) =>
     setSelectedCircuit((prev) => (prev?.circuit_id === c.circuit_id ? null : c));
 
-  const handleGridChange = (posIndex: number, driverId: string) =>
-    setGrid((prev) => { const n = [...prev]; n[posIndex] = driverId; return n; });
+  const handleGridChange = (posIndex: number, driverId: string) => {
+    setGrid((prev) => {
+      const n = [...prev];
+      n[posIndex] = driverId;
+      return n;
+    });
+  };
 
-  const handlePredict = () => {
-    // Step 3 wiring will replace this stub
-    const p1Name = drivers.find((d) => d.driver_id === grid[0])?.driver_full_name ?? 'Unknown';
-    alert(`Predicting — Circuit: ${selectedCircuit?.circuit_name} | Weather: ${weather} | P1: ${p1Name}`);
+  const handlePredict = async () => {
+    if (!selectedCircuit || !weather) return;
+
+    setPredictLoading(true);
+    setPredictError(null);
+
+    try {
+      // Find race by exact circuit name match (circuits were built from races, so names match exactly)
+      const race = races2026.find((r) => r.circuit_name === selectedCircuit.circuit_name);
+
+      if (!race) {
+        throw new Error(`Could not find a 2026 race for circuit: ${selectedCircuit.circuit_name}`);
+      }
+
+      // Map weather UI format to API format
+      const weatherMap: Record<WeatherCondition, string> = {
+        sunny: 'dry',
+        rainy: 'wet',
+        windy: 'mixed',
+      };
+      const apiWeather = weatherMap[weather];
+
+      // Build grid_order: filter out empty positions
+      const gridOrder = grid.filter(Boolean);
+
+      // Call simulator API
+      const result = await submitSimulation({
+        race_id: race.race_id,
+        weather: apiWeather,
+        grid_order: gridOrder.length > 0 ? gridOrder : undefined,
+      });
+      
+      // Format top 3 with position numbers
+      const top3 = result.predictions
+        .slice(0, 3)
+        .map((p, idx) => `${idx + 1}. ${p.driver_name}`)
+        .join('\n');
+      
+      alert(`🏁 RACE PREDICTION\n\nTop 3 Finishers:\n${top3}`);
+    } catch (error: unknown) {
+      console.error('[Simulator] Prediction failed:', error);
+      setPredictError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to generate predictions. Please try again.'
+      );
+    } finally {
+      setPredictLoading(false);
+    }
   };
 
   return (
@@ -522,11 +586,12 @@ export default function Simulator() {
             weather={weather}
             onWeatherChange={setWeather}
             drivers={drivers}
-            driversLoading={driversLoading}
             grid={grid}
             onGridChange={handleGridChange}
             onBack={() => setStep(1)}
             onPredict={handlePredict}
+            predictLoading={predictLoading}
+            predictError={predictError}
           />
         )}
       </div>

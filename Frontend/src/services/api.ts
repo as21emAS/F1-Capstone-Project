@@ -20,6 +20,7 @@ export type {
   RaceResult,
   RaceSummary,
   WeatherResponse,
+  CircuitWeatherResponse,
 } from "../types/api";
 
 // ─── Import types locally for use in function signatures ─────────────────────
@@ -36,7 +37,7 @@ import type {
   PredictionResponse as LocalPredictionResponse,
   SimulatorRequest as LocalSimulatorRequest,
   NewsResponse as LocalNewsResponse,
-  WeatherResponse as LocalWeatherResponse,
+  CircuitWeatherResponse as LocalCircuitWeatherResponse,
 } from "../types/api";
 
 // ─── Axios Client ─────────────────────────────────────────────────────────────
@@ -55,6 +56,10 @@ apiClient.interceptors.request.use(
   (config) => {
     config.headers["Content-Type"] = "application/json";
     config.headers["Accept"] = "application/json";
+    // Prevent caching of API requests
+    config.headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    config.headers["Pragma"] = "no-cache";
+    config.headers["Expires"] = "0";
     return config;
   },
   (error) => Promise.reject(error),
@@ -114,8 +119,16 @@ export const getRaces = async (season?: number): Promise<LocalRaceData[]> => {
   const params = season ? { season } : {};
   const response = await apiClient.get("/api/races", { params });
   const data = response.data?.data ?? response.data;
+  interface RaceApiResponse {
+    race_id: number;
+    round: number;
+    race_name: string;
+    circuit_name?: string;
+    country?: string;
+    date?: string;
+  }
   return Array.isArray(data)
-    ? data.map((r: any) => ({
+    ? (data as RaceApiResponse[]).map((r) => ({
         id: String(r.race_id),
         roundNumber: r.round,
         raceName: r.race_name,
@@ -123,6 +136,34 @@ export const getRaces = async (season?: number): Promise<LocalRaceData[]> => {
         country: r.country ?? "",
         location: "",
         date: r.date ?? "",
+      }))
+    : [];
+};
+
+// All 2026 races (for Simulator - includes past races)
+export const fetchAll2026Races = async (): Promise<LocalUpcomingRace[]> => {
+  const response = await apiClient.get<{ data: LocalUpcomingRace[] }>("/api/races", { 
+    params: { season: 2026, limit: 100 } 
+  });
+  const data = response.data?.data ?? response.data;
+  interface RaceApiResponse {
+    race_id: number;
+    round: number;
+    race_name: string;
+    circuit_name?: string;
+    country?: string;
+    date?: string;
+    season?: number;
+  }
+  return Array.isArray(data)
+    ? (data as unknown as RaceApiResponse[]).map((r) => ({
+        race_id: r.race_id,
+        round_number: r.round,
+        race_name: r.race_name,
+        circuit_name: r.circuit_name ?? "",
+        country: r.country ?? "",
+        date: r.date ?? "",
+        season: r.season ?? 2026,
       }))
     : [];
 };
@@ -155,9 +196,20 @@ export const fetchDriverStandings = async (): Promise<LocalDriverStandingsRespon
 export const fetchTeamStandings = async (): Promise<LocalTeamStandingsResponse> => {
   const response = await apiClient.get("/api/standings/teams/current");
   const data = response.data;
+  interface TeamApiStanding {
+    team_name: string;
+    wins?: number;
+    position: number;
+    points: number;
+  }
+  interface TeamApiResponse {
+    season: number;
+    standings: TeamApiStanding[];
+  }
+  const typedData = data as TeamApiResponse;
   return {
-    ...data,
-    standings: data.standings.map((t: any) => ({
+    ...typedData,
+    standings: typedData.standings.map((t) => ({
       ...t,
       team: t.team_name,
       wins: t.wins ?? 0,
@@ -203,8 +255,8 @@ export const fetchVideos = async () => {
 };
 
 // Weather data for a specific circuit
-export const fetchCircuitWeather = async (circuitId: string): Promise<LocalWeatherResponse> => {
-  const response = await apiClient.get<LocalWeatherResponse>(`/api/weather/circuit/${circuitId}`);
+export const fetchCircuitWeather = async (circuitId: string): Promise<LocalCircuitWeatherResponse> => {
+  const response = await apiClient.get<LocalCircuitWeatherResponse>(`/api/weather/circuit/${circuitId}`);
   return response.data;
 };
 
