@@ -134,7 +134,7 @@ export default function NextRaceCard({
       <video
         ref={videoRef}
         className="hero__video"
-        src="https://res.cloudinary.com/dro8uxoin/video/upload/q_auto/f_auto/v1777146785/16726088-uhd_2160_3840_60fps_tsr7qu.mp4"
+        src="https://res.cloudinary.com/dro8uxoin/video/upload/v1777147481/17324151-hd_1080_1920_30fps_1_vvonyi.mp4"
         autoPlay
         muted
         loop
