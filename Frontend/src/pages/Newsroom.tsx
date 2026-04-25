@@ -119,7 +119,7 @@ export default function Newsroom() {
     retry: 1,
   });
 
-  // Map API news data to article format
+  // Map API news data to article format.
   //const articles: Article[] = (newsData?.items ?? []).map((item: any, index: number) => {
   // First check if news loaded if not use fall back article data
   const rawItems = (newsData?.items?.length ?? 0) > 0 ? newsData!.items! : FALLBACK_ARTICLES
