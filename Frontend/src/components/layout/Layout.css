@@ -257,12 +257,19 @@
 
 /* ─── Desktop (≥ 1024px) ─────────────────────────────────────────────────────── */
 
-@media (min-width: 1024px) {
+@media (min-width: 1600px) {
   .app-root {
-    max-width: 1400px;
-    margin: 0 auto;
-    box-shadow: -1px 0 0 rgba(0,0,0,0.6), 1px 0 0 rgba(0,0,0,0.6);
+    max-width: 1600px;
   }
-  .logo-title { font-size: 24px; }
-  .nav-btn    { font-size: 14px; }
+  .nav-btn { font-size: 15px; }
+  .race-clock { font-size: 13px; }
+}
+
+@media (min-width: 1920px) {
+  .app-root {
+    max-width: 1800px;
+  }
+  .logo-title { font-size: 28px; }
+  .nav-btn { font-size: 16px; }
+  .race-clock { font-size: 14px; }
 }
