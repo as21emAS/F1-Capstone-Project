@@ -526,7 +526,7 @@ export default function DashboardHome() {
                                 </td>
                                 <td>
                                   <span className="db-team-dot" style={{ background: color }} />
-                                  {t.team.toUpperCase()}
+                                  {(t.team ?? '').toUpperCase()}
                                 </td>
                                 <td className="db-td-pts">{t.points}</td>
                                 <td className="db-td-wins">{t.wins}</td>

@@ -153,8 +153,16 @@ export const fetchDriverStandings = async (): Promise<LocalDriverStandingsRespon
 
 // Team standings
 export const fetchTeamStandings = async (): Promise<LocalTeamStandingsResponse> => {
-  const response = await apiClient.get<LocalTeamStandingsResponse>("/api/standings/teams/current");
-  return response.data;
+  const response = await apiClient.get("/api/standings/teams/current");
+  const data = response.data;
+  return {
+    ...data,
+    standings: data.standings.map((t: any) => ({
+      ...t,
+      team: t.team_name,
+      wins: t.wins ?? 0,
+    })),
+  };
 };
 
 // Predictions (dashboard — POST with just race_id)

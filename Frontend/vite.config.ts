@@ -10,8 +10,8 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': { target: 'http://localhost:8000', changeOrigin: true },
-      '/health': { target: 'http://localhost:8000', changeOrigin: true },
+      '/api': { target: 'https://racetrack-backend-2ak8.onrender.com', changeOrigin: true },
+      '/health': { target: 'https://racetrack-backend-2ak8.onrender.com', changeOrigin: true },
     },
   },
   resolve: {
